@@ -1,0 +1,12 @@
+# Taruh link-nya di baris paling atas!
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# Baru tulis nama library-nya di bawah
+fastapi
+uvicorn
+pydantic
+pandas
+numpy
+torch
+transformers
+chronos-forecasting
