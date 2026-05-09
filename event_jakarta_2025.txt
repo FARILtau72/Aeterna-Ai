@@ -1,0 +1,16 @@
+Tanggal,Nama_Event,Lokasi_Utama,Ada_Event
+2025-02-01,Konser Maroon 5,Jakarta International Stadium (JIS),1
+2025-02-08,Konser SEVENTEEN,Jakarta International Stadium (JIS),1
+2025-02-14,Konser NIKI,Beach City International Stadium Ancol,1
+2025-05-18,Sheila On 7 Concert,Istora Senayan,1
+2025-06-19,Pembukaan Jakarta Fair (JFK),JIExpo Kemayoran,1
+2025-06-21,Konser Ungu (Jakarta Fair),JIExpo Kemayoran,1
+2025-06-22,Puncak HUT Kota Jakarta Ke-498,Monas & Sudirman,1
+2025-06-28,Konser JKT48 (Jakarta Fair),JIExpo Kemayoran,1
+2025-07-04,Konser NCT Dream,Jakarta,1
+2025-07-13,Penutupan Jakarta Fair Kemayoran,JIExpo Kemayoran,1
+2025-08-15,Festival Kemerdekaan (RI Fest),JIExpo Kemayoran,1
+2025-08-22,LaLaLa Fest 2025,JIExpo Kemayoran,1
+2025-10-02,Konser Foo Fighters,Carnaval Ancol,1
+2025-10-03,Synchronize Festival,JIExpo Kemayoran,1
+2025-11-01,Konser BLACKPINK,Stadion Utama GBK,1
