@@ -1,3 +1,17 @@
+title: Predictive Waste Analytics
+emoji: 🚛
+colorFrom: green
+colorTo: blue
+sdk: docker
+app_file: app.py
+pinned: false
+
+
+
+
+
+
+
 # 🌍 Eco-Twin AI: Waste Volume Prediction System
 **Proyek untuk Hackathon DKI Jakarta 2025 (Case 2)**
 
