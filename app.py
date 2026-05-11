@@ -206,8 +206,19 @@ async def get_waste_forecast(request: PredictionRequest):
             
             # Logika otomatis vs manual untuk Event
             event_info = events_data.get(date_str)
+            
+            # Cek apakah event terjadi di lokasi yang diminta
+            is_event_at_location = False
             if event_info:
-                # Jika ada di jadwal kalender otomatis (misal Konser Maroon 5), asumsikan lonjakan 35%
+                lokasi_event_lower = event_info['Lokasi'].lower()
+                lokasi_req_lower = request.nama_lokasi.lower()
+                # Cocokkan jika nama lokasi ada di dalam nama tempat event (misal 'gbk' di 'Stadion Utama GBK')
+                # Atau jika event bersifat seluruh kota ('jakarta')
+                if lokasi_req_lower in lokasi_event_lower or lokasi_event_lower == 'jakarta' or lokasi_event_lower in lokasi_req_lower:
+                    is_event_at_location = True
+
+            if event_info and is_event_at_location:
+                # Jika ada di jadwal kalender otomatis dan lokasinya match, asumsikan lonjakan 35%
                 event_impact = val * 0.35
                 info_text = f"{event_info['Nama_Event']} di {event_info['Lokasi']}"
             else:
