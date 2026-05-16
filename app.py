@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import os
 import logging
 import random
+import re
 
 # ==========================================
 # 1. KONFIGURASI & METADATA API
@@ -24,19 +25,9 @@ app = FastAPI(
     API Prediksi Volume Sampah Berbasis AI untuk tantangan CASE 2.
     Sistem menggunakan Model Transformer (Amazon Chronos) untuk memprediksi tumpukan sampah 
     berdasarkan anomali cuaca (BMKG) dan izin keramaian (Event Data).
-    
-    Fitur Utama:
-    - Prediksi Volume Total (Ton)
-    - Dekomposisi Sampah (Organik vs Plastik) berdasarkan SIPSN KLHK 2026
-    - Rekomendasi Jumlah Armada Truk
-    - Status Risiko Operasional (Safe, Warning, Critical)
-    - Integrasi Jadwal Event Otomatis
     """,
-    version="1.3.0",
-    contact={
-        "name": "Faril Putra Pratama - SMK Taruna Bangsa",
-        "url": "https://github.com/FARILtau72",
-    }
+    version="1.5.0",
+    contact={"name": "Faril Putra Pratama - SMK Taruna Bangsa", "url": "https://github.com/FARILtau72"}
 )
 
 app.add_middleware(
@@ -48,61 +39,105 @@ app.add_middleware(
 )
 
 # ==========================================
-# 2. MODEL & DATA LOADING (STARTUP)
+# 2. MODEL & DATA LOADING
 # ==========================================
 pipeline = None
 df_history = None
 events_data = {}
+
+def parse_flexible_date(date_input: str, default_year: int = 2026) -> pd.Timestamp:
+    """
+    Parse tanggal dengan format fleksibel:
+    - "2026-06-01" → full ISO
+    - "06-01" → MM-DD, tahun default 2026
+    - "1 Juni 2026" → natural language (ID)
+    - "Jun 1" → natural language (EN)
+    """
+    if not date_input:
+        return None
+    
+    date_input = date_input.strip()
+    
+    # Coba parse dengan berbagai format
+    formats_to_try = [
+        "%Y-%m-%d",      # 2026-06-01
+        "%d-%m-%Y",      # 01-06-2026
+        "%m-%d",         # 06-01 (tanpa tahun)
+        "%d %B %Y",      # 1 Juni 2026
+        "%d %b %Y",      # 1 Jun 2026
+        "%B %d, %Y",     # June 1, 2026
+        "%b %d, %Y",     # Jun 1, 2026
+    ]
+    
+    for fmt in formats_to_try:
+        try:
+            parsed = datetime.strptime(date_input, fmt)
+            # Jika format tanpa tahun (MM-DD), tambahkan tahun default
+            if fmt == "%m-%d":
+                parsed = parsed.replace(year=default_year)
+            return pd.Timestamp(parsed)
+        except ValueError:
+            continue
+    
+    # Fallback: coba regex untuk MM-DD atau DD-MM
+    match = re.match(r'^(\d{1,2})[-/](\d{1,2})$', date_input)
+    if match:
+        a, b = int(match.group(1)), int(match.group(2))
+        # Asumsi: jika a > 12, maka format DD-MM; jika b > 12, maka MM-DD
+        if a > 12:  # DD-MM
+            return pd.Timestamp(year=default_year, month=b, day=a)
+        elif b > 12:  # MM-DD
+            return pd.Timestamp(year=default_year, month=a, day=b)
+        else:  # Ambigu, default ke MM-DD (US style)
+            return pd.Timestamp(year=default_year, month=a, day=b)
+    
+    raise ValueError(f"Format tanggal '{date_input}' tidak dikenali. Gunakan: YYYY-MM-DD, MM-DD, atau '1 Juni 2026'")
 
 @app.on_event("startup")
 def load_assets():
     global pipeline, df_history, events_data
     logger.info("⏳ Menyiapkan AI Engine (Chronos-T5)...")
     try:
-        pipeline = ChronosPipeline.from_pretrained(
-            "amazon/chronos-t5-tiny",
-            device_map="cpu", 
-            torch_dtype=torch.float32,
-        )
-        logger.info("✅ Model Chronos-T5 Tiny loaded.")
+        pipeline = ChronosPipeline.from_pretrained("amazon/chronos-t5-tiny", device_map="cpu", torch_dtype=torch.float32)
+        logger.info("✅ Model Chronos loaded.")
         
         dataset_path = 'dataset_vibe_coder_2026.csv'
         if os.path.exists(dataset_path):
             df_history = pd.read_csv(dataset_path)
-            logger.info(f"✅ Dataset loaded: {dataset_path} ({len(df_history)} rows)")
+            df_history['TANGGAL'] = pd.to_datetime(df_history['TANGGAL']).dt.strftime('%Y-%m-%d')
+            logger.info(f"✅ Dataset loaded: {len(df_history)} rows")
         else:
-            logger.error(f"❌ Dataset tidak ditemukan: {dataset_path}")
-            raise FileNotFoundError(f"Dataset {dataset_path} tidak ada!")
+            raise FileNotFoundError(f"Dataset {dataset_path} tidak ditemukan!")
             
         event_path = 'event_jakarta_2026.txt'
         if os.path.exists(event_path):
             df_events = pd.read_csv(event_path)
-            # ✅ FIX: Gunakan lowercase 'tanggal' sesuai format CSV lo
             for _, row in df_events.iterrows():
                 if str(row.get('Ada_Event', '0')) == '1':
-                    date_key = str(row.get('tanggal', '')).strip()
+                    date_key = str(row.get('tanggal', row.get('TANGGAL', ''))).strip()
                     if date_key:
                         events_data[date_key] = {
                             'Nama_Event': row.get('Nama_Event', ''),
                             'Lokasi': row.get('Lokasi_Utama', ''),
                             'Crowd_Scale': float(row.get('Crowd_Scale', 0))
                         }
-            logger.info(f"✅ Jadwal {len(events_data)} event berhasil dimuat")
+            logger.info(f"✅ {len(events_data)} events loaded.")
         else:
-            logger.warning(f"⚠️ Event file tidak ditemukan: {event_path}")
+            logger.warning(f"⚠️ Event file tidak ditemukan.")
             
     except Exception as e:
-        logger.error(f"❌ Gagal memuat asset: {e}")
+        logger.error(f"❌ Startup failed: {e}")
         raise
 
 # ==========================================
-# 3. SCHEMA VALIDATION
+# 3. SCHEMA
 # ==========================================
 class PredictionRequest(BaseModel):
-    hari_ke_depan: int = Field(7, ge=1, le=30)
-    prediksi_hujan_bmkg: float = Field(0.0, ge=0)
-    skala_keramaian: int = Field(0, ge=0, le=3)
-    nama_lokasi: str = Field("JIS")
+    hari_ke_depan: int = Field(7, ge=1, le=30, description="Durasi prediksi (1-30 hari)")
+    prediksi_hujan_bmkg: float = Field(0.0, ge=0, description="Estimasi curah hujan (mm)")
+    skala_keramaian: int = Field(0, ge=0, le=3, description="Skala event manual (0-3)")
+    nama_lokasi: str = Field("JIS", description="Nama lokasi: JIS, GBK, Pasar Senen, dll")
+    dari_tanggal: Optional[str] = Field(None, description="Tanggal mulai prediksi. Format fleksibel: '2026-06-01', '06-01', atau '1 Juni 2026'. Default: tanggal terakhir dataset.")
 
 class PredictionResult(BaseModel):
     tanggal: str
@@ -140,36 +175,28 @@ DATABASE_LOKASI = {
     'Gang Sempit Tambora': {'aksesibilitas': 0.25}
 }
 
-# ✅ FIX: Threshold risiko disesuaikan dengan volume realistis (~1000-2000 ton)
 def hitung_prioritas(nama_lokasi: str, volume_ton: float) -> str:
-    aksesibilitas = DATABASE_LOKASI.get(nama_lokasi, {}).get('aksesibilitas', 1.0)
-    skor_risiko = volume_ton / aksesibilitas
-    if skor_risiko > 1500:  # ✅ FIX: Threshold dinaikkan
-        return 'CRITICAL ⚠️'
-    elif skor_risiko >= 1000:  # ✅ FIX: Threshold dinaikkan
-        return 'WARNING 🟡'
+    akses = DATABASE_LOKASI.get(nama_lokasi, {}).get('aksesibilitas', 1.0)
+    skor = volume_ton / akses
+    if skor > 1600: return 'CRITICAL ⚠️'
+    if skor >= 1100: return 'WARNING 🟡'
     return 'SAFE ✅'
 
-# ✅ FIX: Hitung rasio dekomposisi dari dataset historis (lebih akurat)
 def get_decomposition_ratios():
-    if df_history is not None and 'Vol_Sisa_Makanan_Ton' in df_history.columns:
-        avg_organic = (df_history['Vol_Sisa_Makanan_Ton'] / df_history['Volume_Total_Ton']).mean()
-        avg_plastic = (df_history['Vol_Plastik_Ton'] / df_history['Volume_Total_Ton']).mean()
-        return avg_organic, avg_plastic
-    # Fallback ke standar KLHK 2026
+    if df_history is not None:
+        try:
+            o_ratio = (df_history['Vol_Sisa_Makanan_Ton'] / df_history['Volume_Total_Ton']).mean()
+            p_ratio = (df_history['Vol_Plastik_Ton'] / df_history['Volume_Total_Ton']).mean()
+            return o_ratio, p_ratio
+        except: pass
     return 0.4987, 0.2295
 
 # ==========================================
-# 5. ENDPOINT LOGIC
+# 5. ENDPOINT
 # ==========================================
 @app.get("/", tags=["Sistem"])
 def status_check():
-    return {
-        "status": "Online",
-        "model": "Chronos-T5 Tiny",
-        "dataset_year": "2026",
-        "events_loaded": len(events_data)
-    }
+    return {"status": "Online", "model": "Chronos-T5 Tiny", "dataset_year": "2026", "events_loaded": len(events_data)}
 
 def perform_inference(context_tensor, steps):
     forecast = pipeline.predict(context_tensor.unsqueeze(0), steps)
@@ -178,111 +205,86 @@ def perform_inference(context_tensor, steps):
 @app.post("/api/v1/predict", response_model=APIResponse, tags=["Prediksi Sampah"])
 async def get_waste_forecast(request: PredictionRequest):
     if df_history is None or pipeline is None:
-        raise HTTPException(status_code=503, detail="Model atau Dataset belum siap.")
+        raise HTTPException(status_code=503, detail="Model/Dataset belum siap.")
 
     try:
+        # ✅ FIX: Parse tanggal dengan format fleksibel
+        if request.dari_tanggal:
+            try:
+                last_date = parse_flexible_date(request.dari_tanggal, default_year=2026)
+                logger.info(f"📅 Menggunakan tanggal mulai: {last_date.date()} (dari input: '{request.dari_tanggal}')")
+            except ValueError as e:
+                raise HTTPException(status_code=400, detail=f"Format tanggal tidak valid: {str(e)}")
+        else:
+            last_date = pd.to_datetime(df_history['TANGGAL'].iloc[-1])
+            logger.info(f"📅 Menggunakan tanggal default (akhir dataset): {last_date.date()}")
+            
         context = torch.tensor(df_history['Volume_Total_Ton'].values, dtype=torch.float32)
-        logger.info(f"⏳ Memprediksi {request.hari_ke_depan} hari ke depan...")
+        logger.info(f"⏳ Predicting {request.hari_ke_depan} days from {last_date.date()}...")
         median_forecast = await run_in_threadpool(perform_inference, context, request.hari_ke_depan)
 
         results = []
-        last_date = pd.to_datetime(df_history['TANGGAL'].iloc[-1])
         total_volume_all_days = 0.0
         max_risk_score = 0.0
-        
-        # ✅ FIX: Ambil rasio dekomposisi dari data historis
         organic_ratio, plastic_ratio = get_decomposition_ratios()
 
         for i, val in enumerate(median_forecast):
             current_date = last_date + timedelta(days=i+1)
             date_str = current_date.strftime('%Y-%m-%d')
             
-            # ✅ FIX: Rain impact sebagai persentase, bukan absolut
-            rain_multiplier = 1.0
-            if request.prediksi_hujan_bmkg > 20:
-                rain_multiplier = 1.02 + min((request.prediksi_hujan_bmkg - 20) * 0.001, 0.03)  # +2% to +5%
+            # Rain impact (multiplier)
+            rain_mult = 1.02 + min(max(0, request.prediksi_hujan_bmkg - 20) * 0.001, 0.03) if request.prediksi_hujan_bmkg > 20 else 1.0
             
-            # ✅ FIX: Event impact logic yang lebih robust
+            # Event impact
             event_info = events_data.get(date_str)
-            event_multiplier = 1.0
+            event_mult = 1.0
             info_text = None
             
             if event_info:
-                # Event otomatis dari kalender: gunakan Crowd_Scale dari event file
                 scale = event_info.get('Crowd_Scale', 0)
                 if scale > 0:
-                    # Scale 1-5 → impact 10%-50%
-                    event_multiplier = 1.0 + (scale * 0.10)
-                    info_text = f"{event_info['Nama_Event']} di {event_info['Lokasi']}"
+                    event_mult = 1.0 + (scale * 0.10)
+                    info_text = f"{event_info['Nama_Event']} @ {event_info['Lokasi']}"
             elif request.skala_keramaian > 0:
-                # Fallback ke input manual user
-                event_multiplier = 1.0 + (request.skala_keramaian * 0.10)
+                event_mult = 1.0 + (request.skala_keramaian * 0.10)
             
-            # ✅ FIX: Terapkan multiplier, bukan penjumlahan absolut
-            total_vol = float(val * rain_multiplier * event_multiplier)
-            
-            # Tambah noise realistis (±2.5%)
-            total_vol = total_vol * random.uniform(0.975, 1.025)
-            total_vol = round(total_vol, 2)  # ✅ FIX: Round ke 2 desimal
-
+            total_vol = round(float(val * rain_mult * event_mult * random.uniform(0.975, 1.025)), 2)
             total_volume_all_days += total_vol
-
-            # Hitung risk score
+            
             akses = DATABASE_LOKASI.get(request.nama_lokasi, {}).get('aksesibilitas', 1.0)
-            current_risk = total_vol / akses
-            if current_risk > max_risk_score:
-                max_risk_score = current_risk
-
-            # ✅ FIX: Gunakan rasio dinamis dari dataset
+            risk_score = total_vol / akses
+            if risk_score > max_risk_score: max_risk_score = risk_score
+            
             food_waste = round(total_vol * organic_ratio, 2)
             plastic_waste = round(total_vol * plastic_ratio, 2)
-
-            # ✅ FIX: Gunakan int(np.ceil()) untuk integer fields
             num_trucks = int(np.ceil(total_vol / 10))
             risk_status = hitung_prioritas(request.nama_lokasi, total_vol)
 
             results.append(PredictionResult(
-                tanggal=date_str,
-                lokasi=request.nama_lokasi,
-                total_volume_ton=total_vol,
-                sisa_makanan_ton=food_waste,
-                plastik_ton=plastic_waste,
-                rekomendasi_truk=num_trucks,
-                status_risiko=risk_status,
-                info_event=info_text
+                tanggal=date_str, lokasi=request.nama_lokasi,
+                total_volume_ton=total_vol, sisa_makanan_ton=food_waste,
+                plastik_ton=plastic_waste, rekomendasi_truk=num_trucks,
+                status_risiko=risk_status, info_event=info_text
             ))
 
-        # Logistics plan
-        confidence_score = round(random.uniform(0.85, 0.98), 2)
-        trucks_needed = int(np.ceil(total_volume_all_days / 10))  # ✅ FIX: int, bukan round()
+        trucks_needed = int(np.ceil(total_volume_all_days / 10))
         manpower = trucks_needed * 3
-        estimated_duration = round(total_volume_all_days / 5, 1)
-
-        logistics = LogisticsPlan(
-            trucks_needed=trucks_needed,
-            manpower=manpower,
-            estimated_duration_hours=estimated_duration,
-            efficiency_rate="85% (Optimal)"
-        )
-
-        # Executive message yang lebih informatif
-        if max_risk_score > 1500:
-            msg = f"⚠️ HIGH RISK di {request.nama_lokasi}: Volume diprediksi >1500 ton. Siapkan armada tambahan!"
-        elif max_risk_score >= 1000:
-            msg = f"🟡 WARNING di {request.nama_lokasi}: Volume di atas rata-rata. Monitoring intensif disarankan."
-        else:
-            msg = f"✅ Kondisi normal di {request.nama_lokasi}. Jadwal pengangkutan dapat berjalan sesuai rencana."
+        est_duration = round(total_volume_all_days / 5, 1)
+        confidence = round(random.uniform(0.85, 0.98), 2)
+        
+        msg = "✅ Kondisi normal. Jadwal pengangkutan sesuai rencana."
+        if max_risk_score >= 1100: msg = f"🟡 WARNING di {request.nama_lokasi}: Volume di atas rata-rata. Siagakan armada cadangan."
+        if max_risk_score > 1600: msg = f"⚠️ CRITICAL di {request.nama_lokasi}: Lonjakan volume signifikan! Deploy armada tambahan segera."
 
         return APIResponse(
-            status="success",
-            message=msg,
-            confidence_score=confidence_score,
+            status="success", message=msg, confidence_score=confidence,
             data=PredictionData(
                 prediction_results=results,
-                logistics_plan=logistics
+                logistics_plan=LogisticsPlan(trucks_needed=trucks_needed, manpower=manpower, estimated_duration_hours=est_duration, efficiency_rate="85% (Optimal)")
             )
         )
-
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"❌ Error saat prediksi: {e}", exc_info=True)
+        logger.error(f"❌ Prediction failed: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Gagal memproses prediksi: {str(e)}")
