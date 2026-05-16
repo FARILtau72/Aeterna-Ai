@@ -15,7 +15,7 @@ pinned: false
 
 
 # 🌍 Eco-Twin AI: Waste Volume Prediction System
-**Proyek untuk Hackathon DKI Jakarta 2025 (Case 2)**
+**Proyek untuk Hackathon DKI Jakarta 2026 (Case 2)**
 
 Eco-Twin AI adalah sistem cerdas berbasis *Machine Learning* yang dirancang untuk memprediksi lonjakan volume timbulan sampah harian di area Jakarta Pusat. Sistem ini menggunakan arsitektur ganda: **Amazon Chronos-T5** (Time-Series Transformer) untuk peramalan (*forecasting*) dan integrasi Algoritma Pendukung untuk ekstraksi fitur lanjutan (Cuaca, Skala Keramaian, dan Jadwal Event).
 
@@ -97,7 +97,7 @@ Mendapatkan peramalan volume sampah berdasarkan data historis, cuaca, dan event.
 ```json
 [
   {
-    "tanggal": "2025-02-01",
+    "tanggal": "2026-02-01",
     "total_volume_ton": 1520.45,
     "sisa_makanan_ton": 758.25,
     "plastik_ton": 348.94,
