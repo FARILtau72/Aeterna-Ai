@@ -67,7 +67,7 @@ def load_assets():
             torch_dtype=torch.float32,
         )
         
-        dataset_path = 'dataset_vibe_coder_2025.csv'
+        dataset_path = 'dataset_vibe_coder_2026.csv'
         if os.path.exists(dataset_path):
             df_history = pd.read_csv(dataset_path)
             logger.info("✅ Dataset & Model AI berhasil dimuat.")
