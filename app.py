@@ -67,7 +67,7 @@ def load_assets():
             torch_dtype=torch.float32,
         )
         
-        dataset_path = 'dataset_vibe_coder_2026.csv'
+        dataset_path = 'dataset_vibe_coder_2025.csv'
         if os.path.exists(dataset_path):
             df_history = pd.read_csv(dataset_path)
             logger.info("✅ Dataset & Model AI berhasil dimuat.")
@@ -75,7 +75,7 @@ def load_assets():
             logger.warning(f"⚠️ Warning: {dataset_path} tidak ditemukan!")
             
         # Memuat jadwal event jika ada
-        event_path = 'event_jakarta_2025.txt'
+        event_path = 'event_jakarta_2026.txt'
         if os.path.exists(event_path):
             df_events = pd.read_csv(event_path)
             for _, row in df_events.iterrows():
