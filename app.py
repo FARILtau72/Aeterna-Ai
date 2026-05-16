@@ -209,7 +209,7 @@ async def predict(req: PredictionRequest):
         max_risk_score = 0.0
         
         for i, val in enumerate(forecast):
-            current_date = last + timedelta(days=i+1)
+            current_date = last + timedelta(days=i) 
             date_str = current_date.strftime("%Y-%m-%d")
             
             # Rain impact
