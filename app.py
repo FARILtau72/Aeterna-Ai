@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="Waste Intelligence API - Jakarta Pusat 2025",
+    title="Waste Intelligence API - Jakarta Pusat 2026",
     description="""
     API Prediksi Volume Sampah Berbasis AI untuk tantangan CASE 2.
     Sistem menggunakan Model Transformer (Amazon Chronos) untuk memprediksi tumpukan sampah 
@@ -28,7 +28,7 @@ app = FastAPI(
     
     Fitur Utama:
     - Prediksi Volume Total (Ton)
-    - Dekomposisi Sampah (Organik vs Plastik) berdasarkan SIPSN KLHK 2025
+    - Dekomposisi Sampah (Organik vs Plastik) berdasarkan SIPSN KLHK 2026
     - Rekomendasi Jumlah Armada Truk
     - Status Risiko Operasional (Safe, Warning, Critical)
     - Integrasi Jadwal Event Otomatis
