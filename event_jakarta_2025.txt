@@ -1,16 +1,16 @@
-Tanggal,Nama_Event,Lokasi_Utama,Ada_Event
-2025-02-01,Konser Maroon 5,Jakarta International Stadium (JIS),1
-2025-02-08,Konser SEVENTEEN,Jakarta International Stadium (JIS),1
-2025-02-14,Konser NIKI,Beach City International Stadium Ancol,1
-2025-05-18,Sheila On 7 Concert,Istora Senayan,1
-2025-06-19,Pembukaan Jakarta Fair (JFK),JIExpo Kemayoran,1
-2025-06-21,Konser Ungu (Jakarta Fair),JIExpo Kemayoran,1
-2025-06-22,Puncak HUT Kota Jakarta Ke-498,Monas & Sudirman,1
-2025-06-28,Konser JKT48 (Jakarta Fair),JIExpo Kemayoran,1
-2025-07-04,Konser NCT Dream,Jakarta,1
-2025-07-13,Penutupan Jakarta Fair Kemayoran,JIExpo Kemayoran,1
-2025-08-15,Festival Kemerdekaan (RI Fest),JIExpo Kemayoran,1
-2025-08-22,LaLaLa Fest 2025,JIExpo Kemayoran,1
-2025-10-02,Konser Foo Fighters,Carnaval Ancol,1
-2025-10-03,Synchronize Festival,JIExpo Kemayoran,1
-2025-11-01,Konser BLACKPINK,Stadion Utama GBK,1
+tanggal,nama_event,lokasi,skala_keramaian,estimasi_peserta,jenis_sampah_utama
+2026-01-01,Perayaan Tahun Baru 2026,Monas & Kawasan Pusat Kota,4,150000,plastik_kertas
+2026-02-17,Imlek 2026 & Festival Glodok,Glodok & Taman Sari,3,80000,organik_plastik
+2026-03-20,H-3 Idul Fitri 2026,Seluruh Jakarta (Pasar & Mall),5,200000,organik_kemasan
+2026-03-22,Hari Raya Idul Fitri 2026,Permukiman & Masjid,4,180000,organik_sisa_makanan
+2026-04-10,Jakarta Art & Design Festival (JAD),JIExpo Kemayoran,3,60000,kertas_plastik
+2026-05-01,Buruh Day Rally & Festival,Monas & Kawasan Industri,3,100000,minuman_plastik
+2026-06-01,Pembukaan PRJ 2026 (Jakarta Fair),JIExpo Kemayoran,5,250000,plastik_kemasan_makanan
+2026-06-15,Concert: International Music Festival,GBK Senayan,4,50000,minuman_plastik
+2026-07-20,Peak PRJ 2026 (Weekend),JIExpo Kemayoran,5,300000,sampah_komersial
+2026-08-17,Upacara HUT RI ke-81,Monas & Seluruh Kelurahan,4,200000,kertas_bendera
+2026-09-15,Jakarta Food & Culture Expo,Balai Kota & Ancol,3,90000,organik_kemasan
+2026-10-10,Jakarta Marathon 2026,Jalan Protokol Utama,4,120000,minuman_gel_plastik
+2026-11-25,Music Festival Ancol,Ancol Dreamland,4,70000,plastik_kemasan
+2026-12-20,Christmas Market & Festival,Bundaran HI & Pondok Indah Mall,4,110000,plastik_kertas_organik
+2026-12-31,Countdown Jakarta 2027,Monas & Kawasan Sudirman,5,200000,minuman_plastik_kemasan
