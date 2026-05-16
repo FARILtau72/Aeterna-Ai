@@ -98,9 +98,15 @@ def load_assets():
     global pipeline, df_history, events_data
     logger.info("⏳ Menyiapkan AI Engine (Chronos-T5)...")
     try:
-        pipeline = ChronosPipeline.from_pretrained("amazon/chronos-t5-tiny", device_map="cpu", torch_dtype=torch.float32)
+        # 1. Load Model
+        pipeline = ChronosPipeline.from_pretrained(
+            "amazon/chronos-t5-tiny", 
+            device_map="cpu", 
+            torch_dtype=torch.float32
+        )
         logger.info("✅ Model Chronos loaded.")
         
+        # 2. Load Dataset
         dataset_path = 'dataset_vibe_coder_2026.csv'
         if os.path.exists(dataset_path):
             df_history = pd.read_csv(dataset_path)
@@ -109,21 +115,33 @@ def load_assets():
         else:
             raise FileNotFoundError(f"Dataset {dataset_path} tidak ditemukan!")
             
+        # 3. Load Event File ✅ FIX: Handle lowercase columns
         event_path = 'event_jakarta_2026.txt'
         if os.path.exists(event_path):
             df_events = pd.read_csv(event_path)
+            
+            # ✅ Normalisasi nama kolom jadi lowercase biar fleksibel
+            df_events.columns = [c.strip().lower() for c in df_events.columns]
+            
             for _, row in df_events.iterrows():
-                if str(row.get('Ada_Event', '0')) == '1':
-                    date_key = str(row.get('tanggal', row.get('TANGGAL', ''))).strip()
+                # ✅ Cek kolom 'ada_event' (lowercase) atau fallback ke True jika tidak ada
+                is_event = True
+                if 'ada_event' in df_events.columns:
+                    is_event = str(row.get('ada_event', '0')) == '1'
+                
+                if is_event:
+                    date_key = str(row.get('tanggal', '')).strip()
                     if date_key:
                         events_data[date_key] = {
-                            'Nama_Event': row.get('Nama_Event', ''),
-                            'Lokasi': row.get('Lokasi_Utama', ''),
-                            'Crowd_Scale': float(row.get('Crowd_Scale', 0))
+                            # ✅ Map ke nama kolom lowercase di file CSV lo
+                            'Nama_Event': str(row.get('nama_event', row.get('event', 'Event'))),
+                            'Lokasi': str(row.get('lokasi', row.get('lokasi_utama', ''))),
+                            'Crowd_Scale': float(row.get('skala_keramaian', row.get('crowd_scale', 0)))
                         }
-            logger.info(f"✅ {len(events_data)} events loaded.")
+            
+            logger.info(f"✅ {len(events_data)} events loaded. Sample: {list(events_data.keys())[:3]}")
         else:
-            logger.warning(f"⚠️ Event file tidak ditemukan.")
+            logger.warning(f"⚠️ Event file tidak ditemukan: {event_path}")
             
     except Exception as e:
         logger.error(f"❌ Startup failed: {e}")
