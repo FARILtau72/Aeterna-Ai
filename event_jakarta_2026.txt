@@ -1,16 +1,16 @@
-tanggal,nama_event,lokasi,skala_keramaian,estimasi_peserta,jenis_sampah_utama
-2026-01-01,Perayaan Tahun Baru 2026,Monas & Kawasan Pusat Kota,4,150000,plastik_kertas
-2026-02-17,Imlek 2026 & Festival Glodok,Glodok & Taman Sari,3,80000,organik_plastik
-2026-03-20,H-3 Idul Fitri 2026,Seluruh Jakarta (Pasar & Mall),5,200000,organik_kemasan
-2026-03-22,Hari Raya Idul Fitri 2026,Permukiman & Masjid,4,180000,organik_sisa_makanan
-2026-04-10,Jakarta Art & Design Festival (JAD),JIExpo Kemayoran,3,60000,kertas_plastik
-2026-05-01,Buruh Day Rally & Festival,Monas & Kawasan Industri,3,100000,minuman_plastik
-2026-06-01,Pembukaan PRJ 2026 (Jakarta Fair),JIExpo Kemayoran,5,250000,plastik_kemasan_makanan
-2026-06-15,Concert: International Music Festival,GBK Senayan,4,50000,minuman_plastik
-2026-07-20,Peak PRJ 2026 (Weekend),JIExpo Kemayoran,5,300000,sampah_komersial
-2026-08-17,Upacara HUT RI ke-81,Monas & Seluruh Kelurahan,4,200000,kertas_bendera
-2026-09-15,Jakarta Food & Culture Expo,Balai Kota & Ancol,3,90000,organik_kemasan
-2026-10-10,Jakarta Marathon 2026,Jalan Protokol Utama,4,120000,minuman_gel_plastik
-2026-11-25,Music Festival Ancol,Ancol Dreamland,4,70000,plastik_kemasan
-2026-12-20,Christmas Market & Festival,Bundaran HI & Pondok Indah Mall,4,110000,plastik_kertas_organik
-2026-12-31,Countdown Jakarta 2027,Monas & Kawasan Sudirman,5,200000,minuman_plastik_kemasan
+tanggal,nama_event,lokasi,skala_keramaian
+2026-01-01,Perayaan Tahun Baru,Monas,4
+2026-02-17,Imlek Festival,Glodok,2
+2026-03-20,H-3 Lebaran,Jakarta,4
+2026-03-22,Idul Fitri,Jakarta,5
+2026-04-10,Jakarta Art Festival,JIExpo,2
+2026-05-01,May Day Rally,Monas,2
+2026-06-01,PRJ Opening,JIExpo,5
+2026-06-15,Music Festival GBK,GBK,3
+2026-07-20,PRJ Peak Weekend,JIExpo,5
+2026-08-17,HUT RI ke-81,Monas,4
+2026-09-15,Food & Culture Expo,Ancol,2
+2026-10-10,Jakarta Marathon,Jalan Protokol,3
+2026-11-25,Ancol Music Fest,Ancol,3
+2026-12-20,Christmas Market,Bundaran HI,3
+2026-12-31,Countdown Jakarta 2027,Monas,4
