@@ -25,8 +25,16 @@ app = FastAPI(
     API Prediksi Volume Sampah Berbasis AI untuk tantangan CASE 2.
     Sistem menggunakan Model Transformer (Amazon Chronos) untuk memprediksi tumpukan sampah 
     berdasarkan anomali cuaca (BMKG) dan izin keramaian (Event Data).
+    
+    Fitur Utama:
+    - ✅ Prediksi Volume Total (Ton) dengan probabilistic forecasting
+    - ✅ Dekomposisi Sampah (Organik vs Plastik) berdasarkan SIPSN KLHK 2026
+    - ✅ Rekomendasi Jumlah Armada Truk & Manpower
+    - ✅ Status Risiko Operasional (Safe/Warning/Critical)
+    - ✅ Integrasi Jadwal Event Otomatis + Location Matching
+    - ✅ Flexible Date Parser (YYYY-MM-DD, MM-DD, "1 Juni 2026")
     """,
-    version="1.5.0",
+    version="2.0.0",
     contact={"name": "Faril Putra Pratama - SMK Taruna Bangsa", "url": "https://github.com/FARILtau72"}
 )
 
@@ -45,68 +53,68 @@ pipeline = None
 df_history = None
 events_data = {}
 
+# ✅ Mapping radius event: event di lokasi X juga impact ke lokasi terdekat
+EVENT_RADIUS_MAP = {
+    'jiexpo': ['jis', 'kemayoran', 'pademangan', 'jakarta'],
+    'monas': ['pasar senen', 'gang sempit tambora', 'merdeka', 'jakarta'],
+    'gbk': ['senayan', 'tanah abang', 'kuningan', 'jakarta'],
+    'ancol': ['pademangan', 'kelapa gading', 'jakarta'],
+    'glodok': ['tamansari', 'kota tua', 'jakarta'],
+    'bundaran hi': ['sudirman', 'thamrin', 'jakarta'],
+    'jakarta': ['*']  # City-wide event impact ke semua lokasi
+}
+
 def parse_flexible_date(date_input: str, default_year: int = 2026) -> pd.Timestamp:
-    """
-    Parse tanggal dengan format fleksibel:
-    - "2026-06-01" → full ISO
-    - "06-01" → MM-DD, tahun default 2026
-    - "1 Juni 2026" → natural language (ID)
-    - "Jun 1" → natural language (EN)
-    """
-    if not date_input:
-        return None
-    
+    """Parse tanggal dengan format fleksibel"""
+    if not date_input: return None
     date_input = date_input.strip()
     
-    # Coba parse dengan berbagai format
     formats_to_try = [
-        "%Y-%m-%d",      # 2026-06-01
-        "%d-%m-%Y",      # 01-06-2026
-        "%m-%d",         # 06-01 (tanpa tahun)
-        "%d %B %Y",      # 1 Juni 2026
-        "%d %b %Y",      # 1 Jun 2026
-        "%B %d, %Y",     # June 1, 2026
-        "%b %d, %Y",     # Jun 1, 2026
+        "%Y-%m-%d", "%d-%m-%Y", "%m-%d", "%d %B %Y", "%d %b %Y", "%B %d, %Y", "%b %d, %Y"
     ]
-    
     for fmt in formats_to_try:
         try:
             parsed = datetime.strptime(date_input, fmt)
-            # Jika format tanpa tahun (MM-DD), tambahkan tahun default
-            if fmt == "%m-%d":
-                parsed = parsed.replace(year=default_year)
+            if fmt == "%m-%d": parsed = parsed.replace(year=default_year)
             return pd.Timestamp(parsed)
-        except ValueError:
-            continue
+        except ValueError: continue
     
-    # Fallback: coba regex untuk MM-DD atau DD-MM
     match = re.match(r'^(\d{1,2})[-/](\d{1,2})$', date_input)
     if match:
         a, b = int(match.group(1)), int(match.group(2))
-        # Asumsi: jika a > 12, maka format DD-MM; jika b > 12, maka MM-DD
-        if a > 12:  # DD-MM
-            return pd.Timestamp(year=default_year, month=b, day=a)
-        elif b > 12:  # MM-DD
-            return pd.Timestamp(year=default_year, month=a, day=b)
-        else:  # Ambigu, default ke MM-DD (US style)
-            return pd.Timestamp(year=default_year, month=a, day=b)
+        if a > 12: return pd.Timestamp(year=default_year, month=b, day=a)  # DD-MM
+        elif b > 12: return pd.Timestamp(year=default_year, month=a, day=b)  # MM-DD
+        else: return pd.Timestamp(year=default_year, month=a, day=b)  # Ambigu → MM-DD
+    raise ValueError(f"Format tanggal '{date_input}' tidak dikenali.")
+
+def check_location_match(requested_location: str, event_location: str) -> bool:
+    """Cek apakah event di lokasi X impact ke requested_location"""
+    req_lower = requested_location.lower().strip()
+    evt_lower = event_location.lower().strip()
     
-    raise ValueError(f"Format tanggal '{date_input}' tidak dikenali. Gunakan: YYYY-MM-DD, MM-DD, atau '1 Juni 2026'")
+    # Direct match
+    if req_lower == evt_lower or req_lower in evt_lower or evt_lower in req_lower:
+        return True
+    
+    # City-wide event
+    if evt_lower == 'jakarta':
+        return True
+    
+    # Radius mapping
+    for event_loc, nearby in EVENT_RADIUS_MAP.items():
+        if event_loc in evt_lower:
+            if '*' in nearby or req_lower in nearby or any(req_lower in n for n in nearby):
+                return True
+    return False
 
 @app.on_event("startup")
 def load_assets():
     global pipeline, df_history, events_data
     logger.info("⏳ Menyiapkan AI Engine (Chronos-T5)...")
     try:
-        # 1. Load Model
-        pipeline = ChronosPipeline.from_pretrained(
-            "amazon/chronos-t5-tiny", 
-            device_map="cpu", 
-            torch_dtype=torch.float32
-        )
+        pipeline = ChronosPipeline.from_pretrained("amazon/chronos-t5-tiny", device_map="cpu", torch_dtype=torch.float32)
         logger.info("✅ Model Chronos loaded.")
         
-        # 2. Load Dataset
         dataset_path = 'dataset_vibe_coder_2026.csv'
         if os.path.exists(dataset_path):
             df_history = pd.read_csv(dataset_path)
@@ -115,34 +123,26 @@ def load_assets():
         else:
             raise FileNotFoundError(f"Dataset {dataset_path} tidak ditemukan!")
             
-        # 3. Load Event File ✅ FIX: Handle lowercase columns
         event_path = 'event_jakarta_2026.txt'
         if os.path.exists(event_path):
             df_events = pd.read_csv(event_path)
-            
-            # ✅ Normalisasi nama kolom jadi lowercase biar fleksibel
             df_events.columns = [c.strip().lower() for c in df_events.columns]
             
             for _, row in df_events.iterrows():
-                # ✅ Cek kolom 'ada_event' (lowercase) atau fallback ke True jika tidak ada
                 is_event = True
                 if 'ada_event' in df_events.columns:
                     is_event = str(row.get('ada_event', '0')) == '1'
-                
                 if is_event:
                     date_key = str(row.get('tanggal', '')).strip()
                     if date_key:
                         events_data[date_key] = {
-                            # ✅ Map ke nama kolom lowercase di file CSV lo
                             'Nama_Event': str(row.get('nama_event', row.get('event', 'Event'))),
                             'Lokasi': str(row.get('lokasi', row.get('lokasi_utama', ''))),
                             'Crowd_Scale': float(row.get('skala_keramaian', row.get('crowd_scale', 0)))
                         }
-            
-            logger.info(f"✅ {len(events_data)} events loaded. Sample: {list(events_data.keys())[:3]}")
+            logger.info(f"✅ {len(events_data)} events loaded.")
         else:
             logger.warning(f"⚠️ Event file tidak ditemukan: {event_path}")
-            
     except Exception as e:
         logger.error(f"❌ Startup failed: {e}")
         raise
@@ -151,11 +151,11 @@ def load_assets():
 # 3. SCHEMA
 # ==========================================
 class PredictionRequest(BaseModel):
-    hari_ke_depan: int = Field(7, ge=1, le=30, description="Durasi prediksi (1-30 hari)")
-    prediksi_hujan_bmkg: float = Field(0.0, ge=0, description="Estimasi curah hujan (mm)")
-    skala_keramaian: int = Field(0, ge=0, le=3, description="Skala event manual (0-3)")
-    nama_lokasi: str = Field("JIS", description="Nama lokasi: JIS, GBK, Pasar Senen, dll")
-    dari_tanggal: Optional[str] = Field(None, description="Tanggal mulai prediksi. Format fleksibel: '2026-06-01', '06-01', atau '1 Juni 2026'. Default: tanggal terakhir dataset.")
+    hari_ke_depan: int = Field(7, ge=1, le=30)
+    prediksi_hujan_bmkg: float = Field(0.0, ge=0)
+    skala_keramaian: int = Field(0, ge=0, le=5)  # ✅ Extended to 5 for manual input
+    nama_lokasi: str = Field("JIS")
+    dari_tanggal: Optional[str] = Field(None, description="Format: YYYY-MM-DD, MM-DD, atau '1 Juni 2026'")
 
 class PredictionResult(BaseModel):
     tanggal: str
@@ -187,10 +187,8 @@ class APIResponse(BaseModel):
 # 4. BUSINESS LOGIC
 # ==========================================
 DATABASE_LOKASI = {
-    'JIS': {'aksesibilitas': 1.0},
-    'GBK': {'aksesibilitas': 1.0},
-    'Pasar Senen': {'aksesibilitas': 0.6},
-    'Gang Sempit Tambora': {'aksesibilitas': 0.25}
+    'JIS': {'aksesibilitas': 1.0}, 'GBK': {'aksesibilitas': 1.0},
+    'Pasar Senen': {'aksesibilitas': 0.6}, 'Gang Sempit Tambora': {'aksesibilitas': 0.25}
 }
 
 def hitung_prioritas(nama_lokasi: str, volume_ton: float) -> str:
@@ -226,43 +224,36 @@ async def get_waste_forecast(request: PredictionRequest):
         raise HTTPException(status_code=503, detail="Model/Dataset belum siap.")
 
     try:
-        # ✅ FIX: Parse tanggal dengan format fleksibel
-        if request.dari_tanggal:
-            try:
-                last_date = parse_flexible_date(request.dari_tanggal, default_year=2026)
-                logger.info(f"📅 Menggunakan tanggal mulai: {last_date.date()} (dari input: '{request.dari_tanggal}')")
-            except ValueError as e:
-                raise HTTPException(status_code=400, detail=f"Format tanggal tidak valid: {str(e)}")
-        else:
-            last_date = pd.to_datetime(df_history['TANGGAL'].iloc[-1])
-            logger.info(f"📅 Menggunakan tanggal default (akhir dataset): {last_date.date()}")
-            
+        last_date = parse_flexible_date(request.dari_tanggal, default_year=2026) if request.dari_tanggal else pd.to_datetime(df_history['TANGGAL'].iloc[-1])
         context = torch.tensor(df_history['Volume_Total_Ton'].values, dtype=torch.float32)
         logger.info(f"⏳ Predicting {request.hari_ke_depan} days from {last_date.date()}...")
         median_forecast = await run_in_threadpool(perform_inference, context, request.hari_ke_depan)
 
-        results = []
-        total_volume_all_days = 0.0
-        max_risk_score = 0.0
+        results, total_volume_all_days, max_risk_score = [], 0.0, 0.0
         organic_ratio, plastic_ratio = get_decomposition_ratios()
 
         for i, val in enumerate(median_forecast):
             current_date = last_date + timedelta(days=i+1)
             date_str = current_date.strftime('%Y-%m-%d')
             
-            # Rain impact (multiplier)
+            # Rain impact
             rain_mult = 1.02 + min(max(0, request.prediksi_hujan_bmkg - 20) * 0.001, 0.03) if request.prediksi_hujan_bmkg > 20 else 1.0
             
-            # Event impact
+            # ✅ MULTI-EVENT + LOCATION MATCHING
             event_info = events_data.get(date_str)
             event_mult = 1.0
             info_text = None
             
             if event_info:
                 scale = event_info.get('Crowd_Scale', 0)
-                if scale > 0:
-                    event_mult = 1.0 + (scale * 0.10)
-                    info_text = f"{event_info['Nama_Event']} @ {event_info['Lokasi']}"
+                evt_loc = event_info.get('Lokasi', '')
+                
+                # ✅ Cek location match dengan radius mapping
+                if check_location_match(request.nama_lokasi, evt_loc) and scale > 0:
+                    # ✅ Soft impact: scale 1-5 → +10% to +35%
+                    impact_pct = 0.10 + min(scale * 0.05, 0.25)
+                    event_mult = 1.0 + impact_pct
+                    info_text = f"{event_info['Nama_Event']} @ {evt_loc}"
             elif request.skala_keramaian > 0:
                 event_mult = 1.0 + (request.skala_keramaian * 0.10)
             
@@ -273,36 +264,29 @@ async def get_waste_forecast(request: PredictionRequest):
             risk_score = total_vol / akses
             if risk_score > max_risk_score: max_risk_score = risk_score
             
-            food_waste = round(total_vol * organic_ratio, 2)
-            plastic_waste = round(total_vol * plastic_ratio, 2)
-            num_trucks = int(np.ceil(total_vol / 10))
-            risk_status = hitung_prioritas(request.nama_lokasi, total_vol)
-
             results.append(PredictionResult(
                 tanggal=date_str, lokasi=request.nama_lokasi,
-                total_volume_ton=total_vol, sisa_makanan_ton=food_waste,
-                plastik_ton=plastic_waste, rekomendasi_truk=num_trucks,
-                status_risiko=risk_status, info_event=info_text
+                total_volume_ton=total_vol,
+                sisa_makanan_ton=round(total_vol * organic_ratio, 2),
+                plastik_ton=round(total_vol * plastic_ratio, 2),
+                rekomendasi_truk=int(np.ceil(total_vol / 10)),
+                status_risiko=hitung_prioritas(request.nama_lokasi, total_vol),
+                info_event=info_text
             ))
 
         trucks_needed = int(np.ceil(total_volume_all_days / 10))
-        manpower = trucks_needed * 3
-        est_duration = round(total_volume_all_days / 5, 1)
-        confidence = round(random.uniform(0.85, 0.98), 2)
-        
         msg = "✅ Kondisi normal. Jadwal pengangkutan sesuai rencana."
-        if max_risk_score >= 1100: msg = f"🟡 WARNING di {request.nama_lokasi}: Volume di atas rata-rata. Siagakan armada cadangan."
-        if max_risk_score > 1600: msg = f"⚠️ CRITICAL di {request.nama_lokasi}: Lonjakan volume signifikan! Deploy armada tambahan segera."
+        if max_risk_score >= 1100: msg = f"🟡 WARNING di {request.nama_lokasi}: Volume di atas rata-rata."
+        if max_risk_score > 1600: msg = f"⚠️ CRITICAL di {request.nama_lokasi}: Lonjakan volume signifikan!"
 
         return APIResponse(
-            status="success", message=msg, confidence_score=confidence,
+            status="success", message=msg, confidence_score=round(random.uniform(0.85, 0.98), 2),
             data=PredictionData(
                 prediction_results=results,
-                logistics_plan=LogisticsPlan(trucks_needed=trucks_needed, manpower=manpower, estimated_duration_hours=est_duration, efficiency_rate="85% (Optimal)")
+                logistics_plan=LogisticsPlan(trucks_needed=trucks_needed, manpower=trucks_needed*3, estimated_duration_hours=round(total_volume_all_days/5,1), efficiency_rate="85% (Optimal)")
             )
         )
-    except HTTPException:
-        raise
+    except HTTPException: raise
     except Exception as e:
         logger.error(f"❌ Prediction failed: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Gagal memproses prediksi: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
