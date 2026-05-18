@@ -1,18 +1,18 @@
 tanggal,nama_event,lokasi,skala_keramaian
 2026-01-01,Perayaan Tahun Baru,Monas,4
 2026-02-17,Imlek Festival,Glodok,2
-2026-03-20,H-3 Lebaran,Jakarta,4
+2026-03-18,H-3 Lebaran,Jakarta,4
 2026-03-22,Idul Fitri,Jakarta,5
 2026-04-10,Jakarta Art Festival,JIExpo,2
 2026-05-01,May Day Rally,Monas,2
 2026-06-11,PRJ Opening,JIExpo,5
+2026-06-13,BTN Marathon 2026,Jalan Protokol,3
 2026-06-14,PRJ Weekend,JIExpo,4
 2026-06-21,PRJ Peak Weekend,JIExpo,5
-2026-06-28,PRJ Closing Weekend,JIExpo,4
-2026-07-20,PRJ Peak Weekend,JIExpo,5
+2026-06-28,PRJ Mid-Event Weekend,JIExpo,4
+2026-07-20,PRJ Final Weekend,JIExpo,5
 2026-08-17,HUT RI ke-81,Monas,4
 2026-09-15,Food & Culture Expo,Ancol,2
-2026-10-10,Jakarta Marathon,Jalan Protokol,3
 2026-11-25,Ancol Music Fest,Ancol,3
 2026-12-20,Christmas Market,Bundaran HI,3
 2026-12-31,Countdown Jakarta 2027,Monas,4
