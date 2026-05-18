@@ -5,8 +5,10 @@ tanggal,nama_event,lokasi,skala_keramaian
 2026-03-22,Idul Fitri,Jakarta,5
 2026-04-10,Jakarta Art Festival,JIExpo,2
 2026-05-01,May Day Rally,Monas,2
-2026-06-01,PRJ Opening,JIExpo,5
-2026-06-15,Music Festival GBK,GBK,3
+2026-06-11,PRJ Opening,JIExpo,5
+2026-06-14,PRJ Weekend,JIExpo,4
+2026-06-21,PRJ Peak Weekend,JIExpo,5
+2026-06-28,PRJ Closing Weekend,JIExpo,4
 2026-07-20,PRJ Peak Weekend,JIExpo,5
 2026-08-17,HUT RI ke-81,Monas,4
 2026-09-15,Food & Culture Expo,Ancol,2
