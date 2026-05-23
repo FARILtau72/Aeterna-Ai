@@ -1,26 +1,3 @@
-"""
-Waste Intelligence API — Jakarta Pusat 2026
-AI-Powered Predictive Waste Management System (CASE 2)
-
-Team: Aeterna AI
-Leader: Faril Putra Pratama
-Institution: SMK Taruna Bangsa
-
-Description:
-This API predicts waste volume 1–30 days ahead for high-density operational zones 
-in Central Jakarta. It integrates historical generation patterns, weather forecasts, 
-and verified event calendars with spatial location mapping to enable proactive fleet 
-scheduling and resource optimization for Dinas Lingkungan Hidup (DLH).
-
-Key Features:
-- Zero-shot time-series forecasting using Amazon Chronos-T5
-- Real-world data calibration (aligning AI output with operational baselines)
-- Spatial-aware event impact mapping (e.g., JIExpo events → JIS/Kemayoran)
-- Dynamic risk scoring based on location-specific capacity thresholds
-- Adaptive granularity: daily & hourly hybrid forecasting
-- Production-ready REST API with strict validation & <3s response time
-"""
-
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.concurrency import run_in_threadpool
