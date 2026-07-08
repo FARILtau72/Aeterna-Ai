@@ -12,3 +12,4 @@ transformers
 chronos-forecasting
 scikit-learn
 joblib
+httpx
