@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waste Intelligence Dashboard - DKI Jakarta 2026</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet.js Map Library -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Background Canvas for Interactive Particle Rain -->
+    <canvas id="rain-canvas"></canvas>
+
+    <header>
+        <div class="logo-container">
+            <span class="logo-text">WASTE<span class="highlight">INTELLIGENCE</span></span>
+            <span class="version-tag">v3.0.0 (Calibrated)</span>
+        </div>
+        <div class="system-status">
+            <span class="status-indicator online"></span>
+            <span class="status-label">System Online</span>
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+        <!-- Panel Kontrol (Sidebar) -->
+        <section class="panel control-panel">
+            <h2 class="panel-title">PREDICTION CONFIG</h2>
+            <div class="control-group">
+                <label for="location-select">Target Location</label>
+                <select id="location-select" class="form-control">
+                    <option value="JIS" selected>JIS (North Jakarta)</option>
+                    <option value="GBK">GBK (Central/South Jakarta)</option>
+                    <option value="Pasar Senen">Pasar Senen (Central Jakarta)</option>
+                    <option value="Gang Sempit Tambora">Gang Sempit Tambora (West Jakarta)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="model-select">AI Forecasting Model</label>
+                <select id="model-select" class="form-control">
+                    <option value="chronos">Amazon Chronos-T5 (Tiny)</option>
+                    <option value="gradient_boosting" selected>Gradient Boosting (Real Data - 94.0% Accuracy)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="forecast-slider">Forecast Horizon: <span id="forecast-val" class="value-display">7</span> Days</label>
+                <input type="range" id="forecast-slider" min="1" max="30" value="7" class="slider">
+            </div>
+
+            <div class="divider"></div>
+            <h3 class="panel-subtitle">Simulation Overrides</h3>
+
+            <div class="control-group">
+                <label for="rain-override">Manual Rain Override (mm)</label>
+                <div class="range-override-container">
+                    <input type="range" id="rain-override" min="0" max="100" value="0" class="slider">
+                    <span id="rain-override-val" class="override-display">Auto (Open-Meteo)</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label for="event-override">Crowd Event Scale (0 - 5)</label>
+                <input type="range" id="event-override" min="0" max="5" value="0" class="slider">
+            </div>
+
+            <div class="button-row">
+                <button id="predict-btn" class="action-btn">
+                    <span class="btn-text">RUN PREDICTION</span>
+                    <span class="btn-glow"></span>
+                </button>
+                <button id="export-btn" class="action-btn secondary-btn">
+                    <span class="btn-text">EXPORT CSV</span>
+                    <span class="btn-glow"></span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Peta Interaktif & Main Stats -->
+        <section class="map-and-stats">
+            <!-- Peta Leaflet.js -->
+            <div class="panel map-panel">
+                <h2 class="panel-title">JAKARTA SPATIAL REALTIME MAP</h2>
+                <div class="map-container">
+                    <div id="map"></div>
+                </div>
+            </div>
+
+            <!-- Stats Real-Time -->
+            <div class="stats-row">
+                <div class="panel stat-card text-glow">
+                    <span class="card-label">TOTAL FORECAST VOLUME</span>
+                    <span id="stat-total-volume" class="card-value">0.00 <span class="unit">Tons</span></span>
+                    <span class="card-meta" id="stat-period-meta">Period: N/A</span>
+                </div>
+                <div class="panel stat-card">
+                    <span class="card-label">RISK STATUS</span>
+                    <span id="stat-risk-status" class="card-value status-badge safe">SAFE</span>
+                    <span class="card-meta" id="stat-location-meta">JIS (Radius 1.5 km)</span>
+                </div>
+                <div class="panel stat-card">
+                    <span class="card-label">RECOMMENDED FLEET</span>
+                    <span id="stat-trucks" class="card-value">0 <span class="unit">Trucks (5T)</span></span>
+                    <span class="card-meta">Logistics Fleet Suggestion</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rincian Logistik & Analisis -->
+        <section class="analysis-panel">
+            <!-- Kategori / Komposisi Sampah -->
+            <div class="panel category-panel">
+                <h2 class="panel-title">WASTE COMPOSITION</h2>
+                <div class="progress-container">
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span>Organic / Sisa Makanan (49.87%)</span>
+                            <span id="val-organic">0.00 Ton</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div id="bar-organic" class="progress-bar-fill organic" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span>Plastic / Plastik (22.95%)</span>
+                            <span id="val-plastic">0.00 Ton</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div id="bar-plastic" class="progress-bar-fill plastic" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Widget Cuaca Live & Info Event -->
+            <div class="panel weather-event-panel">
+                <h2 class="panel-title">WEATHER & EVENT FORECAST</h2>
+                <div class="weather-grid">
+                    <div class="weather-info">
+                        <span class="weather-temp" id="weather-forecast-text">Fetching Live...</span>
+                        <span class="weather-label" id="weather-location-text">Jakarta, Indonesia</span>
+                    </div>
+                    <div class="weather-details">
+                        <div>Precipitation (Rain): <span id="weather-precip" class="highlight">0.0 mm</span></div>
+                        <div>BMKG Alert: <span id="weather-alert" class="highlight">None</span></div>
+                    </div>
+                </div>
+                <div class="event-box" id="event-box">
+                    <span class="event-title">Upcoming Event Calendar</span>
+                    <p class="event-desc" id="event-desc-text">No major events registered for today.</p>
+                </div>
+            </div>
+
+            <!-- Logistics Plan -->
+            <div class="panel logistics-panel">
+                <h2 class="panel-title">OPERATIONAL LOGISTICS PLAN</h2>
+                <div class="logistics-grid">
+                    <div class="log-item">
+                        <span class="log-label">Manpower Required</span>
+                        <span id="log-manpower" class="log-value">0 Crew</span>
+                    </div>
+                    <div class="log-item">
+                        <span class="log-label">Estimated Collection Time</span>
+                        <span id="log-duration" class="log-value">0.0 Hours</span>
+                    </div>
+                    <div class="log-item">
+                        <span class="log-label">Operational Efficiency</span>
+                        <span id="log-efficiency" class="log-value">85% (Optimal)</span>
+                    </div>
+                    <div class="log-item">
+                        <span class="log-label">Confidence Score</span>
+                        <span id="log-confidence" class="log-value highlight">92.0%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Timeline Harian -->
+    <section class="container timeline-container">
+        <div class="panel timeline-panel">
+            <h2 class="panel-title">DAILY TIMELINE BREAKDOWN</h2>
+            <div id="timeline-list" class="timeline-list">
+                <!-- Will be dynamically populated -->
+                <div class="empty-timeline">Run a prediction to generate the forecast timeline.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hourly Breakdown (for hourly granularity) -->
+    <section id="hourly-section" class="container hourly-container" style="display: none;">
+        <div class="panel hourly-panel">
+            <h2 class="panel-title">HOURLY DISPATCH RISK HEATMAP</h2>
+            <div class="hourly-grid" id="hourly-grid">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Waste Intelligence System - DKI Jakarta Province. Calibrated using DLH & KLHK Statistics.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/static/app.js"></script>
+</body>
+</html>

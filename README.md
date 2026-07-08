@@ -21,6 +21,12 @@ Eco-Twin AI adalah sistem cerdas berbasis *Machine Learning* yang dirancang untu
 
 ---
 
+> [!IMPORTANT]
+> **📖 DOKUMENTASI INTEGRASI FRONT-END**:  
+> Kami telah menyediakan panduan integrasi lengkap khusus tim Front-End (FE) di file [FRONTEND_API_DOC.md](file:///c:/khusus%20project%20IT/Fine%20tuning%20ulang%20AI%20jakarta/waste-prediction-api/FRONTEND_API_DOC.md). File tersebut berisi konstanta koordinat peta, tipe data TypeScript, contoh request Axios/Fetch, serta cara memetakan respons ke UI Dashboard.
+
+---
+
 ## 🚀 Fitur Unggulan (Hackathon Killer Features)
 
 1. **Integrasi Kalender Event Otomatis**: Sistem secara otomatis membaca file `event_jakarta_2025.txt` saat server dinyalakan. Jika ada *request* prediksi yang menyentuh tanggal konser besar (misal: Maroon 5 di JIS), AI akan mendeteksi dan secara akurat menambahkan estimasi volume sampah tanpa input manual tambahan.
