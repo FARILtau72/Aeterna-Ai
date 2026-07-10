@@ -14,8 +14,11 @@ import io
 import csv
 import json
 from chronos import ChronosPipeline
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import os, logging, re
+
+def get_jakarta_now() -> datetime:
+    return datetime.now(timezone(timedelta(hours=7)))
 
 # ==========================================
 # 1. APPLICATION CONFIGURATION
@@ -331,7 +334,7 @@ def get_latest_news():
         "title": "DKI Uji Coba Penarikan Retribusi Sampah Pelayanan Kebersihan Harian",
         "source": "Antara News",
         "url": "https://www.antaranews.com/tag/sampah-jakarta",
-        "date_fetched": str(datetime.now().date()),
+        "date_fetched": str(get_jakarta_now().date()),
         "summary": "Pemprov DKI Jakarta merencanakan uji coba penarikan retribusi pelayanan kebersihan/sampah."
       }
     ]
@@ -346,7 +349,7 @@ async def predict_waste_volume(req: PredictionRequest):
         raise HTTPException(503, "Models not ready.")
     
     try:
-        start_date = parse_flexible_date(req.start_date) if req.start_date else pd.Timestamp(datetime.now().date())
+        start_date = parse_flexible_date(req.start_date) if req.start_date else pd.Timestamp(get_jakarta_now().date())
         
         # Get location metadata
         config = KECAMATAN_DATABASE[req.location]
@@ -529,7 +532,7 @@ async def get_alerts(location: str = Query(None)):
     if df_history is None: raise HTTPException(503, "Model not ready")
     
     alerts = []
-    today = datetime.now().date()
+    today = get_jakarta_now().date()
     
     for i in range(3):
         d = (today + timedelta(days=i)).strftime("%Y-%m-%d")
@@ -551,7 +554,7 @@ async def get_alerts(location: str = Query(None)):
                     "message": f"Alert: {status} volume expected at {loc}"
                 })
                 
-    return AlertResponse(status="success", alert_count=len(alerts), alerts=alerts, last_updated=datetime.now().isoformat())
+    return AlertResponse(status="success", alert_count=len(alerts), alerts=alerts, last_updated=get_jakarta_now().isoformat())
 
 @app.get("/api/v1/autopilot", tags=["Autonomous"])
 async def get_autopilot_data():
@@ -559,7 +562,7 @@ async def get_autopilot_data():
     if df_history is None:
         raise HTTPException(503, "Models not ready")
         
-    today = datetime.now()
+    today = get_jakarta_now()
     d_str = today.strftime("%Y-%m-%d")
     
     total_vol = 0.0
