@@ -162,71 +162,85 @@ Rasio dekomposisi dihitung dinamis dari dataset historis, fallback ke standar re
 
 ## 4. API Reference
 
-###  `POST /api/v1/predict`
-**Deskripsi**: Generate prediksi volume sampah 1–30 hari ke depan untuk lokasi tertentu.
+### 1. `POST /api/v1/predict`
+**Deskripsi**: Menghasilkan prediksi volume timbulan sampah harian/jam-an untuk lokasi tertentu beserta analisis risiko logistik menggunakan model Amazon Chronos atau Gradient Boosting.
 
 #### Request Body
 ```json
 {
-  "hari_ke_depan": 7,
-  "prediksi_hujan_bmkg": 25.5,
-  "skala_keramaian": 0,
-  "nama_lokasi": "JIS",
-  "dari_tanggal": "06-01"
+  "forecast_days": 7,
+  "rainfall_mm": 25.5,
+  "event_scale": 0,
+  "location": "JIS",
+  "start_date": "2026-07-03",
+  "granularity": "daily",
+  "model_type": "gradient_boosting"
 }
 ```
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `hari_ke_depan` | `int` | ✅ | Durasi prediksi (1–30 hari) |
-| `prediksi_hujan_bmkg` | `float` | ✅ | Estimasi curah hujan (mm). `0` = kering |
-| `skala_keramaian` | `int` | ✅ | Skala event manual (0–5). `0` = normal |
-| `nama_lokasi` | `string` | ✅ | Target lokasi: `JIS`, `GBK`, `Pasar Senen`, `Gang Sempit Tambora` |
-| `dari_tanggal` | `string` | ❌ | Tanggal mulai. Format: `YYYY-MM-DD`, `MM-DD`, atau `"1 Juni 2026"` |
+| `forecast_days` | `int` | ✅ | Durasi prediksi (1–30 hari) |
+| `rainfall_mm` | `float` | ✅ | Curah hujan (mm). `0` = Auto (mengambil ramalan cuaca dari Open-Meteo) |
+| `event_scale` | `int` | ✅ | Skala keramaian event buatan (0-5) |
+| `location` | `string` | ✅ | Target lokasi: `JIS`, `GBK`, `Pasar Senen`, `Gang Sempit Tambora` |
+| `start_date` | `string` | ❌ | Tanggal awal prediksi. Contoh: `2026-07-03` |
+| `granularity` | `string` | ❌ | Tingkat rincian: `daily` atau `hourly` (default: `daily`) |
+| `model_type` | `string` | ❌ | Algoritma: `gradient_boosting` atau `chronos` (default: `gradient_boosting`) |
 
 #### Response Success (200)
 ```json
 {
   "status": "success",
-  "message": "🟡 WARNING di JIS: Volume di atas rata-rata.",
-  "confidence_score": 0.94,
+  "message": "Normal conditions.",
+  "confidence_score": 0.9325,
   "data": {
     "prediction_results": [
       {
-        "tanggal": "2026-06-02",
-        "lokasi": "JIS",
-        "total_volume_ton": 1245.50,
-        "sisa_makanan_ton": 621.15,
-        "plastik_ton": 285.84,
-        "rekomendasi_truk": 125,
-        "status_risiko": "WARNING 🟡",
-        "info_event": "PRJ Opening @ JIExpo"
+        "date": "2026-07-03",
+        "location": "JIS",
+        "total_volume_ton": 140.70,
+        "organic_waste_ton": 70.17,
+        "plastic_waste_ton": 32.29,
+        "recommended_trucks": 29,
+        "risk_status": "SAFE",
+        "event_info": null,
+        "hourly_breakdown": null
       }
     ],
     "logistics_plan": {
-      "trucks_needed": 872,
-      "manpower": 2616,
-      "estimated_duration_hours": 1743.2,
+      "trucks_needed": 29,
+      "manpower": 87,
+      "estimated_duration_hours": 28.1,
       "efficiency_rate": "85% (Optimal)"
     }
   }
 }
 ```
 
-#### Error Responses
-| Status Code | Response | Cause |
-|-------------|----------|-------|
-| `400` | `{"detail": "Format tanggal tidak valid..."}` | Input tanggal tidak dikenali parser |
-| `500` | `{"detail": "Gagal memproses prediksi: ..."}` | Internal error / model crash |
-| `503` | `{"detail": "Model/Dataset belum siap."}` | Service masih startup / model loading |
+---
 
-###  `GET /`
-**Deskripsi**: Health check & metadata sistem.
+### 2. `POST /api/v1/predict/csv`
+**Deskripsi**: Mengirimkan parameter yang sama seperti endpoint prediksi standar, tetapi menghasilkan output berkas CSV secara langsung untuk diunduh.
+
+#### Request Body
+Sama seperti `POST /api/v1/predict`.
+
+#### Response Success (200)
+Mengembalikan berkas file download (`text/csv`) dengan nama file dinamis: `waste_forecast_[Location]_[Days]d.csv`.
+**Header Respon**:
+`Content-Disposition: attachment; filename="waste_forecast_JIS_7d.csv"`
+
+---
+
+### 3. `GET /status`
+**Deskripsi**: Health check status server dan ketersediaan model ML.
+#### Response Success (200)
 ```json
 {
   "status": "Online",
-  "model": "Chronos-T5 Tiny",
-  "dataset_year": "2026",
-  "events_loaded": 15
+  "model_chronos": "Chronos-T5 Tiny",
+  "model_gbr": "Gradient Boosting Regressor",
+  "calibrated": true
 }
 ```
 
