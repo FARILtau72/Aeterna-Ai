@@ -59,6 +59,11 @@ const KECAMATAN_DATABASE = {
 
 const BANTARGEBANG_COORDS = [-6.3477, 106.9939];
 
+// Dynamic backend routing (highly compatible with Vercel deployment)
+const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "" // Relative path on local environment
+    : "https://alamdieng-waste-prediction-api.hf.space"; // Direct backend url on remote hosting
+
 // UI Elements
 const locationSelect = document.getElementById("location-select");
 const modelSelect = document.getElementById("model-select");
@@ -420,7 +425,7 @@ async function runPrediction() {
     };
 
     try {
-        const response = await fetch("/api/v1/predict", {
+        const response = await fetch(`${API_BASE_URL}/api/v1/predict`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -606,7 +611,7 @@ async function loadNewsFeed() {
     newsGrid.innerHTML = '<div class="loading-news">Loading latest waste intelligence...</div>';
     
     try {
-        const res = await fetch("/api/v1/news");
+        const res = await fetch(`${API_BASE_URL}/api/v1/news`);
         if (res.ok) {
             const news = await res.json();
             newsGrid.innerHTML = "";
@@ -642,7 +647,7 @@ async function loadAlertsFeed() {
     alertsList.innerHTML = '<div class="loading-alerts">Evaluating regional alert parameters...</div>';
     
     try {
-        const res = await fetch("/api/v1/alerts");
+        const res = await fetch(`${API_BASE_URL}/api/v1/alerts`);
         if (res.ok) {
             const alertData = await res.json();
             alertsList.innerHTML = "";
@@ -698,7 +703,7 @@ async function loadAutopilotFeed() {
     await new Promise(r => setTimeout(r, 800));
     
     try {
-        const res = await fetch("/api/v1/autopilot");
+        const res = await fetch(`${API_BASE_URL}/api/v1/autopilot`);
         if (res.ok) {
             const data = await res.json();
             
