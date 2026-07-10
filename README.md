@@ -8,118 +8,152 @@ app_file: app.py
 pinned: false
 ---
 
+# 🚛 Aeterna AI: Next-Gen Waste Intelligence Platform
+**Platform Sistem Peringatan Dini & Peramalan Sampah Real-Time DKI Jakarta**
 
+Aeterna AI (sebelumnya Eco-Twin AI) adalah platform analitik cerdas berbasis *Machine Learning* yang dirancang untuk memantau, memprediksi, dan mengoptimalkan manajemen logistik sampah DKI Jakarta secara spasial-temporal harian.
 
-
-
-
-
-# 🌍 Eco-Twin AI: Waste Volume Prediction System
-**Proyek untuk Hackathon DKI Jakarta 2026 (Case 2)**
-
-Eco-Twin AI adalah sistem cerdas berbasis *Machine Learning* yang dirancang untuk memprediksi lonjakan volume timbulan sampah harian di area Jakarta Pusat. Sistem ini menggunakan arsitektur ganda: **Amazon Chronos-T5** (Time-Series Transformer) untuk peramalan (*forecasting*) dan integrasi Algoritma Pendukung untuk ekstraksi fitur lanjutan (Cuaca, Skala Keramaian, dan Jadwal Event).
+Sistem ini didesain menggunakan **Clean Architecture** (memisahkan frontend statis yang di-host di Vercel dan backend model AI di Hugging Face Spaces) dengan performa model prediksi yang sangat tinggi.
 
 ---
 
-> [!IMPORTANT]
-> **📖 DOKUMENTASI SISTEM & INTEGRASI**:  
-> 1. **Untuk Publik / Stakeholder**: Silakan merujuk ke [PUBLIC_DOC.md](file:///c:/khusus%20project%20IT/Fine%20tuning%20ulang%20AI%20jakarta/waste-prediction-api/PUBLIC_DOC.md) untuk melihat ringkasan tingkat tinggi, pemodelan AI, cara kerja sistem, serta panduan lengkap penggunaan dashboard bagi pengguna umum.
-> 2. **Untuk Tim Front-End (FE)**: Silakan merujuk ke [FRONTEND_API_DOC.md](file:///c:/khusus%20project%20IT/Fine%20tuning%20ulang%20AI%20jakarta/waste-prediction-api/FRONTEND_API_DOC.md) untuk melihat spesifikasi detail endpoint API, tipe data TypeScript, contoh kode Axios/Fetch, serta panduan pemetaan data logistik ke UI Dashboard.
-> 3. **Pengujian API (Postman)**: Anda bisa mengimpor file [waste_intelligence_api.postman_collection.json](file:///c:/khusus%20project%20IT/Fine%20tuning%20ulang%20AI%20jakarta/waste-prediction-api/waste_intelligence_api.postman_collection.json) langsung ke aplikasi Postman Anda untuk menguji seluruh endpoint secara instan.
+## 🌟 Fitur Unggulan (Key Features)
+
+1. **AI Autopilot Forecaster**: AI berjalan secara asinkron dan mandiri untuk memprediksi volume timbulan sampah harian di seluruh **44 Kecamatan DKI Jakarta** secara paralel berdasarkan cuaca live tingkat koordinat dan kalender event aktif hari ini.
+2. **6-Kategori Komposisi Sampah**: Memprediksi rincian tonase sampah secara proporsional sesuai statistik riil Dinas Lingkungan Hidup (DLH) DKI Jakarta menjadi 6 kategori: *Sisa Makanan (~50.2%), Plastik (~22.8%), Kertas (~11.5%), Tekstil (~4.2%), Kaca (~3.2%), dan Logam/Lainnya (~8.1%)*.
+3. **Integrasi Cuaca Live Open-Meteo**: API menarik data curah hujan real-time per kecamatan berdasarkan titik koordinat geografis asli untuk mengukur penambahan berat sampah basah akibat resapan air hujan (2% s.d. 5% multiplier).
+4. **Kalender Event Jakarta 2026**: Mengidentifikasi jadwal acara besar Jakarta (seperti PRJ JIExpo, BTN Marathon, HUT RI di Monas, dll.) untuk menghitung lonjakan kapasitas sampah kerumunan (15% s.d. 30% multiplier).
+5. **Interactive Cyber HUD UI**: Antarmuka bertema *Dark Glassmorphism* modern yang terinspirasi oleh floodzy.id dengan kursor interaktif kustom, visualisasi progress bar kategori neon glow, rincian logistik armada truk, dan efek radar sweep live di peta.
 
 ---
 
-## 🚀 Fitur Unggulan (Hackathon Killer Features)
+## 📊 Hasil Evaluasi & Akurasi Model GBR
 
-1. **Integrasi Kalender Event Otomatis**: Sistem secara otomatis membaca file `event_jakarta_2025.txt` saat server dinyalakan. Jika ada *request* prediksi yang menyentuh tanggal konser besar (misal: Maroon 5 di JIS), AI akan mendeteksi dan secara akurat menambahkan estimasi volume sampah tanpa input manual tambahan.
-2. **Asynchronous API Processing**: Menggunakan FastAPI dengan `run_in_threadpool`, memastikan sistem AI tidak memblokir (*blocking*) pengguna lain saat sedang mengolah model Transformer yang berat.
-3. **Standar Produksi (CORS & Logging)**: Aplikasi aman dipanggil secara langsung oleh Frontend (React/Vue/HTML) dan menggunakan sistem *logging* kelas enterprise.
-4. **Interactive API Docs (Swagger UI)**: Endpoint dilengkapi parameter Pydantic lengkap beserta contoh JSON terisi otomatis, sangat cocok untuk didemokan langsung ke Juri.
-5. **Dekomposisi Sampah SIPSN KLHK 2025**: Memprediksi bukan hanya berat total (Ton), tapi juga membedahnya menjadi *Sisa Makanan* dan *Plastik*, serta memberikan rekomendasi jumlah armada truk yang dibutuhkan.
+Model inti Gradient Boosting Regressor (GBR) dilatih menggunakan **GridSearchCV** untuk mencari hyperparameter terbaik di atas dataset historis teraugmentasi 2 tahun dengan baseline rata-rata kota **8.020 Ton/hari**.
+
+### Metrik Evaluasi Model:
+
+| Metrik Evaluasi | Model Baseline | Model Upgraded (Aeterna AI) | Status Performa |
+| :--- | :---: | :---: | :--- |
+| **Mean Absolute Error (MAE)** | `149.13 Ton` | **`132.29 Ton`** | Semakin Baik (Turun ⬇️) |
+| **Root Mean Squared Error (RMSE)** | `188.46 Ton` | **`165.46 Ton`** | Semakin Baik (Turun ⬇️) |
+| **R-Squared ($R^2$ Score)** | `76.02%` | **`81.51%`** | Semakin Baik (Naik ⬆️) |
+| **Mean Absolute Percentage Error (MAPE)** | `1.78%` | **`1.59%`** | **Sangat Akurat (< 10%) (⬇️)** |
+
+### Hyperparameter Terbaik (GBR):
+*   `n_estimators` (Pohon keputusan): **100**
+*   `learning_rate`: **0.03**
+*   `max_depth`: **3**
+*   `subsample`: **0.9**
 
 ---
 
-## 📂 Struktur File
+## 📂 Struktur Berkas (Clean Architecture)
 
-- `app.py` : Berisi *Core Engine* API menggunakan FastAPI dan Amazon Chronos.
-- `train.py` : Script *Advanced Feature Engineering* dan pelatihan model Gradient Boosting (Eco-Twin Pro) untuk simulasi dataset.
-- `event_jakarta_2025.txt` : *Database* kalender event yang otomatis dilacak oleh AI.
-- `dataset_vibe_coder_2025.csv` : Dataset historis yang dipakai oleh model.
-- `.dockerfile` : Konfigurasi untuk men-*deploy* aplikasi ini (misalnya ke Hugging Face Spaces atau server Cloud).
-- `requirements.txt` : Daftar dependensi *library* Python.
+```
+waste-prediction-api/
+├── frontend/                  (📂 Client-side statis Vercel-ready)
+│   ├── index.html             (Dashboard Visual)
+│   ├── style.css              (Estetika HUD Neon & Animasi)
+│   ├── app.js                 (Logika Interaksi & Dynamic API routing)
+│   └── vercel.json            (Konfigurasi standalone Vercel subfolder)
+│
+├── vercel.json                (Konfigurasi Vercel root level)
+├── app.py                     (Python FastAPI Backend)
+├── train.py                   (Skrip training GBR & GridSearchCV)
+├── Dockerfile                 (Hugging Face Docker deployment)
+├── requirements.txt           (Python library dependencies)
+├── model_sampah_advanced.pkl  (Binary Model GBR)
+├── latest_waste_news.json     (Database Berita Rill)
+└── event_jakarta_2026.txt     (Jadwal Event Jakarta 2026)
+```
 
 ---
 
-## 🛠️ Cara Menjalankan Sistem
+## 📡 Dokumentasi Endpoint API Utama
 
-### 1. Instalasi Kebutuhan (Library)
-Pastikan Python sudah terinstal di laptop Anda. Buka Terminal/Command Prompt di dalam folder proyek ini, lalu jalankan:
+Semua endpoint didukung dengan dokumentasi interaktif Swagger UI di `/docs`.
+
+### 1. Predict Waste Volume (Forecasting)
+*   **Method**: `POST`
+*   **Endpoint**: `/api/v1/predict`
+*   **Request Body**:
+    ```json
+    {
+      "forecast_days": 7,
+      "rainfall_mm": 0.0,
+      "event_scale": 0,
+      "location": "Menteng",
+      "model_type": "gradient_boosting",
+      "granularity": "daily"
+    }
+    ```
+*   **Response JSON (Truncated)**:
+    ```json
+    {
+      "status": "success",
+      "confidence_score": 0.92,
+      "message": "Normal conditions.",
+      "data": {
+        "prediction_results": [
+          {
+            "date": "2026-07-11",
+            "total_volume_ton": 120.80,
+            "organic_waste_ton": 60.64,
+            "plastic_waste_ton": 27.54,
+            "paper_waste_ton": 13.89,
+            "metal_waste_ton": 9.78,
+            "glass_waste_ton": 3.87,
+            "textile_waste_ton": 5.07,
+            "other_waste_ton": 0.00,
+            "risk_status": "SAFE",
+            "event_info": null,
+            "recommended_trucks": 25
+          }
+        ]
+      }
+    }
+    ```
+
+### 2. AI Autopilot
+*   **Method**: `GET`
+*   **Endpoint**: `/api/v1/autopilot`
+*   **Description**: Mengembalikan kalkulasi prediksi otonom hari ini untuk seluruh 44 kecamatan DKI secara paralel.
+
+### 3. News Feed
+*   **Method**: `GET`
+*   **Endpoint**: `/api/v1/news`
+*   **Description**: Mengembalikan 12 berita riil DKI Jakarta lengkap dengan link langsung ke artikel aslinya.
+
+---
+
+## 🚀 Panduan Deployment
+
+### 1. Deploy ke Hugging Face Spaces (Backend API)
+Aplikasi ini sudah dikonfigurasi untuk berjalan di Hugging Face Spaces menggunakan Docker:
+1. Buat Space baru di Hugging Face dengan memilih **SDK: Docker**.
+2. Hubungkan Git Anda atau unggah file di root direktori (termasuk `app.py`, `Dockerfile`, `requirements.txt`, dan `model_sampah_advanced.pkl`).
+3. Port internal Docker sudah otomatis disetel ke `7860` (standar Hugging Face). Space Anda akan otomatis memuat dan menjalankan backend.
+
+### 2. Deploy ke Vercel (Frontend Dashboard)
+Frontend dirancang agar terpisah dan di-host di Vercel:
+1. Hubungkan repositori GitHub Anda ke akun Vercel.
+2. Buat proyek baru dan pilih repositori `Aeterna-Ai`.
+3. Di bagian pengaturan Vercel, Anda dapat membiarkannya default (Vercel akan mendeteksi `vercel.json` di root) atau mengatur **Root Directory** langsung ke folder `frontend/`.
+4. Vercel akan menyajikan frontend statis dan secara otomatis mem-proxy pemanggilan API `/api` langsung ke backend Hugging Face Space Anda tanpa kendala CORS.
+
+---
+
+## 🛠️ Pengembangan Lokal (Local Development)
+
+### 1. Instalasi Dependensi
 ```bash
 pip install -r requirements.txt
-pip install chronos-forecasting
 ```
 
-### 2. Menjalankan Server API
-Jalankan server Uvicorn dengan mode *auto-reload* agar perubahan kode langsung terbaca:
+### 2. Jalankan Server API Lokal
 ```bash
-uvicorn app:app --reload --port 8001
+python -m uvicorn app:app --port 8001 --host 127.0.0.1
 ```
-
-### 3. Menguji via Swagger (Demonstrasi Juri)
-Setelah server berjalan, buka browser dan akses:
-👉 **[http://127.0.0.1:8001/docs](http://127.0.0.1:8001/docs)**
-
-Anda bisa menekan tombol **"Try it out"** di *endpoint* `/api/v1/predict` dan langsung tekan **"Execute"**.
-
----
-
-## 📡 Dokumentasi Endpoint API
-
-### 1. Status Check
-Mengecek apakah server hidup dan berapa banyak jadwal event yang berhasil dimuat oleh AI.
-- **URL**: `/`
-- **Method**: `GET`
-- **Response**:
-```json
-{
-  "status": "Online",
-  "model": "Chronos-T5 Tiny",
-  "region": "Jakarta Pusat",
-  "events_loaded": 15
-}
-```
-
-### 2. Prediksi Volume Sampah (Forecasting)
-Mendapatkan peramalan volume sampah berdasarkan data historis, cuaca, dan event.
-- **URL**: `/api/v1/predict`
-- **Method**: `POST`
-- **Body Request**:
-```json
-{
-  "hari_ke_depan": 7,
-  "prediksi_hujan_bmkg": 25.5,
-  "skala_keramaian": 0
-}
-```
-- **Response JSON**:
-```json
-[
-  {
-    "tanggal": "2026-02-01",
-    "total_volume_ton": 1520.45,
-    "sisa_makanan_ton": 758.25,
-    "plastik_ton": 348.94,
-    "rekomendasi_truk": 153,
-    "status_risiko": "CRITICAL ⚠️",
-    "info_event": "Konser Maroon 5 di Jakarta International Stadium (JIS)"
-  }
-]
-```
-
----
-
-## 📝 Catatan Penting
-- Jika Anda mendapatkan error `ModuleNotFoundError: No module named 'chronos'`, pastikan Anda menginstal package dengan perintah `pip install chronos-forecasting` **(BUKAN pip install chronos)**.
-- Untuk deployment dengan `Dockerfile`, pastikan untuk mengubah port Uvicorn menyesuaikan provider (misal: HuggingFace Spaces menggunakan `--port 7860`).
-
-
+Akses UI lokal di: **[http://localhost:8001](http://localhost:8001)**  
+Akses Swagger Docs di: **[http://localhost:8001/docs](http://localhost:8001/docs)**
