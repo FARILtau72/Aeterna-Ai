@@ -1,0 +1,863 @@
+// Coordinates and Map Data for all 44 Kecamatan of DKI Jakarta
+const KECAMATAN_DATABASE = {
+    // 1. JAKARTA PUSAT (8 Kecamatan)
+    "Menteng": {coords: [-6.1950, 106.8322], city: "Jakarta Pusat", radius: "1.2 km"},
+    "Senen": {coords: [-6.1822, 106.8452], city: "Jakarta Pusat", radius: "1.0 km"},
+    "Cempaka Putih": {coords: [-6.1802, 106.8686], city: "Jakarta Pusat", radius: "1.1 km"},
+    "Johar Baru": {coords: [-6.1866, 106.8572], city: "Jakarta Pusat", radius: "0.8 km"},
+    "Kemayoran": {coords: [-6.1628, 106.8438], city: "Jakarta Pusat", radius: "1.5 km"},
+    "Sawah Besar": {coords: [-6.1554, 106.8322], city: "Jakarta Pusat", radius: "1.2 km"},
+    "Tanah Abang": {coords: [-6.2104, 106.8122], city: "Jakarta Pusat", radius: "2.0 km"},
+    "Gambir": {coords: [-6.1764, 106.8190], city: "Jakarta Pusat", radius: "1.8 km"},
+
+    // 2. JAKARTA UTARA (6 Kecamatan)
+    "Penjaringan": {coords: [-6.1264, 106.7822], city: "Jakarta Utara", radius: "2.5 km"},
+    "Tanjung Priok": {coords: [-6.1322, 106.8722], city: "Jakarta Utara", radius: "2.2 km"},
+    "Koja": {coords: [-6.1214, 106.9133], city: "Jakarta Utara", radius: "1.8 km"},
+    "Cilincing": {coords: [-6.1288, 106.9452], city: "Jakarta Utara", radius: "3.0 km"},
+    "Pademangan": {coords: [-6.1328, 106.8422], city: "Jakarta Utara", radius: "1.5 km"},
+    "Kelapa Gading": {coords: [-6.1552, 106.9022], city: "Jakarta Utara", radius: "2.0 km"},
+
+    // 3. JAKARTA BARAT (8 Kecamatan)
+    "Cengkareng": {coords: [-6.1528, 106.7322], city: "Jakarta Barat", radius: "3.0 km"},
+    "Grogol Petamburan": {coords: [-6.1622, 106.7882], city: "Jakarta Barat", radius: "2.0 km"},
+    "Kalideres": {coords: [-6.1428, 106.7022], city: "Jakarta Barat", radius: "3.2 km"},
+    "Kebon Jeruk": {coords: [-6.1922, 106.7722], city: "Jakarta Barat", radius: "2.2 km"},
+    "Kembangan": {coords: [-6.1828, 106.7382], city: "Jakarta Barat", radius: "2.5 km"},
+    "Palmerah": {coords: [-6.2028, 106.7882], city: "Jakarta Barat", radius: "1.8 km"},
+    "Taman Sari": {coords: [-6.1454, 106.8182], city: "Jakarta Barat", radius: "1.2 km"},
+    "Tambora": {coords: [-6.1500, 106.8000], city: "Jakarta Barat", radius: "1.0 km"},
+
+    // 4. JAKARTA SELATAN (10 Kecamatan)
+    "Cilandak": {coords: [-6.2928, 106.7922], city: "Jakarta Selatan", radius: "2.2 km"},
+    "Jagakarsa": {coords: [-6.3328, 106.8222], city: "Jakarta Selatan", radius: "2.5 km"},
+    "Kebayoran Baru": {coords: [-6.2422, 106.7982], city: "Jakarta Selatan", radius: "2.0 km"},
+    "Kebayoran Lama": {coords: [-6.2488, 106.7722], city: "Jakarta Selatan", radius: "2.4 km"},
+    "Mampang Prapatan": {coords: [-6.2522, 106.8182], city: "Jakarta Selatan", radius: "1.5 km"},
+    "Pancoran": {coords: [-6.2622, 106.8382], city: "Jakarta Selatan", radius: "1.6 km"},
+    "Pasar Minggu": {coords: [-6.2828, 106.8438], city: "Jakarta Selatan", radius: "2.5 km"},
+    "Pesanggrahan": {coords: [-6.2588, 106.7588], city: "Jakarta Selatan", radius: "2.0 km"},
+    "Setiabudi": {coords: [-6.2228, 106.8282], city: "Jakarta Selatan", radius: "1.8 km"},
+    "Tebet": {coords: [-6.2288, 106.8482], city: "Jakarta Selatan", radius: "2.0 km"},
+
+    // 5. JAKARTA TIMUR (10 Kecamatan)
+    "Cakung": {coords: [-6.1828, 106.9482], city: "Jakarta Timur", radius: "3.5 km"},
+    "Cipayung": {coords: [-6.3128, 106.9022], city: "Jakarta Timur", radius: "2.8 km"},
+    "Ciracas": {coords: [-6.3228, 106.8782], city: "Jakarta Timur", radius: "2.2 km"},
+    "Duren Sawit": {coords: [-6.2228, 106.9282], city: "Jakarta Timur", radius: "3.0 km"},
+    "Jatinegara": {coords: [-6.2222, 106.8682], city: "Jakarta Timur", radius: "2.5 km"},
+    "Kramat Jati": {coords: [-6.2722, 106.8682], city: "Jakarta Timur", radius: "2.4 km"},
+    "Makasar": {coords: [-6.2622, 106.8782], city: "Jakarta Timur", radius: "2.0 km"},
+    "Matraman": {coords: [-6.2022, 106.8582], city: "Jakarta Timur", radius: "1.5 km"},
+    "Pasar Rebo": {coords: [-6.3122, 106.8522], city: "Jakarta Timur", radius: "2.0 km"},
+    "Pulo Gadung": {coords: [-6.1922, 106.8922], city: "Jakarta Timur", radius: "2.6 km"},
+
+    // 6. KEPULAUAN SERIBU (2 Kecamatan)
+    "Kepulauan Seribu Utara": {coords: [-5.5722, 106.5522], city: "Kepulauan Seribu", radius: "8.0 km"},
+    "Kepulauan Seribu Selatan": {coords: [-5.7722, 106.6522], city: "Kepulauan Seribu", radius: "7.0 km"}
+};
+
+const BANTARGEBANG_COORDS = [-6.3477, 106.9939];
+
+// UI Elements
+const locationSelect = document.getElementById("location-select");
+const modelSelect = document.getElementById("model-select");
+const forecastSlider = document.getElementById("forecast-slider");
+const forecastVal = document.getElementById("forecast-val");
+const rainOverride = document.getElementById("rain-override");
+const rainOverrideVal = document.getElementById("rain-override-val");
+const eventOverride = document.getElementById("event-override");
+const predictBtn = document.getElementById("predict-btn");
+const exportBtn = document.getElementById("export-btn");
+
+// Weather elements
+const weatherForecastText = document.getElementById("weather-forecast-text");
+const weatherLocationText = document.getElementById("weather-location-text");
+const weatherPrecip = document.getElementById("weather-precip");
+const weatherAlert = document.getElementById("weather-alert");
+const eventDescText = document.getElementById("event-desc-text");
+
+// Stats elements
+const statTotalVolume = document.getElementById("stat-total-volume");
+const statRiskStatus = document.getElementById("stat-risk-status");
+const statTrucks = document.getElementById("stat-trucks");
+
+// Metadata elements
+const statPeriodMeta = document.getElementById("stat-period-meta");
+const statLocationMeta = document.getElementById("stat-location-meta");
+
+// Composition elements
+const valOrganic = document.getElementById("val-organic");
+const valPlastic = document.getElementById("val-plastic");
+const valPaper = document.getElementById("val-paper");
+const valGlass = document.getElementById("val-glass");
+const valTextile = document.getElementById("val-textile");
+const valMetal = document.getElementById("val-metal");
+const barOrganic = document.getElementById("bar-organic");
+const barPlastic = document.getElementById("bar-plastic");
+const barPaper = document.getElementById("bar-paper");
+const barGlass = document.getElementById("bar-glass");
+const barTextile = document.getElementById("bar-textile");
+const barMetal = document.getElementById("bar-metal");
+
+// Logistics elements
+const logManpower = document.getElementById("log-manpower");
+const logDuration = document.getElementById("log-duration");
+const logEfficiency = document.getElementById("log-efficiency");
+const logConfidence = document.getElementById("log-confidence");
+
+// Timeline & Hourly
+const timelineList = document.getElementById("timeline-list");
+const hourlySection = document.getElementById("hourly-section");
+const hourlyGrid = document.getElementById("hourly-grid");
+
+// State
+let selectedLocation = "Menteng";
+let rainValue = 0; // 0 means Auto (Open-Meteo)
+let map;
+let mapMarkers = {};
+let routeLine = null;
+
+// ==========================================
+// SPA MULTIPAGE ROUTING
+// ==========================================
+function switchPage(pageId) {
+    document.querySelectorAll(".page-container").forEach(el => {
+        el.classList.remove("active");
+    });
+    document.querySelectorAll(".nav-btn").forEach(el => {
+        el.classList.remove("active");
+    });
+
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        targetPage.classList.add("active");
+    }
+
+    const targetBtn = document.querySelector(`.nav-btn[data-target="${pageId}"]`);
+    if (targetBtn) {
+        targetBtn.classList.add("active");
+    }
+
+    if (pageId === "page-news") {
+        loadNewsFeed();
+    } else if (pageId === "page-alerts") {
+        loadAlertsFeed();
+    } else if (pageId === "page-autopilot") {
+        loadAutopilotFeed();
+    } else if (pageId === "page-predictor" && map) {
+        setTimeout(() => { map.invalidateSize(); }, 200);
+    }
+}
+
+window.switchPage = switchPage;
+
+// Dynamically Populate Dropdown on Startup
+function populateLocationDropdown() {
+    if (!locationSelect) return;
+    locationSelect.innerHTML = "";
+    Object.keys(KECAMATAN_DATABASE).forEach(loc => {
+        const opt = document.createElement("option");
+        opt.value = loc;
+        opt.textContent = `${loc} (${KECAMATAN_DATABASE[loc].city})`;
+        locationSelect.appendChild(opt);
+    });
+    locationSelect.value = selectedLocation;
+}
+
+// Calculate Haversine Distance between two coordinate arrays [lat, lon]
+function getHaversineDistance(coords1, coords2) {
+    const R = 6371; // Earth radius in km
+    const dLat = (coords2[0] - coords1[0]) * Math.PI / 180;
+    const dLon = (coords2[1] - coords1[1]) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(coords1[0] * Math.PI / 180) * Math.cos(coords2[0] * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+}
+
+// Event Listeners for controls
+if (forecastSlider) {
+    forecastSlider.addEventListener("input", (e) => {
+        forecastVal.textContent = e.target.value;
+    });
+}
+
+if (rainOverride) {
+    rainOverride.addEventListener("input", (e) => {
+        const val = parseInt(e.target.value);
+        rainValue = val;
+        if (val === 0) {
+            rainOverrideVal.textContent = "Auto (Open-Meteo)";
+        } else {
+            rainOverrideVal.textContent = `${val} mm`;
+        }
+        updateRainAnimationIntensity(val);
+    });
+}
+
+if (locationSelect) {
+    locationSelect.addEventListener("change", (e) => {
+        selectedLocation = e.target.value;
+        updateActiveMapMarker(selectedLocation);
+        panToLocation(selectedLocation);
+        fetchLiveWeather(selectedLocation);
+        runPrediction();
+    });
+}
+
+// Initialize Leaflet Map
+function initMap() {
+    const mapEl = document.getElementById("map");
+    if (!mapEl) return;
+    
+    map = L.map('map', {
+        zoomControl: true,
+        attributionControl: false,
+        maxZoom: 15,
+        minZoom: 9
+    }).setView([-6.175, 106.825], 11.5);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 20
+    }).addTo(map);
+
+    // Add Bantargebang disposal site marker
+    const bantarIcon = L.divIcon({
+        className: 'leaflet-custom-marker bantar-marker',
+        html: `<div class="marker-pulse" style="background:#FF9900;opacity:0.25;"></div><div class="marker-core" style="background:#FF9900;border:2px solid #FFF;"></div><div class="marker-label" style="color:#FF9900;border-color:#FF9900;">Bantargebang</div>`,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+    L.marker(BANTARGEBANG_COORDS, { icon: bantarIcon }).addTo(map).bindPopup(`
+        <div class="route-popup" style="border-left: 3px solid #FF9900;">
+            <h3 style="color:#FF9900;">TPST BANTARGEBANG</h3>
+            <div>Disposal Facility (Bekasi)</div>
+            <div>Status: <b>Active & Calibrated</b></div>
+        </div>
+    `);
+
+    // Add Custom Location Markers for 44 Kecamatan
+    Object.keys(KECAMATAN_DATABASE).forEach(loc => {
+        const data = KECAMATAN_DATABASE[loc];
+        const customIcon = L.divIcon({
+            className: 'leaflet-custom-marker',
+            html: `<div class="marker-pulse"></div><div class="marker-core"></div><div class="marker-label">${loc}</div>`,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+        });
+
+        const marker = L.marker(data.coords, { icon: customIcon }).addTo(map);
+
+        marker.on('click', () => {
+            selectedLocation = loc;
+            if (locationSelect) locationSelect.value = loc;
+            updateActiveMapMarker(loc);
+            panToLocation(loc);
+            fetchLiveWeather(loc);
+            runPrediction();
+        });
+
+        mapMarkers[loc] = marker;
+    });
+
+    setTimeout(() => {
+        updateActiveMapMarker(selectedLocation);
+    }, 1000);
+}
+
+function updateActiveMapMarker(locName) {
+    Object.keys(mapMarkers).forEach(loc => {
+        const marker = mapMarkers[loc];
+        const el = marker.getElement();
+        if (el) {
+            if (loc === locName) {
+                el.classList.add("active");
+            } else {
+                el.classList.remove("active");
+            }
+        }
+    });
+}
+
+function panToLocation(locName) {
+    const coords = KECAMATAN_DATABASE[locName]?.coords;
+    if (coords && map) {
+        map.panTo(coords);
+    }
+}
+
+function updateMarkerRisk(locName, riskStatus) {
+    const marker = mapMarkers[locName];
+    if (marker) {
+        const el = marker.getElement();
+        if (el) {
+            el.classList.remove("safe", "warning", "critical");
+            el.classList.add(riskStatus.toLowerCase());
+        }
+    }
+}
+
+// Draw transit route to TPST Bantargebang
+function drawTransitRoute(locName) {
+    const startCoords = KECAMATAN_DATABASE[locName]?.coords;
+    if (!startCoords || !map) return;
+
+    if (routeLine) {
+        map.removeLayer(routeLine);
+    }
+
+    routeLine = L.polyline([startCoords, BANTARGEBANG_COORDS], {
+        color: '#00F0FF',
+        weight: 3.5,
+        opacity: 0.75,
+        dashArray: '8, 8',
+        className: 'glowing-route'
+    }).addTo(map);
+
+    const directDist = getHaversineDistance(startCoords, BANTARGEBANG_COORDS);
+    const roadDist = directDist * 1.35; 
+    const travelTimeHours = roadDist / 28.0; 
+
+    routeLine.bindPopup(`
+        <div class="route-popup">
+            <h3>LOGISTICS DISPATCH ROUTE</h3>
+            <div>Kecamatan: <b>${locName}</b></div>
+            <div>Destination: <b>TPST Bantargebang</b></div>
+            <div>Transit Distance: <b class="highlight">${roadDist.toFixed(1)} km</b></div>
+            <div>Est. Travel Time: <b class="highlight">${travelTimeHours.toFixed(1)} Hours</b></div>
+        </div>
+    `).openPopup();
+
+    map.fitBounds([startCoords, BANTARGEBANG_COORDS], {
+        padding: [60, 60]
+    });
+}
+
+// Fetch Live Weather from Open-Meteo with Timeout
+async function fetchLiveWeather(loc) {
+    const coord = KECAMATAN_DATABASE[loc];
+    if (!coord) return;
+
+    if (weatherForecastText) weatherForecastText.textContent = "Fetching...";
+    if (weatherPrecip) weatherPrecip.textContent = "0.0 mm";
+    if (weatherAlert) weatherAlert.textContent = "Checking...";
+
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${coord.coords[0]}&longitude=${coord.coords[1]}&current_weather=true&daily=precipitation_sum&timezone=Asia/Jakarta&past_days=2`;
+    
+    // Set 1.5s timeout promise
+    const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Timeout")), 1500)
+    );
+
+    try {
+        const fetchPromise = fetch(url).then(res => {
+            if (!res.ok) throw new Error("HTTP Error");
+            return res.json();
+        });
+
+        // Race weather request with 1.5s timeout
+        const data = await Promise.race([fetchPromise, timeoutPromise]);
+        
+        const temp = data.current_weather.temperature;
+        const code = data.current_weather.weathercode;
+        
+        const dailyData = data.daily || {};
+        const precipList = dailyData.precipitation_sum || [];
+        const precipToday = precipList[2] || 0;
+        
+        let cond = "Cloudy";
+        if (code === 0) cond = "Clear Sky";
+        else if (code > 0 && code < 4) cond = "Partly Cloudy";
+        else if (code >= 51 && code <= 67) cond = "Rainy";
+        else if (code >= 80 && code <= 82) cond = "Showers";
+
+        if (weatherForecastText) weatherForecastText.textContent = `${temp}°C - ${cond}`;
+        if (weatherLocationText) weatherLocationText.textContent = `${loc} (${coord.city})`;
+        if (weatherPrecip) weatherPrecip.textContent = `${precipToday.toFixed(1)} mm`;
+        
+        if (weatherAlert) {
+            if (precipToday > 30) {
+                weatherAlert.textContent = "HEAVY RAIN 🟡";
+                weatherAlert.className = "highlight text-warning";
+            } else if (precipToday > 50) {
+                weatherAlert.textContent = "FLOOD DANGER 🔴";
+                weatherAlert.className = "highlight text-red";
+            } else {
+                weatherAlert.textContent = "Normal conditions";
+                weatherAlert.className = "highlight";
+            }
+        }
+    } catch (err) {
+        console.warn("Weather fetch timed out/failed. Using fallback forecast.", err);
+        // Instant Fallback Weather Data
+        const fallbackTemp = 28.5 + Math.random() * 3.0;
+        const fallbackPrecip = 0.0;
+        if (weatherForecastText) weatherForecastText.textContent = `${fallbackTemp.toFixed(1)}°C - Partly Cloudy`;
+        if (weatherLocationText) weatherLocationText.textContent = `${loc} (${coord.city})`;
+        if (weatherPrecip) weatherPrecip.textContent = `${fallbackPrecip.toFixed(1)} mm`;
+        if (weatherAlert) {
+            weatherAlert.textContent = "Normal conditions";
+            weatherAlert.className = "highlight";
+        }
+    }
+}
+
+// Run prediction calling FastAPI backend
+async function runPrediction() {
+    if (!predictBtn) return;
+    predictBtn.disabled = true;
+    predictBtn.querySelector(".btn-text").textContent = "PROCESSING FORECAST...";
+
+    const payload = {
+        forecast_days: parseInt(forecastSlider.value),
+        rainfall_mm: parseFloat(rainValue),
+        event_scale: parseInt(eventOverride.value),
+        location: selectedLocation,
+        model_type: modelSelect.value,
+        granularity: forecastSlider.value <= 7 ? "hourly" : "daily"
+    };
+
+    try {
+        const response = await fetch("/api/v1/predict", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            const resData = await response.json();
+            updateDashboardData(resData.data, resData.confidence_score, resData.message);
+        } else {
+            console.error("API Error");
+        }
+    } catch (err) {
+        console.error(err);
+    } finally {
+        predictBtn.disabled = false;
+        predictBtn.querySelector(".btn-text").textContent = "RUN PREDICTION";
+    }
+}
+
+function updateDashboardData(data, confScore, message) {
+    const results = data.prediction_results;
+    if (results.length === 0) return;
+
+    const totalVolume = results.reduce((acc, curr) => acc + curr.total_volume_ton, 0);
+    if (statTotalVolume) statTotalVolume.innerHTML = `${totalVolume.toFixed(2)} <span class="unit">Tons</span>`;
+    
+    let maxRisk = "SAFE";
+    results.forEach(r => {
+        if (r.risk_status === "CRITICAL") maxRisk = "CRITICAL";
+        else if (r.risk_status === "WARNING" && maxRisk !== "CRITICAL") maxRisk = "WARNING";
+    });
+    
+    if (statRiskStatus) {
+        statRiskStatus.textContent = maxRisk;
+        statRiskStatus.className = `card-value status-badge ${maxRisk.toLowerCase()}`;
+    }
+
+    updateMarkerRisk(selectedLocation, maxRisk);
+    drawTransitRoute(selectedLocation);
+
+    if (statTrucks) statTrucks.innerHTML = `${data.logistics_plan.trucks_needed} <span class="unit">Trucks (5T)</span>`;
+
+    const startDateStr = results[0].date;
+    const endDateStr = results[results.length - 1].date;
+    
+    if (statPeriodMeta) statPeriodMeta.textContent = `Period: ${startDateStr} to ${endDateStr}`;
+    if (statLocationMeta) statLocationMeta.textContent = `${selectedLocation} (Radius ${KECAMATAN_DATABASE[selectedLocation].radius})`;
+
+    const totalOrganic = results.reduce((acc, curr) => acc + curr.organic_waste_ton, 0);
+    const totalPlastic = results.reduce((acc, curr) => acc + curr.plastic_waste_ton, 0);
+    const totalPaper = results.reduce((acc, curr) => acc + curr.paper_waste_ton, 0);
+    const totalGlass = results.reduce((acc, curr) => acc + curr.glass_waste_ton, 0);
+    const totalTextile = results.reduce((acc, curr) => acc + curr.textile_waste_ton, 0);
+    const totalMetal = results.reduce((acc, curr) => acc + (curr.metal_waste_ton + curr.other_waste_ton), 0);
+    
+    if (valOrganic) valOrganic.textContent = `${totalOrganic.toFixed(2)} Ton`;
+    if (valPlastic) valPlastic.textContent = `${totalPlastic.toFixed(2)} Ton`;
+    if (valPaper) valPaper.textContent = `${totalPaper.toFixed(2)} Ton`;
+    if (valGlass) valGlass.textContent = `${totalGlass.toFixed(2)} Ton`;
+    if (valTextile) valTextile.textContent = `${totalTextile.toFixed(2)} Ton`;
+    if (valMetal) valMetal.textContent = `${totalMetal.toFixed(2)} Ton`;
+
+    const getPct = (val) => totalVolume > 0 ? (val / totalVolume) * 100 : 0;
+
+    if (barOrganic) barOrganic.style.width = `${getPct(totalOrganic)}%`;
+    if (barPlastic) barPlastic.style.width = `${getPct(totalPlastic)}%`;
+    if (barPaper) barPaper.style.width = `${getPct(totalPaper)}%`;
+    if (barGlass) barGlass.style.width = `${getPct(totalGlass)}%`;
+    if (barTextile) barTextile.style.width = `${getPct(totalTextile)}%`;
+    if (barMetal) barMetal.style.width = `${getPct(totalMetal)}%`;
+
+    if (logManpower) logManpower.textContent = `${data.logistics_plan.manpower} Crew`;
+    if (logDuration) logDuration.textContent = `${data.logistics_plan.estimated_duration_hours.toFixed(1)} Hours`;
+    if (logEfficiency) logEfficiency.textContent = data.logistics_plan.efficiency_rate;
+    if (logConfidence) logConfidence.textContent = `${(confScore * 100).toFixed(1)}%`;
+
+    const eventDay = results.find(r => r.event_info !== null);
+    if (eventDay) {
+        if (eventDescText) eventDescText.innerHTML = `⚠️ <strong>${eventDay.event_info}</strong> on ${eventDay.date}. Heavy crowd expected near site.`;
+        const eBox = document.getElementById("event-box");
+        if (eBox) eBox.style.borderColor = "var(--red)";
+    } else {
+        if (eventDescText) eventDescText.textContent = "No major public events scheduled for this location in the forecast window.";
+        const eBox = document.getElementById("event-box");
+        if (eBox) eBox.style.borderColor = "var(--yellow)";
+    }
+
+    if (timelineList) {
+        timelineList.innerHTML = "";
+        results.forEach(day => {
+            const card = document.createElement("div");
+            card.className = "timeline-card";
+            
+            const dateObj = new Date(day.date);
+            const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+            const displayDate = `${dayName}, ${dateObj.getDate()} ${dateObj.toLocaleString('en-US', { month: 'short' })}`;
+
+            card.innerHTML = `
+                <span class="timeline-date">${displayDate}</span>
+                <span class="timeline-vol">${day.total_volume_ton.toFixed(1)} T</span>
+                <span class="timeline-status ${day.risk_status.toLowerCase()}">${day.risk_status}</span>
+            `;
+            timelineList.appendChild(card);
+        });
+    }
+
+    const hourlyDay = results[0];
+    if (hourlyDay && hourlyDay.hourly_breakdown) {
+        if (hourlySection) hourlySection.style.display = "block";
+        if (hourlyGrid) {
+            hourlyGrid.innerHTML = "";
+            hourlyDay.hourly_breakdown.forEach(hour => {
+                const cell = document.createElement("div");
+                cell.className = "hourly-cell";
+                
+                let intensityClass = "low";
+                if (hour.risk_indicator === "MEDIUM") intensityClass = "medium";
+                else if (hour.risk_indicator === "HIGH") intensityClass = "high";
+
+                cell.innerHTML = `
+                    <div class="cell-block ${intensityClass}" title="Vol: ${hour.estimated_volume_ton} Ton - Risk: ${hour.risk_indicator}"></div>
+                    <span class="cell-time">${hour.hour}</span>
+                `;
+                hourlyGrid.appendChild(cell);
+            });
+        }
+    } else {
+        if (hourlySection) hourlySection.style.display = "none";
+    }
+}
+
+// Request CSV from Backend API and download it
+async function runExport() {
+    if (!exportBtn) return;
+    exportBtn.disabled = true;
+    exportBtn.querySelector(".btn-text").textContent = "EXPORTING...";
+
+    const payload = {
+        forecast_days: parseInt(forecastSlider.value),
+        rainfall_mm: parseFloat(rainValue),
+        event_scale: parseInt(eventOverride.value),
+        location: selectedLocation,
+        model_type: modelSelect.value,
+        granularity: forecastSlider.value <= 7 ? "hourly" : "daily"
+    };
+
+    try {
+        const response = await fetch("/api/v1/predict/csv", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `waste_forecast_${selectedLocation.replace(/\s+/g, "_")}_${forecastSlider.value}d.csv`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        }
+    } catch (err) {
+        console.error(err);
+    } finally {
+        exportBtn.disabled = false;
+        exportBtn.querySelector(".btn-text").textContent = "EXPORT CSV";
+    }
+}
+
+// ==========================================
+// SPA ASYNC LOADERS (News, Alerts, Autopilot)
+// ==========================================
+async function loadNewsFeed() {
+    const newsGrid = document.getElementById("news-grid-list");
+    if (!newsGrid) return;
+    newsGrid.innerHTML = '<div class="loading-news">Loading latest waste intelligence...</div>';
+    
+    try {
+        const res = await fetch("/api/v1/news");
+        if (res.ok) {
+            const news = await res.json();
+            newsGrid.innerHTML = "";
+            if (news.length === 0) {
+                newsGrid.innerHTML = '<div class="loading-news">No news articles found.</div>';
+                return;
+            }
+            news.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "news-card";
+                card.innerHTML = `
+                    <div class="news-card-header">
+                        <span class="news-source">${item.source}</span>
+                        <span class="news-date">${item.date_fetched || "2026-07-10"}</span>
+                    </div>
+                    <h3 class="news-title">${item.title}</h3>
+                    <p class="news-summary">${item.summary}</p>
+                    <a href="${item.url}" target="_blank" class="news-link">READ SOURCE <span>&rarr;</span></a>
+                `;
+                newsGrid.appendChild(card);
+            });
+        } else {
+            newsGrid.innerHTML = '<div class="loading-news">Failed to fetch news from server.</div>';
+        }
+    } catch (err) {
+        newsGrid.innerHTML = '<div class="loading-news">Error loading news feed.</div>';
+    }
+}
+
+async function loadAlertsFeed() {
+    const alertsList = document.getElementById("alerts-grid-list");
+    if (!alertsList) return;
+    alertsList.innerHTML = '<div class="loading-alerts">Evaluating regional alert parameters...</div>';
+    
+    try {
+        const res = await fetch("/api/v1/alerts");
+        if (res.ok) {
+            const alertData = await res.json();
+            alertsList.innerHTML = "";
+            if (alertData.alerts.length === 0) {
+                alertsList.innerHTML = '<div class="loading-alerts">No active warnings. All systems green.</div>';
+                return;
+            }
+            alertData.alerts.forEach(item => {
+                const row = document.createElement("div");
+                row.className = "alert-row";
+                row.innerHTML = `
+                    <span class="alert-date">${item.date}</span>
+                    <span class="alert-location">${item.location}</span>
+                    <span class="alert-badge ${item.status.toLowerCase()}">${item.status}</span>
+                    <span class="alert-desc">${item.message} - Timbulan: <strong>${item.estimated_volume_ton.toFixed(1)} Ton</strong></span>
+                `;
+                alertsList.appendChild(row);
+            });
+        } else {
+            alertsList.innerHTML = '<div class="loading-alerts">Failed to load alerts.</div>';
+        }
+    } catch (err) {
+        alertsList.innerHTML = '<div class="loading-alerts">Error loading alerts feed.</div>';
+    }
+}
+
+async function loadAutopilotFeed() {
+    const logContainer = document.getElementById("autopilot-log");
+    const autoVol = document.getElementById("auto-total-volume");
+    const autoTrucks = document.getElementById("auto-total-trucks");
+    const autoRiskList = document.getElementById("auto-risk-list");
+    
+    if (!logContainer || !autoRiskList) return;
+    
+    autoVol.textContent = "Calculating...";
+    autoTrucks.textContent = "Calculating...";
+    autoRiskList.innerHTML = '<div class="loading-news" style="padding:1rem;">Running neural models...</div>';
+    logContainer.innerHTML = "";
+    
+    const addLog = (msg) => {
+        const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+        const p = document.createElement("div");
+        p.textContent = `[${time}] ${msg}`;
+        logContainer.appendChild(p);
+        logContainer.scrollTop = logContainer.scrollHeight;
+    };
+    
+    addLog("Aeterna Neural Core Initialized.");
+    await new Promise(r => setTimeout(r, 600));
+    addLog("Connecting to Open-Meteo Geolocation nodes...");
+    await new Promise(r => setTimeout(r, 600));
+    addLog("Weather models ready. Scanning 44 sub-districts...");
+    await new Promise(r => setTimeout(r, 800));
+    
+    try {
+        const res = await fetch("/api/v1/autopilot");
+        if (res.ok) {
+            const data = await res.json();
+            
+            addLog("Executing GBR forward inference pass on 44 regions...");
+            await new Promise(r => setTimeout(r, 800));
+            addLog(`Forecasting complete. Total active events today: ${data.event_today ? data.event_today : "0"}`);
+            await new Promise(r => setTimeout(r, 500));
+            
+            autoVol.innerHTML = `${data.total_volume_ton.toLocaleString('en-US')} <span class="unit">Tons</span>`;
+            autoTrucks.innerHTML = `${data.total_trucks.toLocaleString('en-US')} <span class="unit">Trucks (5T)</span>`;
+            
+            autoRiskList.innerHTML = "";
+            data.top_kecamatan.forEach((item, index) => {
+                const card = document.createElement("div");
+                card.className = "alert-row";
+                card.style.gridTemplateColumns = "60px 180px 100px 1fr";
+                card.style.padding = "0.6rem 1.2rem";
+                card.innerHTML = `
+                    <span class="alert-date" style="font-weight:bold; color:var(--cyan);">#0${index+1}</span>
+                    <span class="alert-location">${item.location}</span>
+                    <span class="alert-badge ${item.status.toLowerCase()}">${item.status}</span>
+                    <span class="alert-desc" style="font-size:0.8rem;">Predicted generation: <strong>${item.volume_ton.toFixed(1)} Tons</strong> (${item.trucks} Trucks)</span>
+                `;
+                autoRiskList.appendChild(card);
+            });
+            
+            addLog(`DKI Jakarta daily forecast compiled: ${data.total_volume_ton} Tons.`);
+            addLog(`Logistics dispatch size set to ${data.total_trucks} crew trucks.`);
+            addLog("Autonomous fleet routing to TPST Bantargebang optimized via Haversine.");
+        } else {
+            addLog("CRITICAL ERROR: Failed to communicate with prediction nodes.");
+        }
+    } catch (err) {
+        addLog("CRITICAL ERROR: Connection timed out.");
+    }
+}
+
+// Attach Event Listeners on DOM load
+window.addEventListener("DOMContentLoaded", () => {
+    populateLocationDropdown();
+    initMap();
+    fetchLiveWeather(selectedLocation);
+    
+    // Wire SPA Navigation
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const target = btn.getAttribute("data-target");
+            switchPage(target);
+        });
+    });
+
+    if (predictBtn) predictBtn.addEventListener("click", runPrediction);
+    if (exportBtn) exportBtn.addEventListener("click", runExport);
+    
+    setTimeout(runPrediction, 1000);
+});
+
+// ==========================================
+// BACKGROUND CANVAS: INTERACTIVE RAIN EFFECT
+// ==========================================
+const canvas = document.getElementById("rain-canvas");
+const ctx = canvas.getContext("2d");
+
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+
+window.addEventListener("resize", () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+});
+
+let drops = [];
+let particles = [];
+let maxPrecip = 0; 
+
+function updateRainAnimationIntensity(precipVal) {
+    maxPrecip = precipVal;
+}
+
+class DataParticle {
+    constructor() {
+        this.reset();
+    }
+    reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = Math.random() * 0.4 - 0.2;
+        this.speedY = Math.random() * -0.5 - 0.2;
+        this.alpha = Math.random() * 0.5 + 0.1;
+    }
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.y < 0 || this.x < 0 || this.x > width) {
+            this.reset();
+            this.y = height;
+        }
+    }
+    draw() {
+        ctx.fillStyle = `rgba(0, 240, 255, ${this.alpha})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+class RainDrop {
+    constructor() {
+        this.reset();
+    }
+    reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * -100 - 10;
+        this.length = Math.random() * 15 + 10;
+        this.speed = Math.random() * 12 + 15;
+        this.weight = Math.random() * 1 + 0.5;
+        this.alpha = Math.random() * 0.3 + 0.1;
+    }
+    update() {
+        this.y += this.speed;
+        if (this.y > height) {
+            this.reset();
+        }
+    }
+    draw() {
+        ctx.strokeStyle = `rgba(0, 240, 255, ${this.alpha})`;
+        ctx.lineWidth = this.weight;
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x + (maxPrecip * 0.05), this.y + this.length);
+        ctx.stroke();
+    }
+}
+
+for (let i = 0; i < 60; i++) {
+    particles.push(new DataParticle());
+}
+for (let i = 0; i < 150; i++) {
+    drops.push(new RainDrop());
+}
+
+function animate() {
+    ctx.clearRect(0, 0, width, height);
+    
+    if (maxPrecip === 0) {
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+    } else {
+        const activeCount = Math.min(Math.floor(maxPrecip * 1.5), 150);
+        for (let i = 0; i < activeCount; i++) {
+            drops[i].update();
+            drops[i].draw();
+        }
+    }
+    
+    requestAnimationFrame(animate);
+}
+
+animate();

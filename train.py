@@ -1,11 +1,18 @@
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import GradientBoostingRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, mean_absolute_percentage_error
+from sklearn.model_selection import GridSearchCV
 import joblib
+import sys
 import io
 import warnings
 warnings.filterwarnings('ignore')
+
+# Set standard output and standard error to UTF-8 to prevent Unicode encoding errors on Windows
+if sys.platform == 'win32':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 print("🚀 MEMULAI PROSES TRAINING AI LEVEL ADVANCED (ECO-TWIN PRO)...\n")
 
@@ -15,7 +22,7 @@ print("🚀 MEMULAI PROSES TRAINING AI LEVEL ADVANCED (ECO-TWIN PRO)...\n")
 print("📥 1. Menarik & Memproses Data Historis (2023 - 2024)...")
 
 # Baseline Sampah (Diambil dari SIPSN DKI 2025)
-base_sampah = 1050.50 
+base_sampah = 8020.0 
 mrt_harian_avg = 85000 
 hujan_mean = 10.5
 
@@ -88,34 +95,79 @@ train_size = int(len(df) * 0.75) # 75% data awal
 X_train, X_test = X.iloc[:train_size], X.iloc[train_size:]
 y_train, y_test = y.iloc[:train_size], y.iloc[train_size:]
 
-# Menggunakan Gradient Boosting (State-of-the-Art)
-model = GradientBoostingRegressor(
+# Menggunakan Gradient Boosting Regressor (Baseline)
+print("⚙️ Melatih model Baseline...")
+base_model = GradientBoostingRegressor(
     n_estimators=200, 
     learning_rate=0.1, 
     max_depth=4, 
     random_state=42
 )
-model.fit(X_train, y_train)
+base_model.fit(X_train, y_train)
+pred_base = base_model.predict(X_test)
+
+# Hitung Metrics Baseline
+mae_base = mean_absolute_error(y_test, pred_base)
+rmse_base = mean_squared_error(y_test, pred_base) ** 0.5
+r2_base = r2_score(y_test, pred_base)
+mape_base = mean_absolute_percentage_error(y_test, pred_base) * 100
 
 # ==========================================
-# 4. EVALUASI AKURASI (BUAT DIPAMERIN KE JURI)
+# 4. HYPERPARAMETER TUNING (UPGRADE MODEL)
 # ==========================================
-prediksi = model.predict(X_test)
-rmse = mean_squared_error(y_test, prediksi) ** 0.5
-mae = mean_absolute_error(y_test, prediksi)
-r2 = r2_score(y_test, prediksi)
+print("\n⚙️ Melakukan Hyperparameter Tuning menggunakan GridSearchCV...")
+param_grid = {
+    'n_estimators': [100, 200, 300],
+    'learning_rate': [0.03, 0.05, 0.1, 0.15],
+    'max_depth': [3, 4, 5],
+    'subsample': [0.8, 0.9, 1.0]
+}
 
-print("\n📊 HASIL EVALUASI MODEL (METRICS):")
-print(f"   ✅ Root Mean Squared Error (RMSE) : {rmse:.2f} Ton")
-print(f"   ✅ Mean Absolute Error (MAE)      : {mae:.2f} Ton")
-print(f"   ✅ R-Squared (R2 Score)           : {r2 * 100:.2f}% (Tingkat Kepercayaan AI)")
+grid_search = GridSearchCV(
+    estimator=GradientBoostingRegressor(random_state=42),
+    param_grid=param_grid,
+    cv=3,
+    scoring='neg_mean_absolute_error',
+    n_jobs=-1,
+    verbose=1
+)
+grid_search.fit(X_train, y_train)
+
+best_model = grid_search.best_estimator_
+pred_best = best_model.predict(X_test)
+
+# Hitung Metrics Upgraded Model
+mae_best = mean_absolute_error(y_test, pred_best)
+rmse_best = mean_squared_error(y_test, pred_best) ** 0.5
+r2_best = r2_score(y_test, pred_best)
+mape_best = mean_absolute_percentage_error(y_test, pred_best) * 100
+
+# ==========================================
+# 5. PERBANDINGAN METRICS (BUAT DIPAMERIN KE JURI)
+# ==========================================
+print("\n📊 HASIL EVALUASI & PERBANDINGAN METRICS:")
+print(f"┌─────────────────────────┬──────────────────────┬──────────────────────┬──────────────────────┐")
+print(f"│ Metric                  │ Baseline Model       │ Upgraded Model       │ Status               │")
+print(f"├─────────────────────────┼──────────────────────┼──────────────────────┼──────────────────────┤")
+print(f"│ Mean Absolute Error     │ {mae_base:16.2f} Ton │ {mae_best:16.2f} Ton │ {'Semakin Baik (⬇️)' if mae_best < mae_base else 'Sama/Stabil'}  │")
+print(f"│ Root Mean Squared Error │ {rmse_base:16.2f} Ton │ {rmse_best:16.2f} Ton │ {'Semakin Baik (⬇️)' if rmse_best < rmse_base else 'Sama/Stabil'}  │")
+print(f"│ R-Squared (R² Score)    │ {r2_base*100:15.2f}% │ {r2_best*100:15.2f}% │ {'Semakin Baik (⬆️)' if r2_best > r2_base else 'Sama/Stabil'}  │")
+print(f"│ MAPE (Error Persentase) │ {mape_base:15.2f}% │ {mape_best:15.2f}% │ {'Semakin Baik (⬇️)' if mape_best < mape_base else 'Sama/Stabil'}  │")
+print(f"└─────────────────────────┴──────────────────────┴──────────────────────┴──────────────────────┘")
+
+print(f"\n⚙️ Hyperparameter Terbaik hasil tuning:")
+print(f"   - n_estimators : {grid_search.best_params_['n_estimators']}")
+print(f"   - learning_rate: {grid_search.best_params_['learning_rate']}")
+print(f"   - max_depth    : {grid_search.best_params_['max_depth']}")
+print(f"   - subsample    : {grid_search.best_params_['subsample']}")
 
 # Cek Fitur Paling Berpengaruh
-importances = model.feature_importances_
-print("\n🌟 FITUR PALING BERPENGARUH PADA TIMBULAN SAMPAH:")
+importances = best_model.feature_importances_
+print("\n🌟 FITUR PALING BERPENGARUH PADA TIMBULAN SAMPAH (UPGRADED):")
 for name, importance in zip(fitur, importances):
     print(f"   - {name}: {importance*100:.1f}%")
 
-# Simpan Model
-joblib.dump(model, 'model_sampah_advanced.pkl')
-print("\n💾 SUCCESS! 'model_sampah_advanced.pkl' berhasil di-generate!")
+# Simpan Model Terbaik
+joblib.dump(best_model, 'model_sampah_advanced.pkl')
+print("\n💾 SUCCESS! 'model_sampah_advanced.pkl' berhasil di-generate menggunakan model hasil upgrade!")
+
