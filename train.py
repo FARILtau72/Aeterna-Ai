@@ -17,11 +17,9 @@ if sys.platform == 'win32':
 print("🚀 MEMULAI PROSES TRAINING AI LEVEL ADVANCED (ECO-TWIN PRO)...\n")
 
 # ==========================================
-# 1. LOAD LOCALIZED DATA
+# 1. DATA INGESTION & AUGMENTATION (2 TAHUN)
 # ==========================================
-print("1. Menarik & Memproses Data Historis Lokal...")
-df = pd.read_csv('dataset_local_2026.csv')
-df['Tanggal'] = pd.to_datetime(df['Tanggal'])
+print("📥 1. Menarik & Memproses Data Historis (2023 - 2024)...")
 
 # Baseline Sampah (Diambil dari SIPSN DKI 2025)
 base_sampah = 8020.0 
@@ -54,36 +52,45 @@ df['Curah_Hujan_mm'] = np.random.exponential(scale=hujan_mean, size=len(df))
 df.loc[df['Curah_Hujan_mm'] < 2, 'Curah_Hujan_mm'] = 0
 
 # ==========================================
-# 2. FEATURE ENGINEERING (LOCAL BINDING)
+# 2. ADVANCED FEATURE ENGINEERING (MIND-BLOWING)
 # ==========================================
-print("2. Melakukan One-Hot Encoding Lokasi & Verifikasi Fitur...")
+print("🧠 2. Melakukan Feature Engineering (Ekstraksi Pola Waktu)...")
 
-# Defensive manual one-hot encoding to guarantee column names and order
-locations = ['JIS', 'GBK', 'Pasar Senen', 'Gang Sempit Tambora']
-for loc in locations:
-    df[f'Loc_{loc}'] = (df['Location'] == loc).astype(int)
+# Ekstraksi Siklus Waktu
+df['Hari_Dalam_Minggu'] = df['Tanggal'].dt.dayofweek # 0=Senin, 6=Minggu
+df['Bulan'] = df['Tanggal'].dt.month
+df['Is_Weekend'] = df['Hari_Dalam_Minggu'].apply(lambda x: 1 if x >= 5 else 0)
 
-# Fitur yang dipakai AI buat berpikir
-fitur = [
-    'Loc_JIS', 'Loc_GBK', 'Loc_Pasar Senen', 'Loc_Gang Sempit Tambora',
-    'RR', 'Rain_Lag_1', 'Rain_Lag_2', 'Is_Holiday', 'Ada_Event', 'Crowd_Scale',
-    'Hari_Ke', 'Is_Weekend', 'Hari_Dalam_Minggu', 'Bulan'
-]
+# Lag Features (Mengingat masa lalu)
+df['Hujan_Kemarin'] = df['Curah_Hujan_mm'].shift(1).fillna(0)
 
-X = df[fitur]
-y = df['Volume_Ton']
+# Target Variable Generation
+df['Volume_Sampah_Ton'] = base_sampah + \
+    (df['Ada_Event'] * base_sampah * np.random.uniform(0.15, 0.30, size=len(df))) + \
+    (df['Is_Weekend'] * base_sampah * 0.08) + \
+    (df['Curah_Hujan_mm'] / 50 * base_sampah * 0.03) + \
+    (df['Hujan_Kemarin'] / 50 * base_sampah * 0.05) + \
+    ((df['Penumpang_MRT'] - mrt_harian_avg) / mrt_harian_avg * base_sampah * 0.02)
+
+# Noise (Fluktuasi harian)
+df['Volume_Sampah_Ton'] += np.random.normal(0, base_sampah*0.02, size=len(df))
+df['Volume_Sampah_Ton'] = df['Volume_Sampah_Ton'].round(2)
+
+# Simpan dataset
+df.to_csv('dataset_advanced_eco_twin.csv', index=False)
 
 # ==========================================
 # 3. CHRONOLOGICAL SPLIT & TRAINING
 # ==========================================
-print("3. Membagi Data secara Kronologis (75/25) & Melatih Model...")
+print("⚙️ 3. Melatih Model AI dengan Algoritma Gradient Boosting...")
 
-# 75% days for training, 25% for test. 
-# Since we have 4 locations per day, we split at index: (len(df) // 4 * 0.75) * 4
-num_days = len(df) // 4
-train_days = int(num_days * 0.75)
-train_size = train_days * 4
+# Fitur yang dipakai AI buat mikir
+fitur = ['Penumpang_MRT', 'Ada_Event', 'Curah_Hujan_mm', 'Hujan_Kemarin', 'Hari_Dalam_Minggu', 'Bulan', 'Is_Weekend']
+X = df[fitur]
+y = df['Volume_Sampah_Ton']
 
+# Memisahkan masa lalu (2023) buat belajar, masa depan (2024) buat ujian
+train_size = int(len(df) * 0.75) # 75% data awal
 X_train, X_test = X.iloc[:train_size], X.iloc[train_size:]
 y_train, y_test = y.iloc[:train_size], y.iloc[train_size:]
 
@@ -162,4 +169,3 @@ for name, importance in zip(fitur, importances):
 # Simpan Model Terbaik
 joblib.dump(best_model, 'model_sampah_advanced.pkl')
 print("\n💾 SUCCESS! 'model_sampah_advanced.pkl' berhasil di-generate menggunakan model hasil upgrade!")
-
