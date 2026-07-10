@@ -7,8 +7,10 @@
 ---
 
 > [!IMPORTANT]
-> **📖 FRONT-END INTEGRATION GUIDE**:  
-> Untuk panduan teknis khusus tim Front-End (termasuk tipe TypeScript, Axios snippets, pemetaan Peta & progress bar), silakan merujuk langsung ke dokumen [FRONTEND_API_DOC.md](file:///c:/khusus%20project%20IT/Fine%20tuning%20ulang%20AI%20jakarta/waste-prediction-api/FRONTEND_API_DOC.md).
+> **📖 DOKUMENTASI & PENGUJIAN SISTEM**:  
+> * **Untuk Publik / Stakeholder**: Silakan merujuk ke dokumen [PUBLIC_DOC.md](file:///c:/khusus%20project%20IT/Fine%20tuning%20ulang%20AI%20jakarta/waste-prediction-api/PUBLIC_DOC.md) untuk memahami cara kerja sistem AI, arsitektur, dan panduan penggunaan bagi pengguna umum.
+> * **Untuk Developer Front-End (FE)**: Silakan merujuk langsung ke dokumen [FRONTEND_API_DOC.md](file:///c:/khusus%20project%20IT/Fine%20tuning%20ulang%20AI%20jakarta/waste-prediction-api/FRONTEND_API_DOC.md) untuk spesifikasi detail endpoint API, tipe data TypeScript, contoh kode Axios/Fetch, serta petunjuk integrasi visual.
+> * **Pengujian API (Postman)**: Anda dapat mengimpor file [waste_intelligence_api.postman_collection.json](file:///c:/khusus%20project%20IT/Fine%20tuning%20ulang%20AI%20jakarta/waste-prediction-api/waste_intelligence_api.postman_collection.json) langsung ke aplikasi Postman Anda untuk menguji seluruh endpoint secara instan.
 
 ---
 
@@ -310,6 +312,7 @@ numpy>=1.26.0
 torch>=2.1.0
 chronos-forecasting>=0.1.0
 pydantic>=2.5.0
+httpx>=0.25.0
 ```
 
 ---

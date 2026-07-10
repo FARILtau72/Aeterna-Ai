@@ -524,6 +524,26 @@ header {
     box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
 }
 
+.progress-bar-fill.paper {
+    background: linear-gradient(to right, var(--yellow), #FF9900);
+    box-shadow: 0 0 10px rgba(255, 230, 0, 0.3);
+}
+
+.progress-bar-fill.glass {
+    background: linear-gradient(to right, var(--red), #E040FB);
+    box-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
+}
+
+.progress-bar-fill.textile {
+    background: linear-gradient(to right, #CC66FF, #2196F3);
+    box-shadow: 0 0 10px rgba(204, 102, 255, 0.3);
+}
+
+.progress-bar-fill.metal {
+    background: linear-gradient(to right, #E1E3E8, var(--cyan));
+    box-shadow: 0 0 10px rgba(225, 227, 232, 0.3);
+}
+
 /* Weather & Event Panel */
 .weather-grid {
     display: flex;
@@ -777,4 +797,370 @@ footer {
     background: rgba(57, 255, 20, 0.12) !important;
     box-shadow: 0 0 20px var(--green-glow) !important;
 }
+
+
+/* SPA Multi-Page Styling */
+.page-container {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fade-in 0.4s forwards;
+    padding: 1.5rem 2.5rem;
+    flex: 1;
+    z-index: 5;
+    position: relative;
+}
+
+.page-container.active {
+    display: block;
+    opacity: 1;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Nav Links in Header */
+.nav-links {
+    display: flex;
+    gap: 1.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: color 0.3s, background 0.3s, box-shadow 0.3s;
+}
+
+.nav-btn:hover {
+    color: var(--cyan);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.nav-btn.active {
+    color: var(--bg-void);
+    background: var(--cyan);
+    box-shadow: 0 0 15px var(--cyan-glow);
+}
+
+/* Hero Section */
+.hero-section {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 2rem;
+    align-items: center;
+    padding: 3rem 0;
+}
+
+@media (max-width: 900px) {
+    .hero-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #FFF 40%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    max-width: 400px;
+}
+
+.hero-stats-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: rgba(6, 10, 22, 0.6) !important;
+}
+
+.hero-stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.hero-stat-card {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.2rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.h-stat-label {
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.h-stat-value {
+    font-size: 1.8rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: #FFF;
+}
+
+/* Features Grid */
+.features-section {
+    padding: 2rem 0;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 2rem;
+    color: #FFF;
+    border-left: 3px solid var(--cyan);
+    padding-left: 10px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.feature-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: transform 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+}
+
+.feature-icon {
+    font-size: 2rem;
+    font-weight: 800;
+    color: rgba(0, 240, 255, 0.25);
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.05);
+}
+
+.feature-name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--cyan);
+}
+
+.feature-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* Page Headers */
+.page-header-section {
+    padding: 2rem 0 1rem 0;
+}
+
+.section-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+/* News Page Styling */
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+}
+
+.news-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    backdrop-filter: blur(16px);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.news-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-hover);
+    box-shadow: 0 8px 32px 0 rgba(0, 240, 255, 0.05);
+}
+
+.news-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.news-source {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    background: rgba(0, 240, 255, 0.08);
+    color: var(--cyan);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+.news-date {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.news-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #FFF;
+    line-height: 1.4;
+}
+
+.news-summary {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.news-link {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    color: var(--cyan);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: bold;
+    gap: 6px;
+    transition: gap 0.2s;
+}
+
+.news-link:hover {
+    gap: 10px;
+}
+
+.loading-news, .loading-alerts {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+/* Alerts Page Styling */
+.alerts-summary {
+    margin-top: 1.5rem;
+}
+
+.alerts-list-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.alert-row {
+    display: grid;
+    grid-template-columns: 120px 180px 100px 1fr;
+    gap: 1rem;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+
+@media (max-width: 768px) {
+    .alert-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.alert-row:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.alert-date {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.alert-location {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: #FFF;
+}
+
+.alert-badge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.alert-badge.critical {
+    background: rgba(255, 0, 85, 0.12);
+    color: var(--red);
+    border: 1px solid var(--red);
+    box-shadow: 0 0 10px rgba(255, 0, 85, 0.1);
+}
+
+.alert-badge.warning {
+    background: rgba(255, 230, 0, 0.12);
+    color: var(--yellow);
+    border: 1px solid var(--yellow);
+    box-shadow: 0 0 10px rgba(255, 230, 0, 0.1);
+}
+
+.alert-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
 

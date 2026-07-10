@@ -1,381 +1,289 @@
-# 🗑️ Panduan Integrasi API Waste Intelligence — Khusus Front-End (FE)
-> **Sistem Prediksi Manajemen Sampah DKI Jakarta 2026**  
-> **Target API Base URL (Lokal)**: `http://localhost:8001`  
-> **Target API Base URL (Production)**: `https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api`  
+# Aeterna AI - Front-End API Integration Guide (v4.0.0)
 
-Dokumen ini disusun untuk memudahkan tim Front-End (FE) dalam mengintegrasikan endpoint backend dengan Dashboard UI, komponen Peta (Leaflet.js/Mapbox), Grafik (Recharts/ApexCharts/Chart.js), dan Sistem Alerts.
+Dokumen ini ditujukan bagi tim Front-End untuk mengintegrasikan antarmuka pengguna dengan backend **Aeterna AI (Waste Intelligence Platform)**.
 
 ---
 
-## 📑 Daftar Isi
-1. [Konstanta & Data Spasial (Map & Coordinates)](#1-konstanta--data-spasial-map--coordinates)
-2. [Definisi Tipe Data (TypeScript Interfaces)](#2-definisi-tipe-data-typescript-interfaces)
-3. [Referensi Endpoint API](#3-referensi-endpoint-api)
-   - [GET `/status` (Health Check)](#get-status-health-check)
-   - [POST `/api/v1/predict` (Forecasting & Analisis)](#post-apiv1predict-forecasting--analisis)
-   - [POST `/api/v1/predict/csv` (Export Data)](#post-apiv1predictcsv-export-data)
-   - [GET `/api/v1/alerts` (Daftar Peringatan Hari Ini & H+2)](#get-apiv1alerts-daftar-peringatan-hari-ini--h2)
-4. [Contoh Implementasi Code (Axios / Fetch)](#4-contoh-implementasi-code-axios--fetch)
-5. [Panduan Mapping ke UI Dashboard](#5-panduan-mapping-ke-ui-dashboard)
-6. [Penanganan Error & Validasi](#6-penanganan-error--validasi)
+## 📡 Konfigurasi Global
+*   **Base URL (Local)**: `http://localhost:8001`
+*   **Content-Type**: `application/json`
+*   **CORS**: Diaktifkan secara wildcard (`*`) untuk semua origin, method, dan header.
 
 ---
 
-## 1. Konstanta & Data Spasial (Map & Coordinates)
-
-Untuk memudahkan penggambaran Marker dan Garis Rute (Logistics Route) ke TPST Bantargebang di peta Leaflet.js, gunakan konstanta koordinat berikut di sisi klien.
-
-```javascript
-// Koordinat Utama Lokasi Pengamatan
-export const LOCATION_COORDINATES = {
-  "GBK": { latitude: -6.2183, longitude: 106.8022, radiusLabel: "2.0 km" },
-  "JIS": { latitude: -6.1244, longitude: 106.8622, radiusLabel: "1.5 km" },
-  "Pasar Senen": { latitude: -6.1744, longitude: 106.8444, radiusLabel: "1.2 km" },
-  "Gang Sempit Tambora": { latitude: -6.1500, longitude: 106.8000, radiusLabel: "0.8 km" }
-};
-
-// Koordinat Pembuangan Akhir (Tempat Pembuangan Sampah Terpadu Bantargebang)
-export const BANTARGEBANG_COORDS = { latitude: -6.3477, longitude: 106.9939 };
-
-// Jarak & Waktu Tempuh Estimasi untuk UI Rute Logistik
-export const LOGISTICS_ROUTING_PROFILES = {
-  "JIS": { distance: "41.2 km", travelTime: "1.5 Jam" },
-  "GBK": { distance: "38.5 km", travelTime: "1.8 Jam" },
-  "Pasar Senen": { distance: "34.8 km", travelTime: "1.4 Jam" },
-  "Gang Sempit Tambora": { distance: "43.5 km", travelTime: "2.1 Jam" }
-};
-```
-
-> [!TIP]
-> Gambar garis rute (logistik) dari koordinat lokasi terpilih langsung menuju `BANTARGEBANG_COORDS` menggunakan fitur `L.polyline` dengan style *dashed cyan glow* (`#00F0FF`) untuk memberikan kesan modern/cyberpunk.
-
----
-
-## 2. Definisi Tipe Data (TypeScript Interfaces)
-
-Jika Anda menggunakan TypeScript pada frontend (seperti React, Vue, atau Next.js), salin tipe data berikut:
+## 🗺️ Konstanta Wilayah (44 Kecamatan DKI Jakarta)
+Untuk memetakan wilayah pada leaflet/map atau drop-down pilihan di FE, gunakan konstanta koordinat dan baseline berikut:
 
 ```typescript
-export type ModelType = 'chronos' | 'gradient_boosting';
-export type Granularity = 'daily' | 'hourly';
-export type RiskStatus = 'SAFE' | 'WARNING' | 'CRITICAL';
-export type HourlyRiskIndicator = 'LOW' | 'MEDIUM' | 'HIGH';
-
-export interface PredictionRequest {
-  forecast_days: number;       // 1 - 30 hari
-  rainfall_mm: number;         // Curah hujan manual (0 = Otomatis mengambil data live cuaca)
-  event_scale: number;         // Skala keramaian buatan (0 = tidak ada, 5 = masif)
-  location: 'JIS' | 'GBK' | 'Pasar Senen' | 'Gang Sempit Tambora';
-  start_date?: string;         // Opsional, format YYYY-MM-DD
-  granularity?: Granularity;   // Default: 'daily'
-  model_type?: ModelType;      // Default: 'chronos'
+export interface RegionMetadata {
+  latitude: number;
+  longitude: number;
+  normal_avg: number;
+  warning_threshold: number;
+  critical_threshold: number;
+  city: 'Jakarta Pusat' | 'Jakarta Utara' | 'Jakarta Barat' | 'Jakarta Selatan' | 'Jakarta Timur' | 'Kepulauan Seribu';
 }
 
-export interface ConfidenceRange {
-  lower: number;
-  upper: number;
-}
+export const KECAMATAN_DATABASE: Record<string, RegionMetadata> = {
+  // JAKARTA PUSAT
+  "Menteng": { latitude: -6.1950, longitude: 106.8322, normal_avg: 120.0, warning_threshold: 160.0, critical_threshold: 180.0, city: "Jakarta Pusat" },
+  "Senen": { latitude: -6.1822, longitude: 106.8452, normal_avg: 180.0, warning_threshold: 220.0, critical_threshold: 240.0, city: "Jakarta Pusat" },
+  "Cempaka Putih": { latitude: -6.1802, longitude: 106.8686, normal_avg: 90.0, warning_threshold: 120.0, critical_threshold: 140.0, city: "Jakarta Pusat" },
+  "Johar Baru": { latitude: -6.1866, longitude: 106.8572, normal_avg: 70.0, warning_threshold: 95.0, critical_threshold: 110.0, city: "Jakarta Pusat" },
+  "Kemayoran": { latitude: -6.1628, longitude: 106.8438, normal_avg: 180.0, warning_threshold: 220.0, critical_threshold: 240.0, city: "Jakarta Pusat" },
+  "Sawah Besar": { latitude: -6.1554, longitude: 106.8322, normal_avg: 110.0, warning_threshold: 145.0, critical_threshold: 165.0, city: "Jakarta Pusat" },
+  "Tanah Abang": { latitude: -6.2104, longitude: 106.8122, normal_avg: 250.0, warning_threshold: 320.0, critical_threshold: 350.0, city: "Jakarta Pusat" },
+  "Gambir": { latitude: -6.1764, longitude: 106.8190, normal_avg: 150.0, warning_threshold: 195.0, critical_threshold: 215.0, city: "Jakarta Pusat" },
 
-export interface HourlyBreakdown {
-  hour: string;                // Format "00:00", "01:00", dsb.
-  estimated_volume_ton: number;
-  risk_indicator: HourlyRiskIndicator;
-  confidence_range: ConfidenceRange;
-}
+  // JAKARTA UTARA
+  "Penjaringan": { latitude: -6.1264, longitude: 106.7822, normal_avg: 280.0, warning_threshold: 350.0, critical_threshold: 380.0, city: "Jakarta Utara" },
+  "Tanjung Priok": { latitude: -6.1322, longitude: 106.8722, normal_avg: 260.0, warning_threshold: 320.0, critical_threshold: 350.0, city: "Jakarta Utara" },
+  "Koja": { latitude: -6.1214, longitude: 106.9133, normal_avg: 190.0, warning_threshold: 240.0, critical_threshold: 270.0, city: "Jakarta Utara" },
+  "Cilincing": { latitude: -6.1288, longitude: 106.9452, normal_avg: 290.0, warning_threshold: 370.0, critical_threshold: 400.0, city: "Jakarta Utara" },
+  "Pademangan": { latitude: -6.1328, longitude: 106.8422, normal_avg: 140.0, warning_threshold: 180.0, critical_threshold: 200.0, city: "Jakarta Utara" },
+  "Kelapa Gading": { latitude: -6.1552, longitude: 106.9022, normal_avg: 190.0, warning_threshold: 240.0, critical_threshold: 270.0, city: "Jakarta Utara" },
 
-export interface PredictionResult {
-  date: string;                // YYYY-MM-DD
-  location: string;
-  total_volume_ton: number;
-  organic_waste_ton: number;
-  plastic_waste_ton: number;
-  recommended_trucks: number;  // Truk kapasitas 5 ton
-  risk_status: RiskStatus;
-  event_info: string | null;   // Nama event terdekat (jika ada)
-  hourly_breakdown: HourlyBreakdown[] | null; // Terisi jika granularity = 'hourly'
-}
+  // JAKARTA BARAT
+  "Cengkareng": { latitude: -6.1528, longitude: 106.7322, normal_avg: 340.0, warning_threshold: 420.0, critical_threshold: 460.0, city: "Jakarta Barat" },
+  "Grogol Petamburan": { latitude: -6.1622, longitude: 106.7882, normal_avg: 220.0, warning_threshold: 280.0, critical_threshold: 310.0, city: "Jakarta Barat" },
+  "Kalideres": { latitude: -6.1428, longitude: 106.7022, normal_avg: 260.0, warning_threshold: 330.0, critical_threshold: 360.0, city: "Jakarta Barat" },
+  "Kebon Jeruk": { latitude: -6.1922, longitude: 106.7722, normal_avg: 210.0, warning_threshold: 260.0, critical_threshold: 290.0, city: "Jakarta Barat" },
+  "Kembangan": { latitude: -6.1828, longitude: 106.7382, normal_avg: 180.0, warning_threshold: 230.0, critical_threshold: 250.0, city: "Jakarta Barat" },
+  "Palmerah": { latitude: -6.2028, longitude: 106.7882, normal_avg: 160.0, warning_threshold: 200.0, critical_threshold: 220.0, city: "Jakarta Barat" },
+  "Taman Sari": { latitude: -6.1454, longitude: 106.8182, normal_avg: 100.0, warning_threshold: 130.0, critical_threshold: 150.0, city: "Jakarta Barat" },
+  "Tambora": { latitude: -6.1500, longitude: 106.8000, normal_avg: 80.0, warning_threshold: 110.0, critical_threshold: 125.0, city: "Jakarta Barat" },
 
-export interface LogisticsPlan {
-  trucks_needed: number;
-  manpower: number;            // 3 x jumlah armada truk
-  estimated_duration_hours: number;
-  efficiency_rate: string;     // Contoh: "85% (Optimal)"
-}
+  // JAKARTA SELATAN
+  "Cilandak": { latitude: -6.2928, longitude: 106.7922, normal_avg: 180.0, warning_threshold: 230.0, critical_threshold: 250.0, city: "Jakarta Selatan" },
+  "Jagakarsa": { latitude: -6.3328, longitude: 106.8222, normal_avg: 220.0, warning_threshold: 280.0, critical_threshold: 310.0, city: "Jakarta Selatan" },
+  "Kebayoran Baru": { latitude: -6.2422, longitude: 106.7982, normal_avg: 210.0, warning_threshold: 260.0, critical_threshold: 290.0, city: "Jakarta Selatan" },
+  "Kebayoran Lama": { latitude: -6.2488, longitude: 106.7722, normal_avg: 230.0, warning_threshold: 290.0, critical_threshold: 320.0, city: "Jakarta Selatan" },
+  "Mampang Prapatan": { latitude: -6.2522, longitude: 106.8182, normal_avg: 120.0, warning_threshold: 150.0, critical_threshold: 170.0, city: "Jakarta Selatan" },
+  "Pancoran": { latitude: -6.2622, longitude: 106.8382, normal_avg: 130.0, warning_threshold: 160.0, critical_threshold: 180.0, city: "Jakarta Selatan" },
+  "Pasar Minggu": { latitude: -6.2828, longitude: 106.8438, normal_avg: 240.0, warning_threshold: 300.0, critical_threshold: 330.0, city: "Jakarta Selatan" },
+  "Pesanggrahan": { latitude: -6.2588, longitude: 106.7588, normal_avg: 160.0, warning_threshold: 200.0, critical_threshold: 220.0, city: "Jakarta Selatan" },
+  "Setiabudi": { latitude: -6.2228, longitude: 106.8282, normal_avg: 190.0, warning_threshold: 240.0, critical_threshold: 270.0, city: "Jakarta Selatan" },
+  "Tebet": { latitude: -6.2288, longitude: 106.8482, normal_avg: 170.0, warning_threshold: 210.0, critical_threshold: 230.0, city: "Jakarta Selatan" },
 
-export interface PredictionData {
-  prediction_results: PredictionResult[];
-  logistics_plan: LogisticsPlan;
-}
+  // JAKARTA TIMUR
+  "Cakung": { latitude: -6.1828, longitude: 106.9482, normal_avg: 350.0, warning_threshold: 430.0, critical_threshold: 470.0, city: "Jakarta Timur" },
+  "Cipayung": { latitude: -6.3128, longitude: 106.9022, normal_avg: 140.0, warning_threshold: 180.0, critical_threshold: 200.0, city: "Jakarta Timur" },
+  "Ciracas": { latitude: -6.3228, longitude: 106.8782, normal_avg: 190.0, warning_threshold: 240.0, critical_threshold: 270.0, city: "Jakarta Timur" },
+  "Duren Sawit": { latitude: -6.2228, longitude: 106.9282, normal_avg: 300.0, warning_threshold: 370.0, critical_threshold: 410.0, city: "Jakarta Timur" },
+  "Jatinegara": { latitude: -6.2222, longitude: 106.8682, normal_avg: 240.0, warning_threshold: 300.0, critical_threshold: 330.0, city: "Jakarta Timur" },
+  "Kramat Jati": { latitude: -6.2722, longitude: 106.8682, normal_avg: 220.0, warning_threshold: 270.0, critical_threshold: 300.0, city: "Jakarta Timur" },
+  "Makasar": { latitude: -6.2622, longitude: 106.8782, normal_avg: 160.0, warning_threshold: 200.0, critical_threshold: 220.0, city: "Jakarta Timur" },
+  "Matraman": { latitude: -6.2022, longitude: 106.8582, normal_avg: 130.0, warning_threshold: 160.0, critical_threshold: 180.0, city: "Jakarta Timur" },
+  "Pasar Rebo": { latitude: -6.3122, longitude: 106.8522, normal_avg: 150.0, warning_threshold: 190.0, critical_threshold: 210.0, city: "Jakarta Timur" },
+  "Pulo Gadung": { latitude: -6.1922, longitude: 106.8922, normal_avg: 220.0, warning_threshold: 270.0, critical_threshold: 300.0, city: "Jakarta Timur" },
 
-export interface APIPredictionResponse {
-  status: 'success' | 'error';
-  message: string;
-  confidence_score: number;    // Skala 0.0 - 1.0 (misal: 0.93)
-  data: PredictionData;
-}
-
-export interface AlertItem {
-  date: string;
-  location: string;
-  status: 'WARNING' | 'CRITICAL';
-  estimated_volume_ton: number;
-  message: string;
-}
-
-export interface APIAlertResponse {
-  status: 'success';
-  alert_count: number;
-  alerts: AlertItem[];
-  last_updated: string;        // ISO Timestamp
-}
+  // KEPULAUAN SERIBU
+  "Kepulauan Seribu Utara": { latitude: -5.5722, longitude: 106.5522, normal_avg: 11.0, warning_threshold: 15.0, critical_threshold: 18.0, city: "Kepulauan Seribu" },
+  "Kepulauan Seribu Selatan": { latitude: -5.7722, longitude: 106.6522, normal_avg: 9.0, warning_threshold: 12.0, critical_threshold: 15.0, city: "Kepulauan Seribu" }
+};
 ```
 
 ---
 
-## 3. Referensi Endpoint API
+## 🔌 Referensi API Endpoint
 
-### GET `/status` (Health Check)
-Endpoint ini digunakan untuk memverifikasi apakah server menyala dan model AI sudah ter-load dengan benar di memori.
+### 1. Mengambil Berita Ter-crawled Harian
+Endpoint ini menyajikan database berita seputar persampahan DKI Jakarta yang diperbarui berkala setiap 1 jam.
 
-- **URL**: `/status`
-- **Method**: `GET`
-- **Response Contoh (200 OK)**:
-  ```json
-  {
-    "status": "Online",
-    "model_chronos": "Chronos-T5 Tiny",
-    "model_gbr": "Gradient Boosting Regressor",
-    "calibrated": true
-  }
-  ```
+*   **URL**: `/api/v1/news`
+*   **Method**: `GET`
+*   **Headers**: `Accept: application/json`
+*   **Response Schema (`200 OK`)**:
+    ```json
+    [
+      {
+        "title": "DKI Uji Coba Penarikan Retribusi Sampah Pelayanan Kebersihan Harian",
+        "source": "Antara News",
+        "url": "https://www.antaranews.com/tag/sampah-jakarta",
+        "date_fetched": "2026-07-10",
+        "summary": "Pemprov DKI Jakarta merencanakan uji coba penarikan retribusi pelayanan kebersihan/sampah berdasarkan golongan daya listrik..."
+      }
+    ]
+    ```
 
 ---
 
-### POST `/api/v1/predict` (Forecasting & Analisis)
-Endpoint utama untuk memanggil prediksi time-series model AI. AI akan menghitung dampak cuaca basah, event keramaian, status risiko per hari, rincian logistik, hingga dekomposisi sampah organik/plastik.
+### 2. Prediksi AI Otonom (Autopilot Mode)
+Mengambil prediksi otonom untuk ke-44 kecamatan sekaligus untuk hari ini. Berguna untuk dashboard autopilot utama.
 
-- **URL**: `/api/v1/predict`
-- **Method**: `POST`
-- **Headers**:
-  - `Content-Type: application/json`
-- **Request Body Contoh**:
-  ```json
-  {
-    "forecast_days": 7,
-    "rainfall_mm": 0,
-    "event_scale": 0,
-    "location": "JIS",
-    "granularity": "hourly",
-    "model_type": "gradient_boosting"
-  }
-  ```
-
-- **Response Contoh (200 OK)**:
-  ```json
-  {
-    "status": "success",
-    "message": "Normal conditions.",
-    "confidence_score": 0.9325,
-    "data": {
-      "prediction_results": [
+*   **URL**: `/api/v1/autopilot`
+*   **Method**: `GET`
+*   **Response Schema (`200 OK`)**:
+    ```json
+    {
+      "status": "success",
+      "date": "2026-07-10",
+      "total_volume_ton": 8105.42,
+      "total_trucks": 1640,
+      "top_kecamatan": [
         {
-          "date": "2026-07-08",
-          "location": "JIS",
-          "total_volume_ton": 122.45,
-          "organic_waste_ton": 61.07,
-          "plastic_waste_ton": 28.1,
-          "recommended_trucks": 25,
-          "risk_status": "SAFE",
-          "event_info": null,
-          "hourly_breakdown": [
-            {
-              "hour": "00:00",
-              "estimated_volume_ton": 2.45,
-              "risk_indicator": "LOW",
-              "confidence_range": {
-                "lower": 2.08,
-                "upper": 2.82
-              }
-            }
-            // ... total 24 jam data
-          ]
+          "location": "Cakung",
+          "volume_ton": 355.20,
+          "trucks": 72,
+          "status": "SAFE",
+          "city": "Jakarta Timur"
         }
       ],
-      "logistics_plan": {
-        "trucks_needed": 25,
-        "manpower": 75,
-        "estimated_duration_hours": 24.5,
-        "efficiency_rate": "85% (Optimal)"
+      "rainy_regions": 0,
+      "event_today": null
+    }
+    ```
+
+---
+
+### 3. Simulasi Prediksi Wilayah (Predictor Tool)
+Melakukan peramalan timbulan sampah untuk kecamatan tertentu dengan parameter simulasi cuaca/event keramaian.
+
+*   **URL**: `/api/v1/predict`
+*   **Method**: `POST`
+*   **Request Body**:
+    ```typescript
+    interface PredictionRequest {
+      forecast_days: number;       // Ambang batas: 1 - 30 hari
+      rainfall_mm: number;         // Curah hujan override (0.0 = Auto Open-Meteo)
+      event_scale: number;         // 0 (none) sampai 5 (massive crowd)
+      location: string;            // Salah satu nama dari 44 kecamatan
+      granularity: 'daily' | 'hourly';
+      model_type: 'chronos' | 'gradient_boosting';
+    }
+    ```
+*   **Contoh Request Payload**:
+    ```json
+    {
+      "forecast_days": 7,
+      "rainfall_mm": 0.0,
+      "event_scale": 0,
+      "location": "Menteng",
+      "granularity": "daily",
+      "model_type": "gradient_boosting"
+    }
+    ```
+*   **Response Schema (`200 OK`)**:
+    ```json
+    {
+      "status": "success",
+      "message": "Normal conditions.",
+      "confidence_score": 0.9828,
+      "data": {
+        "prediction_results": [
+          {
+            "date": "2026-07-10",
+            "location": "Menteng",
+            "total_volume_ton": 120.54,
+            "organic_waste_ton": 60.11,
+            "plastic_waste_ton": 27.66,
+            "paper_waste_ton": 13.86,
+            "glass_waste_ton": 3.86,
+            "metal_waste_ton": 2.53,
+            "textile_waste_ton": 5.06,
+            "other_waste_ton": 7.46,
+            "recommended_trucks": 25,
+            "risk_status": "SAFE",
+            "event_info": null,
+            "hourly_breakdown": null
+          }
+        ],
+        "logistics_plan": {
+          "trucks_needed": 25,
+          "manpower": 75,
+          "estimated_duration_hours": 24.1,
+          "efficiency_rate": "85% (Optimal)"
+        }
       }
     }
-  }
-  ```
+    ```
 
 ---
 
-### POST `/api/v1/predict/csv` (Export Data)
-Endpoint ini mengembalikan data prediksi yang sama dengan di atas, tetapi langsung dikonversi menjadi file `.csv` yang siap diunduh di peramban pengguna.
+### 4. Unduh Berkas CSV Prediksi
+Mengunduh berkas tabel data hasil simulasi prediksi.
 
-- **URL**: `/api/v1/predict/csv`
-- **Method**: `POST`
-- **Headers**:
-  - `Content-Type: application/json`
-- **Response**: Mengembalikan raw bytes file stream (`text/csv`). Header response menyertakan `Content-Disposition: attachment; filename="waste_forecast_[lokasi]_[hari]d.csv"`.
-
----
-
-### GET `/api/v1/alerts` (Daftar Peringatan Hari Ini & H+2)
-Mengambil daftar titik lokasi yang mengalami lonjakan volume (di atas batas ambang aman) dalam 3 hari ke depan secara dinamis.
-
-- **URL**: `/api/v1/alerts`
-- **Method**: `GET`
-- **Query Params**:
-  - `location` (Opsional) : Untuk memfilter alert hanya untuk lokasi tertentu saja (misal: `JIS` / `GBK`).
-- **Response Contoh (200 OK)**:
-  ```json
-  {
-    "status": "success",
-    "alert_count": 1,
-    "alerts": [
-      {
-        "date": "2026-07-09",
-        "location": "JIS",
-        "status": "WARNING",
-        "estimated_volume_ton": 168.5,
-        "message": "Alert: WARNING volume expected at JIS"
-      }
-    ],
-    "last_updated": "2026-07-08T10:15:30.123456"
-  }
-  ```
+*   **URL**: `/api/v1/predict/csv`
+*   **Method**: `POST`
+*   **Request Body**: Sama dengan request `/api/v1/predict`
+*   **Response**: Binary Blob (`text/csv` stream file).
 
 ---
 
-## 4. Contoh Implementasi Code (Axios / Fetch)
+### 5. Mengambil Peringatan Operasional Dinamis (Alerts)
+Mendapatkan peringatan kritis wilayah yang volumenya melebihi ambang batas warning/critical.
 
-### Mengirim Request Prediksi & Update State (JavaScript / React)
+*   **URL**: `/api/v1/alerts`
+*   **Method**: `GET`
+*   **Query Parameters**: `location` (opsional, untuk menyaring satu kecamatan)
+*   **Response Schema (`200 OK`)**:
+    ```json
+    {
+      "status": "success",
+      "alert_count": 2,
+      "alerts": [
+        {
+          "date": "2026-07-10",
+          "location": "Cakung",
+          "status": "WARNING",
+          "estimated_volume_ton": 435.0,
+          "message": "Alert: WARNING volume expected at Cakung"
+        }
+      ],
+      "last_updated": "2026-07-10T20:52:00.123456"
+    }
+    ```
+
+---
+
+## ⚡ Contoh Integrasi Frontend (Axios / JavaScript)
+
+Berikut adalah contoh cara menarik data prediksi Autopilot dan memuatnya ke komponen halaman FE Anda:
+
 ```javascript
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8001'; // Sesuaikan environment
+const BACKEND_URL = 'http://localhost:8001';
 
-export async function fetchWastePrediction(payload) {
+// 1. Memuat Umpan Berita AI
+export async function getWasteNews() {
   try {
-    const response = await axios.post(`${API_BASE_URL}/api/v1/predict`, payload);
-    return response.data;
+    const res = await axios.get(`${BACKEND_URL}/api/v1/news`);
+    return res.data; // Mengembalikan array berita
   } catch (error) {
-    console.error("Error predicting waste volume:", error.response?.data || error.message);
+    console.error("Gagal menarik berita sampah:", error);
+    return [];
+  }
+}
+
+// 2. Memuat Data Autopilot Otonom DKI
+export async function getAutopilotData() {
+  try {
+    const res = await axios.get(`${BACKEND_URL}/api/v1/autopilot`);
+    return res.data;
+  } catch (error) {
+    console.error("Gagal memuat autopilot data:", error);
+    return null;
+  }
+}
+
+// 3. Menjalankan Prediksi Manual (Simulation)
+export async function postSimulationPrediction(kecamatan, hari = 7, model = 'gradient_boosting') {
+  const payload = {
+    forecast_days: hari,
+    rainfall_mm: 0.0, // Auto
+    event_scale: 0,
+    location: kecamatan,
+    granularity: hari <= 7 ? 'hourly' : 'daily',
+    model_type: model
+  };
+
+  try {
+    const res = await axios.post(`${BACKEND_URL}/api/v1/predict`, payload);
+    return res.data;
+  } catch (error) {
+    console.error("Gagal melakukan prediksi simulasi:", error);
     throw error;
   }
 }
 ```
-
-### Mengunduh CSV File (JavaScript)
-```javascript
-export async function downloadPredictionCSV(payload) {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/api/v1/predict/csv`, payload, {
-      responseType: 'blob' // Wajib diisi agar file blob dibaca dengan benar
-    });
-    
-    // Trigger download manual via browser
-    const blob = new Blob([response.data], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    
-    // Nama file dinamis
-    const fileName = `waste_forecast_${payload.location.replace(/\s+/g, '_')}_${payload.forecast_days}d.csv`;
-    link.setAttribute('download', fileName);
-    
-    document.body.appendChild(link);
-    link.click();
-    
-    // Bersihkan link element setelah click
-    link.remove();
-    window.URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error("Gagal mengunduh CSV:", error);
-    alert("Ekspor CSV Gagal!");
-  }
-}
-```
-
----
-
-## 5. Panduan Mapping ke UI Dashboard
-
-### A. Total Volume & Kebutuhan Armada
-1. **Total Volume Forecast**: Lakukan perulangan (`reduce`) untuk menjumlahkan `total_volume_ton` dari semua entri di `data.prediction_results`. Tampilkan nilai desimal 2 angka (`.toFixed(2)`).
-2. **Kebutuhan Fleet (Truk)**: Tampilkan `data.logistics_plan.trucks_needed`. Truk dihitung secara kumulatif dengan kapasitas angkut maksimal 5 Ton per armada.
-3. **Tenaga Kerja (Manpower)**: Ditampilkan dari `data.logistics_plan.manpower`. Angka ini adalah alokasi aman kru operasional (3 orang per truk).
-
-### B. Komposisi Sampah (Organic & Plastic)
-Hitung persentase dinamis untuk di-render pada UI *Progress Bar*:
-```javascript
-// Hitung jumlah tonase terlebih dahulu
-const totalOrganic = results.reduce((acc, c) => acc + c.organic_waste_ton, 0);
-const totalPlastic = results.reduce((acc, c) => acc + c.plastic_waste_ton, 0);
-const totalVol = results.reduce((acc, c) => acc + c.total_volume_ton, 0);
-
-// Hitung persentase relatif
-const organicPct = totalVol > 0 ? (totalOrganic / totalVol) * 100 : 0;
-const plasticPct = totalVol > 0 ? (totalPlastic / totalVol) * 100 : 0;
-
-// Render ke UI
-// Ganti properti width progress bar inline style / css variable
-document.getElementById('bar-organic').style.width = `${organicPct}%`;
-document.getElementById('bar-plastic').style.width = `${plasticPct}%`;
-```
-
-### C. Penentuan Status Risiko (Risk Status)
-Backend mengembalikan status per hari: `'SAFE'`, `'WARNING'`, atau `'CRITICAL'`.
-Untuk menentukan status risiko keseluruhan periode yang dipilih:
-- Ambil status **tertinggi** yang muncul di sepanjang list hari prediksi.
-- Aturan Prioritas Status: `CRITICAL` > `WARNING` > `SAFE`.
-- Berikan penyesuaian style warna badge:
-  - `SAFE`: Hijau terang (`#00E676`)
-  - `WARNING`: Kuning neon (`#FFD600`)
-  - `CRITICAL`: Merah menyala (`#FF1744`)
-
-### D. Weather Integration (Live BMKG)
-Saat user memilih lokasi baru:
-1. Hubungi BMKG/Open-Meteo API di sisi FE menggunakan koordinat lokasi (lihat [Bagian 1](#1-konstanta--data-spasial-map--coordinates)).
-2. Dapatkan nilai curah hujan hari ini (`precipitation_sum` / `precipitation`).
-3. Tampilkan status peringatan hujan di UI:
-   - Curah Hujan `> 30 mm` ➡️ Tampilkan badge **HEAVY RAIN 🟡**
-   - Curah Hujan `> 50 mm` ➡️ Tampilkan badge **FLOOD DANGER 🔴**
-   - Di bawah itu ➡️ Tampilkan **Normal conditions**
-
----
-
-## 6. Penanganan Error & Validasi
-
-Backend menggunakan Pydantic v2 untuk memvalidasi request body secara ketat.
-
-### HTTP 422 Unprocessable Entity
-Terjadi jika payload yang dikirimkan memiliki tipe data yang salah atau data di luar rentang validasi.
-*Contoh error respon*:
-```json
-{
-  "detail": [
-    {
-      "type": "less_than_equal",
-      "loc": ["body", "forecast_days"],
-      "msg": "Input should be less than or equal to 30",
-      "input": 45
-    }
-  ]
-}
-```
-**Tips FE**: Batasi input `forecast_days` menggunakan komponen slider HTML `min="1" max="30"` untuk menghindari error ini.
-
-### HTTP 503 Service Unavailable
-Terjadi jika startup server belum selesai me-load model Amazon Chronos atau file CSV belum siap di sisi backend.
-**Tips FE**: Sediakan visual loader atau spinner yang menarik di dashboard untuk mencegah interaksi klik ganda saat status server menunjukkan pemuatan ulang aset AI.
-
----
-
-> 💡 **Kontak Developer Backend**:  
-> **Faril Putra Pratama** (SMK Taruna Bangsa)  
-> Hubungi via repository GitHub di: [@FARILtau72](https://github.com/FARILtau72) jika Anda membutuhkan endpoint tambahan atau perubahan format respon!

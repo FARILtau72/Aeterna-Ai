@@ -1,0 +1,193 @@
+{
+  "info": {
+    "_postman_id": "8e3d0ab4-8fb2-47d3-9bc4-3b604e339d2c",
+    "name": "Waste Intelligence API - DKI Jakarta 2026",
+    "description": "Koleksi request Postman untuk menguji seluruh endpoint Waste Intelligence API (DKI Jakarta 2026) tingkat kecamatan. Pastikan server Uvicorn menyala di port 8001 sebelum menjalankan pengujian.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. System Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/status",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "status"
+          ]
+        },
+        "description": "Mengecek apakah server FastAPI online dan memastikan model AI Amazon Chronos serta Gradient Boosting sudah termuat dengan benar."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Run Waste Prediction (Chronos - Daily)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"forecast_days\": 7,\n  \"rainfall_mm\": 0.0,\n  \"event_scale\": 0,\n  \"location\": \"Kemayoran\",\n  \"granularity\": \"daily\",\n  \"model_type\": \"chronos\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/predict",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "predict"
+          ]
+        },
+        "description": "Menjalankan prediksi baseline volume timbulan sampah menggunakan model AI Amazon Chronos (Transformer) dengan granularity harian untuk Kecamatan Kemayoran."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Run Waste Prediction (Gradient Boosting - Hourly with Overrides)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"forecast_days\": 3,\n  \"rainfall_mm\": 45.0,\n  \"event_scale\": 4,\n  \"location\": \"Tanah Abang\",\n  \"granularity\": \"hourly\",\n  \"model_type\": \"gradient_boosting\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/predict",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "predict"
+          ]
+        },
+        "description": "Menjalankan prediksi menggunakan model Gradient Boosting dengan granularity per jam, menyertakan simulasi hujan lebat (45 mm) dan event keramaian skala 4 di Kecamatan Tanah Abang."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Export Prediction to CSV File",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"forecast_days\": 7,\n  \"rainfall_mm\": 0.0,\n  \"event_scale\": 0,\n  \"location\": \"Senen\",\n  \"granularity\": \"daily\",\n  \"model_type\": \"gradient_boosting\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/predict/csv",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "predict",
+            "csv"
+          ]
+        },
+        "description": "Mengirim parameter input prediksi dan langsung mengunduh hasilnya dalam format berkas .csv untuk Kecamatan Senen."
+      },
+      "response": []
+    },
+    {
+      "name": "5. Get Real-time Operational Alerts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/alerts?location=Senen",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "alerts"
+          ],
+          "query": [
+            {
+              "key": "location",
+              "value": "Senen",
+              "description": "Filter peringatan hanya untuk lokasi Senen (opsional)"
+            }
+          ]
+        },
+        "description": "Mengambil status peringatan operasional (WARNING/CRITICAL) secara dinamis untuk 3 hari ke depan."
+      },
+      "response": []
+    },
+    {
+      "name": "6. Get Latest Waste News",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/news",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "news"
+          ]
+        },
+        "description": "Mengambil umpan berita persampahan terbaru di DKI Jakarta yang dirayap oleh AI setiap 1 jam."
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8001",
+      "type": "string"
+    }
+  ]
+}
