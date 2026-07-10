@@ -1163,4 +1163,144 @@ footer {
     color: var(--text-muted);
 }
 
+/* ==========================================
+   CUSTOM CYBER HUD CURSOR & INTERACTIVITY
+   ========================================== */
+#cursor-dot,
+#cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 10000;
+    border-radius: 50%;
+    display: none;
+    backface-visibility: hidden;
+}
+
+#cursor-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan);
+}
+
+#cursor-ring {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border-hover);
+    transition: width 0.25s cubic-bezier(0.25, 1, 0.5, 1), 
+                height 0.25s cubic-bezier(0.25, 1, 0.5, 1), 
+                border-color 0.25s ease, 
+                background 0.25s ease;
+}
+
+/* Hover state on buttons/interactive elements */
+#cursor-ring.hover-state {
+    width: 55px;
+    height: 55px;
+    border-color: var(--cyan);
+    background: rgba(0, 240, 255, 0.04);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+}
+
+@media (pointer: coarse) {
+    #cursor-dot,
+    #cursor-ring {
+        display: none !important;
+    }
+    * {
+        cursor: auto !important;
+    }
+}
+
+/* Hide default cursor on desktops for the custom cursor feel */
+@media (pointer: fine) {
+    body, a, button, select, input, [role="button"], .leaflet-interactive {
+        cursor: none !important;
+    }
+}
+
+/* ==========================================
+   RADAR SWEEP EFFECT (ON MAP OVERLAY)
+   ========================================== */
+.map-container {
+    position: relative;
+}
+
+.map-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1000;
+    background: conic-gradient(from 0deg at 50% 50%, rgba(0, 240, 255, 0.08) 0deg, transparent 90deg, transparent 360deg);
+    animation: radar-sweep 8s linear infinite;
+    opacity: 0.7;
+    border-radius: 8px;
+    mix-blend-mode: screen;
+}
+
+@keyframes radar-sweep {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==========================================
+   AMBIENT GLOWS & GLASSMORPHISM UPGRADES
+   ========================================== */
+body::before {
+    content: '';
+    position: fixed;
+    top: -10%;
+    left: -10%;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.05) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    bottom: -10%;
+    right: -10%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.04) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Neon glow for progress bars */
+.progress-bar-fill.organic {
+    box-shadow: 0 0 8px var(--green-glow);
+}
+.progress-bar-fill.plastic {
+    box-shadow: 0 0 8px var(--cyan-glow);
+}
+.progress-bar-fill.paper {
+    box-shadow: 0 0 8px var(--yellow-glow);
+}
+.progress-bar-fill.glass {
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
+}
+.progress-bar-fill.textile {
+    box-shadow: 0 0 8px rgba(255, 0, 85, 0.25);
+}
+.progress-bar-fill.metal {
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.25);
+}
+
+/* Logo Reflective Polish */
+.logo-text {
+    position: relative;
+    -webkit-box-reflect: below -4px linear-gradient(transparent, rgba(255, 255, 255, 0.08));
+}
+
 

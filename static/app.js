@@ -861,3 +861,67 @@ function animate() {
 }
 
 animate();
+
+// ==========================================
+// CUSTOM CYBER HUD CURSOR
+// ==========================================
+const cursorDot = document.getElementById("cursor-dot");
+const cursorRing = document.getElementById("cursor-ring");
+
+let mouseX = -100;
+let mouseY = -100;
+let ringX = -100;
+let ringY = -100;
+
+document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    
+    if (cursorDot && cursorDot.style.display !== "block") {
+        cursorDot.style.display = "block";
+        cursorRing.style.display = "block";
+    }
+});
+
+function animateCursor() {
+    const lerpFactor = 0.15;
+    ringX += (mouseX - ringX) * lerpFactor;
+    ringY += (mouseY - ringY) * lerpFactor;
+
+    if (cursorDot) {
+        cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate3d(-50%, -50%, 0)`;
+    }
+    if (cursorRing) {
+        cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate3d(-50%, -50%, 0)`;
+    }
+    requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+// Mouse hover scaling state
+document.addEventListener("mouseover", (e) => {
+    if (cursorRing && (
+        e.target.tagName === "BUTTON" || 
+        e.target.tagName === "A" || 
+        e.target.tagName === "SELECT" || 
+        e.target.tagName === "INPUT" || 
+        e.target.classList.contains("leaflet-interactive") ||
+        e.target.closest("button") || 
+        e.target.closest("a")
+    )) {
+        cursorRing.classList.add("hover-state");
+    }
+});
+document.addEventListener("mouseout", (e) => {
+    if (cursorRing && (
+        e.target.tagName === "BUTTON" || 
+        e.target.tagName === "A" || 
+        e.target.tagName === "SELECT" || 
+        e.target.tagName === "INPUT" || 
+        e.target.classList.contains("leaflet-interactive") ||
+        e.target.closest("button") || 
+        e.target.closest("a")
+    )) {
+        cursorRing.classList.remove("hover-state");
+    }
+});
