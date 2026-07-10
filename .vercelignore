@@ -1,0 +1,19 @@
+# Exclude heavy python backend files from Vercel deployment
+app.py
+train.py
+requirements.txt
+Dockerfile
+*.pkl
+*.csv
+*.txt
+__pycache__/
+.system_generated/
+.gemini/
+scratch/
+.agents/
+.system/
+*.log
+postman_collection.json
+FRONTEND_API_DOC.md
+Doc.md
+PUBLIC_DOC.md
