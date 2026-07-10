@@ -41,9 +41,9 @@ app.add_middleware(
 )
 
 # Mount static files to serve the dashboard UI, CSS, and JS
-if not os.path.exists("static"):
-    os.makedirs("static")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+if not os.path.exists("frontend"):
+    os.makedirs("frontend")
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 # ==========================================
 # 2. 44 KECAMATAN DATABASE (DLH Jakarta Calibrated)
@@ -304,10 +304,10 @@ async def load_assets():
 def serve_dashboard():
     """Serve the Floodzy-style interactive dashboard."""
     try:
-        with open("static/index.html", "r", encoding="utf-8") as f:
+        with open("frontend/index.html", "r", encoding="utf-8") as f:
             return HTMLResponse(content=f.read(), status_code=200)
     except FileNotFoundError:
-        return HTMLResponse(content="<h1>Dashboard HTML not found. Please check your static directory.</h1>", status_code=404)
+        return HTMLResponse(content="<h1>Dashboard HTML not found. Please check your frontend directory.</h1>", status_code=404)
 
 @app.get("/status", tags=["System"])
 def status_check():

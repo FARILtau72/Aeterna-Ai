@@ -1,0 +1,6 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://alamdieng-waste-prediction-api.hf.space/api/$1" }
+  ]
+}

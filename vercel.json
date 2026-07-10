@@ -3,8 +3,8 @@
   "public": true,
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/static/(.*)", "destination": "/static/$1" },
+    { "source": "/static/(.*)", "destination": "/frontend/$1" },
     { "source": "/api/(.*)", "destination": "https://alamdieng-waste-prediction-api.hf.space/api/$1" },
-    { "source": "/(.*)", "destination": "/static/$1" }
+    { "source": "/(.*)", "destination": "/frontend/$1" }
   ]
 }
