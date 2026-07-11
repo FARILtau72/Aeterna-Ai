@@ -1110,7 +1110,8 @@ footer {
     border: 1px solid rgba(255, 255, 255, 0.04);
     padding: 1rem 1.5rem;
     border-radius: 8px;
-    transition: background 0.3s;
+    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
 }
 
 @media (max-width: 768px) {
@@ -1120,7 +1121,10 @@ footer {
 }
 
 .alert-row:hover {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(0, 240, 255, 0.04) !important;
+    border-color: var(--cyan) !important;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.1) !important;
+    transform: translateX(6px);
 }
 
 .alert-date {

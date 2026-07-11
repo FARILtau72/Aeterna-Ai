@@ -664,6 +664,17 @@ async function loadAlertsFeed() {
                     <span class="alert-badge ${item.status.toLowerCase()}">${item.status}</span>
                     <span class="alert-desc">${item.message} - Timbulan: <strong>${item.estimated_volume_ton.toFixed(1)} Ton</strong></span>
                 `;
+                row.addEventListener("click", () => {
+                    selectedLocation = item.location;
+                    if (locationSelect) locationSelect.value = item.location;
+                    updateActiveMapMarker(item.location);
+                    panToLocation(item.location);
+                    fetchLiveWeather(item.location);
+                    switchPage("page-predictor");
+                    setTimeout(() => {
+                        runPrediction();
+                    }, 500);
+                });
                 alertsList.appendChild(row);
             });
         } else {
@@ -727,6 +738,17 @@ async function loadAutopilotFeed() {
                     <span class="alert-badge ${item.status.toLowerCase()}">${item.status}</span>
                     <span class="alert-desc" style="font-size:0.8rem;">Predicted generation: <strong>${item.volume_ton.toFixed(1)} Tons</strong> (${item.trucks} Trucks)</span>
                 `;
+                card.addEventListener("click", () => {
+                    selectedLocation = item.location;
+                    if (locationSelect) locationSelect.value = item.location;
+                    updateActiveMapMarker(item.location);
+                    panToLocation(item.location);
+                    fetchLiveWeather(item.location);
+                    switchPage("page-predictor");
+                    setTimeout(() => {
+                        runPrediction();
+                    }, 500);
+                });
                 autoRiskList.appendChild(card);
             });
             
