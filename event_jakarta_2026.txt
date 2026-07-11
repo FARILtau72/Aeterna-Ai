@@ -10,6 +10,8 @@ tanggal,nama_event,lokasi,skala_keramaian
 2026-06-14,PRJ Weekend,JIExpo,4
 2026-06-21,PRJ Peak Weekend,JIExpo,5
 2026-06-28,PRJ Mid-Event Weekend,JIExpo,4
+2026-07-11,Uji Coba Sistem AI (Demo Event),Jakarta,4
+2026-07-12,Konser Musik Spektakuler,Menteng,3
 2026-07-20,PRJ Final Weekend,JIExpo,5
 2026-08-17,HUT RI ke-81,Monas,4
 2026-09-15,Food & Culture Expo,Ancol,2
