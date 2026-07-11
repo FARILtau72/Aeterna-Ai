@@ -1,9 +1,12 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "rewrites": [
-    { "source": "/static/(.*)", "destination": "/frontend/$1" },
-    { "source": "/api/(.*)", "destination": "https://alamdieng-waste-prediction-api.hf.space/api/$1" },
-    { "source": "/(.*)", "destination": "/frontend/$1" }
+  "builds": [
+    { "src": "frontend/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/static/(.*)", "dest": "/frontend/$1" },
+    { "src": "/api/(.*)", "dest": "https://alamdieng-waste-prediction-api.hf.space/api/$1" },
+    { "src": "/(.*)", "dest": "/frontend/$1" }
   ]
 }
