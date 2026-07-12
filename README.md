@@ -17,6 +17,12 @@ Sistem ini didesain menggunakan **Clean Architecture** (memisahkan frontend stat
 
 ---
 
+> [!NOTE]
+> **📖 DOKUMENTASI SISTEM BACKEND**:  
+> Untuk rincian mendalam mengenai arsitektur backend, model machine learning (GBR & Chronos), metrik akurasi GBR (R² 81.51%, MAPE 1.59%), formula rekayasa fitur cuaca/event, dan deployment Docker, silakan merujuk ke **[BACKEND_DOC.md](file:///c:/khusus project IT/Fine tuning ulang AI jakarta/waste-prediction-api/BACKEND_DOC.md)**.
+
+---
+
 ## 🌟 Fitur Unggulan (Key Features)
 
 1. **AI Autopilot Forecaster**: AI berjalan secara asinkron dan mandiri untuk memprediksi volume timbulan sampah harian di seluruh **44 Kecamatan DKI Jakarta** secara paralel berdasarkan cuaca live tingkat koordinat dan kalender event aktif hari ini.
