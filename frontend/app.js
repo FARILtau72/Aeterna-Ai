@@ -736,7 +736,7 @@ async function loadAutopilotFeed() {
                     <span class="alert-date" style="font-weight:bold; color:var(--cyan);">#0${index+1}</span>
                     <span class="alert-location">${item.location}</span>
                     <span class="alert-badge ${item.status.toLowerCase()}">${item.status}</span>
-                    <span class="alert-desc" style="font-size:0.8rem;">Predicted generation: <strong>${item.volume_ton.toFixed(1)} Tons</strong> (${item.trucks} Trucks)</span>
+                    <span class="alert-desc" style="font-size:0.8rem;">Coords: <strong>[${item.latitude.toFixed(4)}, ${item.longitude.toFixed(4)}]</strong> | Predicted: <strong>${item.volume_ton.toFixed(1)} Tons</strong> (${item.trucks} Trucks)</span>
                 `;
                 card.addEventListener("click", () => {
                     selectedLocation = item.location;

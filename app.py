@@ -624,7 +624,9 @@ async def get_autopilot_data():
             "volume_ton": calibrated_volume,
             "trucks": trucks,
             "status": status,
-            "city": config["city"]
+            "city": config["city"],
+            "latitude": config["latitude"],
+            "longitude": config["longitude"]
         })
         
     # Sort by volume to get Top 5
