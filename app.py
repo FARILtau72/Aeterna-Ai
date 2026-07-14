@@ -358,7 +358,7 @@ async def get_latest_news():
         }
         today_str = str(get_jakarta_now().date())
         payload = {
-            "model": "gpt-4o-mini",
+            "model": "gpt-5-mini",
             "messages": [
                 {
                     "role": "system", 
