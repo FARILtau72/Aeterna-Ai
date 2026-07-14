@@ -1,3 +1,6 @@
+import os
+os.environ["HF_HUB_DISABLE_XET"] = "1"
+
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.concurrency import run_in_threadpool
