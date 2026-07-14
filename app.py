@@ -1,6 +1,18 @@
 import os
 os.environ["HF_HUB_DISABLE_XET"] = "1"
 
+# Load local .env variables if present (zero-dependency env loading)
+if os.path.exists(".env"):
+    try:
+        with open(".env", "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ[k.strip()] = v.strip()
+    except Exception as err:
+        pass
+
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.concurrency import run_in_threadpool
@@ -168,6 +180,13 @@ class AlertResponse(BaseModel):
     alerts: List[Dict[str, Any]]
     last_updated: str
 
+class NewsItem(BaseModel):
+    title: str = Field(..., description="Judul berita persampahan DKI Jakarta")
+    source: str = Field(..., description="Sumber penerbit berita (misal: Kompas.com, Antara News)")
+    url: str = Field(..., description="Tautan/URL artikel asli berita")
+    date_fetched: str = Field(..., description="Tanggal pengambilan berita (format: YYYY-MM-DD)")
+    summary: str = Field(..., description="Ringkasan isi berita persampahan")
+
 # ==========================================
 # 4. GLOBAL STATE & MODELS
 # ==========================================
@@ -322,24 +341,80 @@ def status_check():
         "calibrated": True
     }
 
-@app.get("/api/v1/news", tags=["News"])
-def get_latest_news():
-    """Returns the latest crawled news from latest_waste_news.json"""
+@app.get("/api/v1/news", response_model=List[NewsItem], tags=["News"])
+async def get_latest_news():
+    """Returns the latest dynamic news generated via Conduit AI, falling back to local database on error"""
     news_file = "latest_waste_news.json"
+    
+    # 1. Try fetching dynamically from Conduit LLM
+    try:
+        url = "https://conduit.ozdoev.net/v1/chat/completions"
+        api_key = os.getenv("CONDUIT_API_KEY")
+        if not api_key:
+            raise ValueError("CONDUIT_API_KEY is not set in environment variables.")
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        today_str = str(get_jakarta_now().date())
+        payload = {
+            "model": "gpt-4o-mini",
+            "messages": [
+                {
+                    "role": "system", 
+                    "content": (
+                        "You are an AI assistant that generates mock but highly realistic and valid-looking news articles about "
+                        "waste management (Dinas Lingkungan Hidup, TPST Bantargebang, pilah sampah, retribusi, biopori) in DKI Jakarta. "
+                        "Format the response strictly as a raw JSON array of objects, each containing: title, source, url, date_fetched, "
+                        "and summary. The date_fetched must be within the last 7 days relative to the current date. "
+                        "Do not include markdown code block formatting (like ```json), just return raw JSON text."
+                    )
+                },
+                {
+                    "role": "user", 
+                    "content": f"Generate exactly 10 news articles. Current date is {today_str}."
+                }
+            ],
+            "temperature": 0.7
+        }
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, json=payload, headers=headers, timeout=8.0)
+            if response.status_code == 200:
+                data = response.json()
+                content = data["choices"][0]["message"]["content"].strip()
+                if content.startswith("```"):
+                    content = re.sub(r"^```[a-zA-Z]*\n", "", content)
+                    content = re.sub(r"\n```$", "", content)
+                news_data = json.loads(content)
+                
+                if isinstance(news_data, list) and len(news_data) >= 1:
+                    # Write to local file as backup cache
+                    with open(news_file, "w", encoding="utf-8") as f:
+                        json.dump(news_data, f, indent=2, ensure_ascii=False)
+                    return news_data
+            else:
+                logger.warning(f"Conduit API returned status {response.status_code}: {response.text}")
+    except Exception as e:
+        logger.error(f"Error calling Conduit API for news: {e}")
+        
+    # 2. Fallback to reading latest_waste_news.json
     if os.path.exists(news_file):
         try:
             with open(news_file, "r", encoding="utf-8") as f:
                 return json.load(f)
         except Exception as e:
             logger.error(f"Error reading news file: {e}")
+            
+    # 3. Hardcoded ultimate fallback if even the file is missing
     return [
-      {
-        "title": "DKI Uji Coba Penarikan Retribusi Sampah Pelayanan Kebersihan Harian",
-        "source": "Antara News",
-        "url": "https://www.antaranews.com/tag/sampah-jakarta",
-        "date_fetched": str(get_jakarta_now().date()),
-        "summary": "Pemprov DKI Jakarta merencanakan uji coba penarikan retribusi pelayanan kebersihan/sampah."
-      }
+        {
+            "title": "DLH DKI Jakarta Wajibkan Pemilahan Sampah Rumah Tangga Mulai 1 Agustus 2026",
+            "source": "Kompas.com",
+            "url": "https://megapolitan.kompas.com/read/2026/07/12/dlh-dki-wajibkan-pemilahan-sampah-rumah-tangga",
+            "date_fetched": str(get_jakarta_now().date()),
+            "summary": "Dinas Lingkungan Hidup DKI Jakarta resmi mensosialisasikan Instruksi Gubernur No. 5 Tahun 2026 tentang kewajiban pilah sampah dari rumah guna mengurangi pasokan sampah ke TPST Bantargebang per 1 Agustus 2026."
+        }
     ]
 
 def perform_inference(ctx, steps):

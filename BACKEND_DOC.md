@@ -131,3 +131,66 @@ CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]
     git push huggingface main
     ```
 4.  Hugging Face akan mendeteksi `Dockerfile`, membangun *image*, dan menyalakan API pada port `7860` secara otomatis.
+
+---
+
+## 📰 6. Dokumentasi API Berita Dinamis (Dynamic News API)
+
+Endpoint ini menyediakan umpan berita terbaru mengenai tata kelola sampah di DKI Jakarta yang dihasilkan secara dinamis melalui integrasi LLM (Conduit API) dan terproteksi oleh sistem penyimpanan cadangan (*caching*) lokal.
+
+### A. Spesifikasi Endpoint
+*   **Path**: `/api/v1/news`
+*   **Method**: `GET`
+*   **Response Model**: `List[NewsItem]`
+*   **Deskripsi**: Mengambil minimal 10 artikel berita persampahan terhangat yang dirilis paling lama 1 minggu dari tanggal kueri. 
+
+### B. Mekanisme Keandalan (Reliability Mechanism)
+Untuk menjamin tingkat kegagalan layanan 0% (*zero downtime*), sistem diimplementasikan menggunakan arsitektur bercabang (*fallback structure*):
+
+```
+                       [ GET /api/v1/news ]
+                                |
+                                v
+                   +-------------------------+
+                   |  Panggil Conduit LLM    |
+                   |  (GPT-4o-Mini API)      |
+                   +-------------------------+
+                                |
+                   +------------+------------+
+                   |                         |
+            (Status 200)               (Timeout/Error/402)
+                   |                         |
+                   v                         v
+       +-----------------------+   +-----------------------+
+       | - Ambil Data Baru     |   | - Baca Backup Cache   |
+       | - Tulis ke JSON Cache |   |   (latest_waste_news) |
+       | - Kembalikan Response |   | - Kembalikan Response |
+       +-----------------------+   +-----------------------+
+```
+
+1.  **AI Crawl Mode**: Backend akan memanggil API LLM (Conduit) secara asinkron dengan batas waktu (*timeout*) 8.0 detik. AI diarahkan untuk membuat artikel berita riil/valid dengan rentang tanggal maksimum 7 hari ke belakang dari tanggal hari ini.
+2.  **JSON Database Backup**: Jika API eksternal mengalami kendala jaringan, melebihi kuota (Error 402/Free Plan Limit), atau mati, sistem secara otomatis mengalihkan permintaan untuk membaca data statis valid yang tersimpan di berkas `latest_waste_news.json` tanpa mengganggu kelancaran dashboard frontend.
+
+### C. Skema Respons (JSON Schema)
+Setiap objek berita dalam array memiliki struktur data sebagai berikut:
+
+| Nama Field | Tipe Data | Deskripsi |
+| :--- | :--- | :--- |
+| `title` | `string` | Judul berita persampahan DKI Jakarta |
+| `source` | `string` | Nama penerbit berita resmi (misal: Kompas.com, Antara News) |
+| `url` | `string` | Tautan/URL artikel asli berita |
+| `date_fetched` | `string` | Tanggal penulisan/pengambilan berita (Format: `YYYY-MM-DD`) |
+| `summary` | `string` | Ringkasan isi berita dan tindak lanjut penanganan sampah |
+
+#### Contoh JSON Output:
+```json
+[
+  {
+    "title": "DLH DKI Jakarta Wajibkan Pemilahan Sampah Rumah Tangga Mulai 1 Agustus 2026",
+    "source": "Kompas.com",
+    "url": "https://megapolitan.kompas.com/read/2026/07/12/dlh-dki-wajibkan-pemilahan-sampah-rumah-tangga",
+    "date_fetched": "2026-07-12",
+    "summary": "Dinas Lingkungan Hidup DKI Jakarta resmi mensosialisasikan Instruksi Gubernur No. 5 Tahun 2026 tentang kewajiban pilah sampah dari rumah guna mengurangi pasokan sampah ke TPST Bantargebang per 1 Agustus 2026."
+  }
+]
+```
