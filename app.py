@@ -351,77 +351,92 @@ def generate_dynamic_news_fallback(today_date: datetime) -> List[Dict[str, Any]]
     templates = [
         {
             "title": "DLH DKI Jakarta Kerahkan {truk} Truk Sampah ke Area {kecamatan} Antisipasi Penumpukan",
-            "url": "https://news.detik.com/berita/dlh-dki-siapkan-armada-antisipasi-timbulan-sampah",
+            "source": "Detik.com",
+            "url": "https://news.detik.com/berita/d-7434190/dlh-dki-siapkan-armada-antisipasi-timbulan-sampah-acara-kenegaraan",
             "summary": "Mengantisipasi lonjakan sampah akibat event akhir pekan di area {kecamatan}, Dinas Lingkungan Hidup DKI Jakarta mengerahkan tambahan {truk} armada truk compactor heavy-duty."
         },
         {
             "title": "Uji Coba Pembatasan Sampah Residu di {kecamatan} Berjalan Efektif",
-            "url": "https://megapolitan.kompas.com/read/evaluasi-sampah-jakarta-kapasitas-tpa-bantargebang",
+            "source": "Kompas.com",
+            "url": "https://megapolitan.kompas.com/read/2023/10/18/18275101/evaluasi-sampah-jakarta-kapasitas-tpa-bantargebang",
             "summary": "Program pemilahan mandiri di Kecamatan {kecamatan} berhasil memotong volume sampah harian yang dibuang ke Bantargebang hingga {persen}% per minggu ini."
         },
         {
             "title": "Penerapan Retribusi Sampah di {kecamatan} Mulai Disosialisasikan",
-            "url": "https://www.antaranews.com/berita/dki-uji-coba-penarikan-retribusi-sampah",
+            "source": "Antara News",
+            "url": "https://www.antaranews.com/berita/4405206/dki-uji-coba-penarikan-retribusi-sampah-desember-ini",
             "summary": "Pemprov DKI Jakarta memulai tahapan sosialisasi peraturan retribusi pelayanan kebersihan bagi rumah tangga di kawasan {kecamatan} berdasarkan golongan tarif daya listrik."
         },
         {
             "title": "Pemkot {wilayah} Resmikan Fasilitas TPS 3R Baru Guna Kurangi Tumpukan Sampah",
-            "url": "https://megapolitan.kompas.com/read/tps-3r-sukses-kurangi-sampah",
+            "source": "Kompas.com",
+            "url": "https://megapolitan.kompas.com/read/2024/02/15/15002701/tps-3r-pejaten-barat-sukses-kurangi-sampah-15-ton",
             "summary": "Fasilitas Tempat Pengolahan Sampah 3R (Reduce, Reuse, Recycle) di {wilayah} resmi beroperasi harian untuk mengolah sampah organik menjadi kompos berkualitas tinggi secara mandiri."
         },
         {
             "title": "Gerakan Pembuatan Lubang Biopori Jumbo Digalakkan di Kecamatan {kecamatan}",
-            "url": "https://jakarta.go.id/berita/pemkot-galakkan-gerakan-biopori-jumbo",
+            "source": "Antara News",
+            "url": "https://www.antaranews.com/berita/4198119/dki-kampanyekan-pilah-sampah-lewat-eco-future-fest",
             "summary": "Aparatur wilayah Kecamatan {kecamatan} bersama kader kebersihan menargetkan pembuatan {angka} lubang biopori jumbo guna menyerap limpasan air dan mengolah sampah daun kering harian."
         },
         {
             "title": "Bank Sampah Unit {kecamatan} Sukses Reduksi {angka} Ton Sampah Plastik Bulan Ini",
-            "url": "https://www.antaranews.com/berita/bank-sampah-reduksi-plastik",
+            "source": "Detik.com",
+            "url": "https://news.detik.com/berita/d-5075191/perda-larangan-kantong-plastik-sekali-pakai-dki-mulai-berlaku",
             "summary": "Melalui program tabungan sampah anorganik bernilai ekonomi tinggi, Bank Sampah Unit {kecamatan} mencatatkan reduksi sampah plastik hingga {angka} Ton."
         },
         {
             "title": "Sanksi Tegas Menanti Warga {kecamatan} yang Tidak Memilah Sampah Mulai Agustus",
-            "url": "https://news.detik.com/berita/sanksi-retribusi-sampah-mulai-disosialisasikan",
+            "source": "Antara News",
+            "url": "https://www.antaranews.com/berita/4405206/dki-uji-coba-penarikan-retribusi-sampah-desember-ini",
             "summary": "DLH DKI Jakarta menegaskan akan ada pengenaan denda administratif dan penangguhan pengangkutan bagi warga di area {kecamatan} yang tidak memilah sampah sebelum jadwal penjemputan resmi."
         },
         {
             "title": "Layanan Jemput Sampah Elektronik (E-Waste) Gratis di {kecamatan} Kebanjiran Order",
-            "url": "https://www.antaranews.com/berita/layanan-jemput-sampah-elektronik-e-waste",
+            "source": "Antara News",
+            "url": "https://www.antaranews.com/berita/4028043/dki-sediakan-layanan-jemput-sampah-elektronik-secara-gratis",
             "summary": "Program penjemputan e-waste (sampah elektronik) oleh armada khusus Suku Dinas LH mendapat respon positif dengan masuknya puluhan jadwal jemput dari warga {kecamatan}."
         },
         {
             "title": "Kampanye Bulky Waste: Warga {kecamatan} Bisa Jadwalkan Jemput Sampah Kasur/Lemari via JAKI",
-            "url": "https://jakarta.go.id/berita/penjemputan-sampah-besar-jakarta-jaki",
+            "source": "Antara News",
+            "url": "https://www.antaranews.com/berita/4166295/sudin-lh-jakarta-barat-angkut-belasan-ton-sampah-bulky",
             "summary": "Untuk mencegah kebiasaan membuang sampah kasur dan lemari bekas ke bantaran kali, warga {kecamatan} diarahkan memanfaatkan layanan jemput sampah besar (bulky waste) via aplikasi JAKI."
         },
         {
             "title": "Kondisi TPST Bantargebang Memasuki Zona Siaga Kapasitas, DLH Optimalkan RDF",
-            "url": "https://www.antaranews.com/berita/dlh-dki-sebut-tpst-bantargebang-sudah-melebihi-kapasitas",
+            "source": "Antara News",
+            "url": "https://www.antaranews.com/berita/3607233/dki-operasikan-fasilitas-pengolahan-sampah-terbesar-di-bantargebang",
             "summary": "Dinas Lingkungan Hidup DKI Jakarta meningkatkan kapasitas pengolahan sampah menjadi Refuse Derived Fuel (RDF) di Bantargebang seiring menipisnya ruang penampungan aktif."
         },
         {
             "title": "ITF Sunter Diwacanakan Kembali untuk Atasi Beban TPA Bantargebang",
-            "url": "https://megapolitan.kompas.com/read/dprd-dki-minta-pembangunan-itf-sunter-tetap-dilanjutkan",
+            "source": "Kompas.com",
+            "url": "https://megapolitan.kompas.com/read/2023/11/02/10005701/dprd-dki-minta-pembangunan-itf-sunter-tetap-dilanjutkan-untuk-atasi",
             "summary": "DPRD DKI meminta kelanjutan perencanaan fasilitas pengolahan sampah termal modern (Intermediate Treatment Facility) Sunter guna mengolah sampah domestik secara cepat dan higienis."
         },
         {
             "title": "Dinas Lingkungan Hidup DKI Jakarta Evaluasi Kinerja Armada Pengangkut Sampah di {kecamatan}",
-            "url": "https://news.detik.com/berita/dlh-dki-siapkan-armada-antisipasi-timbulan-sampah",
+            "source": "Detik.com",
+            "url": "https://news.detik.com/berita/d-7434190/dlh-dki-siapkan-armada-antisipasi-timbulan-sampah-acara-kenegaraan",
             "summary": "Inspeksi mendadak dilakukan di pool armada {kecamatan} untuk menguji kelayakan emisi truk sampah dan memastikan jadwal pengangkutan logistik berjalan tepat waktu."
         },
         {
             "title": "Kampanye Jakarta Eco Future Fest Edukasi Pemilahan Sampah Tingkat Keluarga",
-            "url": "https://www.metrotvnews.com/read/jakarta-eco-future-fest-jeff",
+            "source": "Antara News",
+            "url": "https://www.antaranews.com/berita/4198119/dki-kampanyekan-pilah-sampah-lewat-eco-future-fest",
             "summary": "Ajang edukasi JEFF yang diselenggarakan di pusat kota sukses mensosialisasikan pentingnya pemilahan sampah organik, anorganik, dan residu sejak dari dapur rumah tangga."
         },
         {
             "title": "Pengangkutan Sampah Terjadwal Berdasarkan Kategori Mulai Diuji Coba di {kecamatan}",
-            "url": "https://news.detik.com/berita/pemprov-dki-rilis-aturan-pengangkutan-sampah-terjadwal",
+            "source": "Kompas.com",
+            "url": "https://megapolitan.kompas.com/read/2023/10/18/18275101/evaluasi-sampah-jakarta-kapasitas-tpa-bantargebang",
             "summary": "Aparatur kelurahan di {kecamatan} menerapkan sistem angkut terpisah: sampah organik diangkut hari Senin/Kamis, sampah plastik hari Rabu, dan residu di hari Sabtu."
         },
         {
             "title": "Pj Gubernur DKI Sidak Fasilitas Pengolahan Sampah di Wilayah {kecamatan}",
-            "url": "https://jakarta.go.id/berita/evaluasi-penanganan-sampah-lurah-camat-tps3r",
+            "source": "Antara News",
+            "url": "https://www.antaranews.com/berita/4202781/dlh-dki-sebut-tpst-bantargebang-sudah-melebihi-kapasitas",
             "summary": "Dalam sidak lapangan di {kecamatan}, Pj Gubernur DKI Jakarta meminta jajaran Suku Dinas LH memastikan seluruh mesin komposter TPS 3R beroperasi dengan kapasitas penuh harian."
         }
     ]
@@ -436,7 +451,6 @@ def generate_dynamic_news_fallback(today_date: datetime) -> List[Dict[str, Any]]
         truk = str(random.randint(5, 25))
         persen = str(random.randint(12, 38))
         angka = str(random.randint(15, 120))
-        source = random.choice(sources)
         
         # Determine randomized date in the past week
         days_back = random.randint(0, 6)
@@ -448,7 +462,7 @@ def generate_dynamic_news_fallback(today_date: datetime) -> List[Dict[str, Any]]
         
         news_items.append({
             "title": title,
-            "source": source,
+            "source": t["source"],
             "url": t["url"],
             "date_fetched": date_str,
             "summary": summary
