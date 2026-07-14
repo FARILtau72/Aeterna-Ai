@@ -343,6 +343,10 @@ def get_latest_news():
     ]
 
 def perform_inference(ctx, steps):
+    # Lock the seed to make Chronos T5 predictions 100% deterministic on consecutive clicks
+    torch.manual_seed(42)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(42)
     forecast = pipeline.predict(ctx.unsqueeze(0), steps)
     return np.quantile(forecast[0].numpy(), 0.5, axis=0)
 
