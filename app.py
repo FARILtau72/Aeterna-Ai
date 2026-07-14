@@ -465,13 +465,12 @@ async def predict_waste_volume(req: PredictionRequest):
                     paper_waste_ton=round(calibrated_volume*paper_r, 2), metal_waste_ton=round(calibrated_volume*metal_r, 2),
                     glass_waste_ton=round(calibrated_volume*glass_r, 2), textile_waste_ton=round(calibrated_volume*textile_r, 2),
                     other_waste_ton=round(calibrated_volume*other_r, 2),
-                    recommended_trucks=max(1, int(np.ceil(calibrated_volume/5))),
+                    recommended_trucks=max(1, int(np.ceil(calibrated_volume/15))),
                     risk_status=risk, event_info=info, hourly_breakdown=hourly
                 ))
         
         trucks = sum([r.recommended_trucks for r in results])
         msg = f"CRITICAL at {req.location}!" if max_risk == "CRITICAL" else f"WARNING at {req.location}." if max_risk == "WARNING" else "Normal conditions."
-        conf = 0.9828 if req.model_type == "gradient_boosting" else 0.92
         
         # Return accuracy score dynamically (Chronos is default 0.92, GBR shows training test score ~0.93)
         conf = 0.9325 if req.model_type == "gradient_boosting" else 0.92
@@ -483,7 +482,7 @@ async def predict_waste_volume(req: PredictionRequest):
                 logistics_plan=LogisticsPlan(
                     trucks_needed=trucks,
                     manpower=trucks*3,
-                    estimated_duration_hours=round(total_vol/5, 1),
+                    estimated_duration_hours=round(total_vol/15, 1),
                     efficiency_rate="85% (Optimal)"
                 )
             )
@@ -506,7 +505,7 @@ async def predict_waste_volume_csv(req: PredictionRequest):
         "Organic Waste (Tons)", "Plastic Waste (Tons)", 
         "Paper Waste (Tons)", "Metal Waste (Tons)",
         "Glass Waste (Tons)", "Textile Waste (Tons)",
-        "Risk Status", "Event Info", "Recommended Trucks (5T)"
+        "Risk Status", "Event Info", "Recommended Trucks (15T)"
     ])
     
     for r in res.data.prediction_results:
@@ -606,7 +605,7 @@ async def get_autopilot_data():
             raw_pred = dataset_mean # Fallback
             
         calibrated_volume = round(float(raw_pred * calibration_factor), 2)
-        trucks = max(1, int(np.ceil(calibrated_volume / 5)))
+        trucks = max(1, int(np.ceil(calibrated_volume / 15)))
         
         status = "CRITICAL" if calibrated_volume > config["critical_threshold"] else "WARNING" if calibrated_volume > config["warning_threshold"] else "SAFE"
         

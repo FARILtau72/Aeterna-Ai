@@ -468,7 +468,7 @@ function updateDashboardData(data, confScore, message) {
     updateMarkerRisk(selectedLocation, maxRisk);
     drawTransitRoute(selectedLocation);
 
-    if (statTrucks) statTrucks.innerHTML = `${data.logistics_plan.trucks_needed} <span class="unit">Trucks (5T)</span>`;
+    if (statTrucks) statTrucks.innerHTML = `${data.logistics_plan.trucks_needed} <span class="unit">Trucks (15T)</span>`;
 
     const startDateStr = results[0].date;
     const endDateStr = results[results.length - 1].date;
@@ -724,7 +724,7 @@ async function loadAutopilotFeed() {
             await new Promise(r => setTimeout(r, 500));
             
             autoVol.innerHTML = `${data.total_volume_ton.toLocaleString('en-US')} <span class="unit">Tons</span>`;
-            autoTrucks.innerHTML = `${data.total_trucks.toLocaleString('en-US')} <span class="unit">Trucks (5T)</span>`;
+            autoTrucks.innerHTML = `${data.total_trucks.toLocaleString('en-US')} <span class="unit">Trucks (15T)</span>`;
             
             autoRiskList.innerHTML = "";
             data.top_kecamatan.forEach((item, index) => {
