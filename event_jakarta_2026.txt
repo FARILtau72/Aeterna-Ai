@@ -10,26 +10,20 @@ tanggal,nama_event,lokasi,skala_keramaian
 2026-06-14,PRJ Weekend,JIExpo,4
 2026-06-21,PRJ Peak Weekend,JIExpo,5
 2026-06-28,PRJ Mid-Event Weekend,JIExpo,4
-2026-07-01,DWP 2026 Jakarta,Jakarta,5
-2026-07-02,INAGRITECH 2026,Jakarta,4
-2026-07-02,"INAMARINE,…",Jakarta,4
-2026-07-02,"INAMARINE, INAWELDING & RAILWAYTECH INDONESIA 2026",Jakarta,4
-2026-07-08,BritCham Indonesia's Golf Tournament,Jakarta,2
-2026-07-08,BritCham Indonesia…,Jakarta,3
+2026-07-01,DWP 2026 Jakarta,Kemayoran,5
+2026-07-02,INAGRITECH 2026,Kemayoran,4
+2026-07-02,"INAMARINE, INAWELDING & RAILWAYTECH INDONESIA 2026",Kemayoran,4
+2026-07-08,BritCham Indonesia's Golf Tournament,Kebayoran Lama,2
 2026-07-08,Canada Cup 2026,Kebayoran Lama,2
-2026-07-11,Uji Coba Sistem AI (Demo Event),Jakarta,4
+2026-07-11,Uji Coba Sistem AI (Demo Event),Gambir,4
 2026-07-12,Konser Musik Spektakuler,Menteng,3
-2026-07-13,𝐑𝐎𝐒𝐄𝐓𝐎𝐏𝐈𝐀 𝐀𝐒𝐈𝐀 𝐓𝐎𝐔𝐑…,Jakarta,3
-2026-07-13,Anime Festival Asia…,Jakarta,5
-2026-07-13,Japan Edu Expo 2026,Jakarta,4
-2026-07-13,Anime Festival Asia Indonesia 2026,Jakarta,5
-2026-07-13,𝐑𝐎𝐒𝐄𝐓𝐎𝐏𝐈𝐀 𝐀𝐒𝐈𝐀 𝐓𝐎𝐔𝐑 𝟐𝟎𝟐𝟔,Jakarta,3
-2026-07-14,Bangor Run Jakarta 2026,Jakarta,3
-2026-07-14,Bangor Run Jakarta…,Jakarta,3
-2026-07-14,Run For Animals 2026,Jakarta,3
-2026-07-14,Solar Run 2026,Jakarta,3
-2026-07-14,Tangy’s Story…,Jakarta,3
-2026-07-14,Tangy’s Story Adventures | WCIJ Trial Class Experience,Jakarta,2
+2026-07-13,Japan Edu Expo 2026,Setiabudi,4
+2026-07-13,Anime Festival Asia Indonesia 2026,Tanah Abang,5
+2026-07-13,𝐑𝐎𝐒𝐄𝐓𝐎𝐏𝐈𝐀 𝐀𝐒𝐈𝐀 𝐓𝐎𝐔𝐑 𝟐𝟎𝟐𝟔,Tanah Abang,5
+2026-07-14,Bangor Run Jakarta 2026,Tanah Abang,3
+2026-07-14,Run For Animals 2026,Cipayung,3
+2026-07-14,Solar Run 2026,Gambir,3
+2026-07-14,Tangy’s Story Adventures | WCIJ Trial Class Experience,Kebayoran Lama,2
 2026-07-20,PRJ Final Weekend,JIExpo,5
 2026-08-17,HUT RI ke-81,Monas,4
 2026-09-15,Food & Culture Expo,Ancol,2
