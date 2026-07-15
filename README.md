@@ -21,7 +21,7 @@ Platform ini mengubah paradigma pengelolaan sampah dari **reaktif** (menangani s
 
 > [!NOTE]
 > **📖 DOKUMENTASI SISTEM BACKEND MENDALAM**:  
-> Untuk rincian mendalam mengenai formula rekayasa fitur cuaca/event, detail hyperparameter GridSearchCV, dan arsitektur asinkron FastAPI, silakan merujuk ke **[BACKEND_DOC.md](file:///c:/khusus project IT/Fine tuning ulang AI jakarta/waste-prediction-api/BACKEND_DOC.md)**.
+> Untuk rincian mendalam mengenai arsitektur backend, model machine learning (GBR & Chronos), metrik akurasi GBR (R² 81.51%, MAPE 1.59%), formula rekayasa fitur cuaca/event, dan deployment Docker, silakan merujuk ke **[BACKEND_DOC.md](BACKEND_DOC.md)**.
 
 ---
 
