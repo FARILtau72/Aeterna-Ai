@@ -299,7 +299,7 @@ header {
 
 /* Custom Marker Styling for Leaflet */
 .leaflet-custom-marker {
-    position: relative;
+    position: absolute;
     cursor: pointer;
 }
 
