@@ -10,6 +10,6 @@ numpy
 torch
 transformers
 chronos-forecasting
-scikit-learn
+scikit-learn==1.8.0
 joblib
 httpx
