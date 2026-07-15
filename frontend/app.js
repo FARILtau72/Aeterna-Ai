@@ -729,9 +729,7 @@ async function loadAutopilotFeed() {
             autoRiskList.innerHTML = "";
             data.top_kecamatan.forEach((item, index) => {
                 const card = document.createElement("div");
-                card.className = "alert-row";
-                card.style.gridTemplateColumns = "60px 180px 100px 1fr";
-                card.style.padding = "0.6rem 1.2rem";
+                card.className = "alert-row autopilot-row";
                 card.innerHTML = `
                     <span class="alert-date" style="font-weight:bold; color:var(--cyan);">#0${index+1}</span>
                     <span class="alert-location">${item.location}</span>

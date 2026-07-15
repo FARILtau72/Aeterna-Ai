@@ -1120,10 +1120,8 @@ footer {
     cursor: pointer;
 }
 
-@media (max-width: 768px) {
-    .alert-row {
-        grid-template-columns: 1fr 1fr;
-    }
+.autopilot-row {
+    grid-template-columns: 60px 180px 100px 1fr !important;
 }
 
 .alert-row:hover {
@@ -1388,9 +1386,21 @@ body::after {
    ========================================== */
 @media (max-width: 1200px) {
     .dashboard-grid {
-        grid-template-columns: 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
         height: auto !important;
         overflow: visible !important;
+        gap: 1.5rem !important;
+    }
+    /* Smart re-ordering for mobile: Show Map & Stats first, then Config Panel, then Charts */
+    .map-and-stats {
+        order: -1 !important;
+    }
+    .control-panel {
+        order: 0 !important;
+    }
+    .analysis-panel {
+        order: 1 !important;
     }
     .page-container {
         height: auto !important;
@@ -1424,24 +1434,32 @@ body::after {
         justify-content: center;
         flex-wrap: wrap;
     }
+    /* Sleek Equal-width Segmented Tab-bar on Mobile */
     .nav-links {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.6rem !important;
-        width: 100%;
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.5rem !important;
+        width: 100% !important;
+        background: rgba(0, 0, 0, 0.4);
+        padding: 4px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
     }
     .nav-btn {
-        padding: 6px 12px !important;
-        font-size: 0.75rem !important;
-        flex-grow: 1;
-        text-align: center;
+        width: 100% !important;
+        padding: 8px 4px !important;
+        font-size: 0.72rem !important;
+        text-align: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
     }
     .system-status {
         justify-content: center;
         width: 100%;
+        margin-top: 0.2rem;
     }
     .page-container {
-        padding: 1rem 1.5rem !important;
+        padding: 1rem 1.2rem !important;
     }
     .stats-row {
         grid-template-columns: 1fr !important;
@@ -1457,10 +1475,36 @@ body::after {
         font-size: 0.95rem !important;
     }
     .map-panel {
-        height: 320px !important;
+        height: 350px !important;
     }
     .logistics-grid {
         grid-template-columns: 1fr !important;
+    }
+    /* Stack progress bars in 1 column to prevent text clipping */
+    .progress-container {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    /* Flex stack alerts to fit narrow viewports beautifully */
+    .alert-row, .autopilot-row {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
+        padding: 1rem 1.2rem !important;
+    }
+    .alert-row > *, .autopilot-row > * {
+        width: auto !important;
+        margin: 0 !important;
+        text-align: left !important;
+    }
+    .alert-desc, .alert-location {
+        font-size: 0.8rem !important;
+        word-break: break-word !important;
+        line-height: 1.4 !important;
+    }
+    .alert-badge {
+        align-self: flex-start !important;
     }
 }
 
@@ -1469,8 +1513,8 @@ body::after {
         font-size: 1.5rem !important;
     }
     .nav-btn {
-        font-size: 0.7rem !important;
-        padding: 5px 10px !important;
+        font-size: 0.68rem !important;
+        padding: 6px 2px !important;
     }
     .section-title {
         font-size: 1.2rem !important;
