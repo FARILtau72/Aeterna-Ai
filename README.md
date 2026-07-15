@@ -192,10 +192,7 @@ npm run dev
     const MapComponent = dynamic(() => import('../components/Map'), { ssr: false });
     ```
 
----
+## 👤 Developer & Pencipta Sistem
 
-## 👥 Kontributor Tim Pengembang (Aeterna Team)
-
-*   **FARIL PUTRA PRATAMA** (AI Engineer) — *SMK Taruna Bangsa*
-*   **ARGA KURNIAWAN** (Front End Developer)
-*   **BAGAS TRESNA MUSTIDA SAKLI** (System Architecture)
+*   **FARIL PUTRA PRATAMA** (Lead Full-Stack AI Engineer) — *SMK Taruna Bangsa*
+    *   *Portofolio Kontribusi*: Merancang dan melatih model GBR (MAPE 1.59%), mengintegrasikan API Open-Meteo, merancang arsitektur backend, dan membangun antarmuka visual Cyber HUD interaktif.
