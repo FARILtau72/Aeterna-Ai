@@ -335,6 +335,9 @@ def serve_dashboard():
 def status_check():
     return {
         "status": "Online",
+        "system_name": "Aeterna AI Waste Intelligence",
+        "developer": "Faril Putra Pratama (@FARILtau72)",
+        "github_repository": "https://github.com/FARILtau72/Aeterna-Ai",
         "model_chronos": "Chronos-T5 Tiny",
         "model_gbr": "Gradient Boosting Regressor (Upgraded)",
         "coverage": "44 Kecamatan DKI Jakarta",
