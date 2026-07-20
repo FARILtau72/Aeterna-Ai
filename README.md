@@ -8,20 +8,25 @@ app_file: app.py
 pinned: false
 ---
 
-# 🚛 Aeterna AI: Next-Gen Waste Intelligence Platform
-**Platform Sistem Peringatan Dini & Peramalan Sampah Real-Time DKI Jakarta (Case 2 - AI Open Innovation Challenge 2026)**
+# 🚛 Aeterna AI: Next-Gen Waste Intelligence Platform DKI Jakarta
+
+### 👨‍💻 Lead Developer: Faril Putra Pratama ([@FARILtau72](https://github.com/FARILtau72))
+**Official Repository**: [https://github.com/FARILtau72/Aeterna-Ai](https://github.com/FARILtau72/Aeterna-Ai)  
+**Live Application**: [https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api](https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api)  
+
+**Platform Sistem Peringatan Dini & Peramalan Sampah Real-Time 44 Kecamatan DKI Jakarta berbasis BPS Jumlah Jiwa, Open-Meteo, & AI Chronos T5.**
 
 ---
 
 ## 📖 Overview
 
-**Aeterna AI** (sebelumnya Eco-Twin AI) adalah platform analitik cerdas berbasis *Machine Learning* yang dirancang untuk memantau, memprediksi, dan mengoptimalkan manajemen logistik sampah DKI Jakarta secara spasial-temporal harian. 
+**Aeterna AI** adalah platform analitik kecerdasan buatan (*Waste Intelligence System*) yang dikembangkan oleh **Faril Putra Pratama (@FARILtau72)**. Platform ini dirancang untuk memantau, memprediksi, dan mengoptimalkan manajemen logistik sampah DKI Jakarta secara spasial-temporal harian untuk seluruh **44 Kecamatan**.
 
-Platform ini mengubah paradigma pengelolaan sampah dari **reaktif** (menangani setelah terjadi penumpukan) menjadi **prediktif** (memprediksi surge sebelum terjadi) guna mengoptimalkan penyebaran truk pengangkut ke 44 kecamatan DKI Jakarta.
+Platform ini mengubah paradigma pengelolaan sampah dari **reaktif** (menangani setelah terjadi penumpukan) menjadi **prediktif** (memprediksi surge sebelum terjadi) guna mengoptimalkan penyebaran armada truk pengangkut ke 44 kecamatan DKI Jakarta.
 
 > [!NOTE]
 > **📖 DOKUMENTASI SISTEM BACKEND MENDALAM**:  
-> Untuk rincian mendalam mengenai arsitektur backend, model machine learning (GBR & Chronos), metrik akurasi GBR (R² 81.51%, MAPE 1.59%), formula rekayasa fitur cuaca/event, dan deployment Docker, silakan merujuk ke **[BACKEND_DOC.md](BACKEND_DOC.md)**.
+> Untuk rincian mendalam mengenai arsitektur backend, model machine learning (GBR & Chronos), metrik akurasi GBR (R² 98.28%, MAPE 1.72%), formula rekayasa fitur cuaca/event, dan deployment Docker, silakan merujuk ke **[BACKEND_DOC.md](BACKEND_DOC.md)**.
 
 ---
 
