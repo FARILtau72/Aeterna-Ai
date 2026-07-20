@@ -65,60 +65,60 @@ app.mount("/static", StaticFiles(directory="frontend"), name="static")
 # ==========================================
 KECAMATAN_DATABASE = {
     # 1. JAKARTA PUSAT (8 Kecamatan) - Total: 1150 Ton
-    "Menteng": {"latitude": -6.1950, "longitude": 106.8322, "normal_avg": 120.0, "warning_threshold": 160.0, "critical_threshold": 180.0, "city": "Jakarta Pusat"},
-    "Senen": {"latitude": -6.1822, "longitude": 106.8452, "normal_avg": 180.0, "warning_threshold": 220.0, "critical_threshold": 240.0, "city": "Jakarta Pusat"},
-    "Cempaka Putih": {"latitude": -6.1802, "longitude": 106.8686, "normal_avg": 90.0, "warning_threshold": 120.0, "critical_threshold": 140.0, "city": "Jakarta Pusat"},
-    "Johar Baru": {"latitude": -6.1866, "longitude": 106.8572, "normal_avg": 70.0, "warning_threshold": 95.0, "critical_threshold": 110.0, "city": "Jakarta Pusat"},
-    "Kemayoran": {"latitude": -6.1628, "longitude": 106.8438, "normal_avg": 180.0, "warning_threshold": 220.0, "critical_threshold": 240.0, "city": "Jakarta Pusat"},
-    "Sawah Besar": {"latitude": -6.1554, "longitude": 106.8322, "normal_avg": 110.0, "warning_threshold": 145.0, "critical_threshold": 165.0, "city": "Jakarta Pusat"},
-    "Tanah Abang": {"latitude": -6.2104, "longitude": 106.8122, "normal_avg": 250.0, "warning_threshold": 320.0, "critical_threshold": 350.0, "city": "Jakarta Pusat"},
-    "Gambir": {"latitude": -6.1764, "longitude": 106.8190, "normal_avg": 150.0, "warning_threshold": 195.0, "critical_threshold": 215.0, "city": "Jakarta Pusat"},
+    "Menteng": {"latitude": -6.1950, "longitude": 106.8322, "population_jiwa": 88000, "normal_avg": 120.0, "warning_threshold": 160.0, "critical_threshold": 180.0, "city": "Jakarta Pusat"},
+    "Senen": {"latitude": -6.1822, "longitude": 106.8452, "population_jiwa": 128000, "normal_avg": 180.0, "warning_threshold": 220.0, "critical_threshold": 240.0, "city": "Jakarta Pusat"},
+    "Cempaka Putih": {"latitude": -6.1802, "longitude": 106.8686, "population_jiwa": 96000, "normal_avg": 90.0, "warning_threshold": 120.0, "critical_threshold": 140.0, "city": "Jakarta Pusat"},
+    "Johar Baru": {"latitude": -6.1866, "longitude": 106.8572, "population_jiwa": 130000, "normal_avg": 70.0, "warning_threshold": 95.0, "critical_threshold": 110.0, "city": "Jakarta Pusat"},
+    "Kemayoran": {"latitude": -6.1628, "longitude": 106.8438, "population_jiwa": 255000, "normal_avg": 180.0, "warning_threshold": 220.0, "critical_threshold": 240.0, "city": "Jakarta Pusat"},
+    "Sawah Besar": {"latitude": -6.1554, "longitude": 106.8322, "population_jiwa": 126000, "normal_avg": 110.0, "warning_threshold": 145.0, "critical_threshold": 165.0, "city": "Jakarta Pusat"},
+    "Tanah Abang": {"latitude": -6.2104, "longitude": 106.8122, "population_jiwa": 175000, "normal_avg": 250.0, "warning_threshold": 320.0, "critical_threshold": 350.0, "city": "Jakarta Pusat"},
+    "Gambir": {"latitude": -6.1764, "longitude": 106.8190, "population_jiwa": 97000, "normal_avg": 150.0, "warning_threshold": 195.0, "critical_threshold": 215.0, "city": "Jakarta Pusat"},
 
     # 2. JAKARTA UTARA (6 Kecamatan) - Total: 1350 Ton
-    "Penjaringan": {"latitude": -6.1264, "longitude": 106.7822, "normal_avg": 280.0, "warning_threshold": 350.0, "critical_threshold": 380.0, "city": "Jakarta Utara"},
-    "Tanjung Priok": {"latitude": -6.1322, "longitude": 106.8722, "normal_avg": 260.0, "warning_threshold": 320.0, "critical_threshold": 350.0, "city": "Jakarta Utara"},
-    "Koja": {"latitude": -6.1214, "longitude": 106.9133, "normal_avg": 190.0, "warning_threshold": 240.0, "critical_threshold": 270.0, "city": "Jakarta Utara"},
-    "Cilincing": {"latitude": -6.1288, "longitude": 106.9452, "normal_avg": 290.0, "warning_threshold": 370.0, "critical_threshold": 400.0, "city": "Jakarta Utara"},
-    "Pademangan": {"latitude": -6.1328, "longitude": 106.8422, "normal_avg": 140.0, "warning_threshold": 180.0, "critical_threshold": 200.0, "city": "Jakarta Utara"},
-    "Kelapa Gading": {"latitude": -6.1552, "longitude": 106.9022, "normal_avg": 190.0, "warning_threshold": 240.0, "critical_threshold": 270.0, "city": "Jakarta Utara"},
+    "Penjaringan": {"latitude": -6.1264, "longitude": 106.7822, "population_jiwa": 312000, "normal_avg": 280.0, "warning_threshold": 350.0, "critical_threshold": 380.0, "city": "Jakarta Utara"},
+    "Tanjung Priok": {"latitude": -6.1322, "longitude": 106.8722, "population_jiwa": 415000, "normal_avg": 260.0, "warning_threshold": 320.0, "critical_threshold": 350.0, "city": "Jakarta Utara"},
+    "Koja": {"latitude": -6.1214, "longitude": 106.9133, "population_jiwa": 330000, "normal_avg": 190.0, "warning_threshold": 240.0, "critical_threshold": 270.0, "city": "Jakarta Utara"},
+    "Cilincing": {"latitude": -6.1288, "longitude": 106.9452, "population_jiwa": 430000, "normal_avg": 290.0, "warning_threshold": 370.0, "critical_threshold": 400.0, "city": "Jakarta Utara"},
+    "Pademangan": {"latitude": -6.1328, "longitude": 106.8422, "population_jiwa": 168000, "normal_avg": 140.0, "warning_threshold": 180.0, "critical_threshold": 200.0, "city": "Jakarta Utara"},
+    "Kelapa Gading": {"latitude": -6.1552, "longitude": 106.9022, "population_jiwa": 143000, "normal_avg": 190.0, "warning_threshold": 240.0, "critical_threshold": 270.0, "city": "Jakarta Utara"},
 
     # 3. JAKARTA BARAT (8 Kecamatan) - Total: 1550 Ton
-    "Cengkareng": {"latitude": -6.1528, "longitude": 106.7322, "normal_avg": 340.0, "warning_threshold": 420.0, "critical_threshold": 460.0, "city": "Jakarta Barat"},
-    "Grogol Petamburan": {"latitude": -6.1622, "longitude": 106.7882, "normal_avg": 220.0, "warning_threshold": 280.0, "critical_threshold": 310.0, "city": "Jakarta Barat"},
-    "Kalideres": {"latitude": -6.1428, "longitude": 106.7022, "normal_avg": 260.0, "warning_threshold": 330.0, "critical_threshold": 360.0, "city": "Jakarta Barat"},
-    "Kebon Jeruk": {"latitude": -6.1922, "longitude": 106.7722, "normal_avg": 210.0, "warning_threshold": 260.0, "critical_threshold": 290.0, "city": "Jakarta Barat"},
-    "Kembangan": {"latitude": -6.1828, "longitude": 106.7382, "normal_avg": 180.0, "warning_threshold": 230.0, "critical_threshold": 250.0, "city": "Jakarta Barat"},
-    "Palmerah": {"latitude": -6.2028, "longitude": 106.7882, "normal_avg": 160.0, "warning_threshold": 200.0, "critical_threshold": 220.0, "city": "Jakarta Barat"},
-    "Taman Sari": {"latitude": -6.1454, "longitude": 106.8182, "normal_avg": 100.0, "warning_threshold": 130.0, "critical_threshold": 150.0, "city": "Jakarta Barat"},
-    "Tambora": {"latitude": -6.1500, "longitude": 106.8000, "normal_avg": 80.0, "warning_threshold": 110.0, "critical_threshold": 125.0, "city": "Jakarta Barat"},
+    "Cengkareng": {"latitude": -6.1528, "longitude": 106.7322, "population_jiwa": 592000, "normal_avg": 340.0, "warning_threshold": 420.0, "critical_threshold": 460.0, "city": "Jakarta Barat"},
+    "Grogol Petamburan": {"latitude": -6.1622, "longitude": 106.7882, "population_jiwa": 240000, "normal_avg": 220.0, "warning_threshold": 280.0, "critical_threshold": 310.0, "city": "Jakarta Barat"},
+    "Kalideres": {"latitude": -6.1428, "longitude": 106.7022, "population_jiwa": 460000, "normal_avg": 260.0, "warning_threshold": 330.0, "critical_threshold": 360.0, "city": "Jakarta Barat"},
+    "Kebon Jeruk": {"latitude": -6.1922, "longitude": 106.7722, "population_jiwa": 380000, "normal_avg": 210.0, "warning_threshold": 260.0, "critical_threshold": 290.0, "city": "Jakarta Barat"},
+    "Kembangan": {"latitude": -6.1828, "longitude": 106.7382, "population_jiwa": 310000, "normal_avg": 180.0, "warning_threshold": 230.0, "critical_threshold": 250.0, "city": "Jakarta Barat"},
+    "Palmerah": {"latitude": -6.2028, "longitude": 106.7882, "population_jiwa": 205000, "normal_avg": 160.0, "warning_threshold": 200.0, "critical_threshold": 220.0, "city": "Jakarta Barat"},
+    "Taman Sari": {"latitude": -6.1454, "longitude": 106.8182, "population_jiwa": 125000, "normal_avg": 100.0, "warning_threshold": 130.0, "critical_threshold": 150.0, "city": "Jakarta Barat"},
+    "Tambora": {"latitude": -6.1500, "longitude": 106.8000, "population_jiwa": 270000, "normal_avg": 80.0, "warning_threshold": 110.0, "critical_threshold": 125.0, "city": "Jakarta Barat"},
 
     # 4. JAKARTA SELATAN (10 Kecamatan) - Total: 1850 Ton
-    "Cilandak": {"latitude": -6.2928, "longitude": 106.7922, "normal_avg": 180.0, "warning_threshold": 230.0, "critical_threshold": 250.0, "city": "Jakarta Selatan"},
-    "Jagakarsa": {"latitude": -6.3328, "longitude": 106.8222, "normal_avg": 220.0, "warning_threshold": 280.0, "critical_threshold": 310.0, "city": "Jakarta Selatan"},
-    "Kebayoran Baru": {"latitude": -6.2422, "longitude": 106.7982, "normal_avg": 210.0, "warning_threshold": 260.0, "critical_threshold": 290.0, "city": "Jakarta Selatan"},
-    "Kebayoran Lama": {"latitude": -6.2488, "longitude": 106.7722, "normal_avg": 230.0, "warning_threshold": 290.0, "critical_threshold": 320.0, "city": "Jakarta Selatan"},
-    "Mampang Prapatan": {"latitude": -6.2522, "longitude": 106.8182, "normal_avg": 120.0, "warning_threshold": 150.0, "critical_threshold": 170.0, "city": "Jakarta Selatan"},
-    "Pancoran": {"latitude": -6.2622, "longitude": 106.8382, "normal_avg": 130.0, "warning_threshold": 160.0, "critical_threshold": 180.0, "city": "Jakarta Selatan"},
-    "Pasar Minggu": {"latitude": -6.2828, "longitude": 106.8438, "normal_avg": 240.0, "warning_threshold": 300.0, "critical_threshold": 330.0, "city": "Jakarta Selatan"},
-    "Pesanggrahan": {"latitude": -6.2588, "longitude": 106.7588, "normal_avg": 160.0, "warning_threshold": 200.0, "critical_threshold": 220.0, "city": "Jakarta Selatan"},
-    "Setiabudi": {"latitude": -6.2228, "longitude": 106.8282, "normal_avg": 190.0, "warning_threshold": 240.0, "critical_threshold": 270.0, "city": "Jakarta Selatan"},
-    "Tebet": {"latitude": -6.2288, "longitude": 106.8482, "normal_avg": 170.0, "warning_threshold": 210.0, "critical_threshold": 230.0, "city": "Jakarta Selatan"},
+    "Cilandak": {"latitude": -6.2928, "longitude": 106.7922, "population_jiwa": 215000, "normal_avg": 180.0, "warning_threshold": 230.0, "critical_threshold": 250.0, "city": "Jakarta Selatan"},
+    "Jagakarsa": {"latitude": -6.3328, "longitude": 106.8222, "population_jiwa": 390000, "normal_avg": 220.0, "warning_threshold": 280.0, "critical_threshold": 310.0, "city": "Jakarta Selatan"},
+    "Kebayoran Baru": {"latitude": -6.2422, "longitude": 106.7982, "population_jiwa": 145000, "normal_avg": 210.0, "warning_threshold": 260.0, "critical_threshold": 290.0, "city": "Jakarta Selatan"},
+    "Kebayoran Lama": {"latitude": -6.2488, "longitude": 106.7722, "population_jiwa": 310000, "normal_avg": 230.0, "warning_threshold": 290.0, "critical_threshold": 320.0, "city": "Jakarta Selatan"},
+    "Mampang Prapatan": {"latitude": -6.2522, "longitude": 106.8182, "population_jiwa": 150000, "normal_avg": 120.0, "warning_threshold": 150.0, "critical_threshold": 170.0, "city": "Jakarta Selatan"},
+    "Pancoran": {"latitude": -6.2622, "longitude": 106.8382, "population_jiwa": 170000, "normal_avg": 130.0, "warning_threshold": 160.0, "critical_threshold": 180.0, "city": "Jakarta Selatan"},
+    "Pasar Minggu": {"latitude": -6.2828, "longitude": 106.8438, "population_jiwa": 315000, "normal_avg": 240.0, "warning_threshold": 300.0, "critical_threshold": 330.0, "city": "Jakarta Selatan"},
+    "Pesanggrahan": {"latitude": -6.2588, "longitude": 106.7588, "population_jiwa": 250000, "normal_avg": 160.0, "warning_threshold": 200.0, "critical_threshold": 220.0, "city": "Jakarta Selatan"},
+    "Setiabudi": {"latitude": -6.2228, "longitude": 106.8282, "population_jiwa": 110000, "normal_avg": 190.0, "warning_threshold": 240.0, "critical_threshold": 270.0, "city": "Jakarta Selatan"},
+    "Tebet": {"latitude": -6.2288, "longitude": 106.8482, "population_jiwa": 220000, "normal_avg": 170.0, "warning_threshold": 210.0, "critical_threshold": 230.0, "city": "Jakarta Selatan"},
 
     # 5. JAKARTA TIMUR (10 Kecamatan) - Total: 2100 Ton
-    "Cakung": {"latitude": -6.1828, "longitude": 106.9482, "normal_avg": 350.0, "warning_threshold": 430.0, "critical_threshold": 470.0, "city": "Jakarta Timur"},
-    "Cipayung": {"latitude": -6.3128, "longitude": 106.9022, "normal_avg": 140.0, "warning_threshold": 180.0, "critical_threshold": 200.0, "city": "Jakarta Timur"},
-    "Ciracas": {"latitude": -6.3228, "longitude": 106.8782, "normal_avg": 190.0, "warning_threshold": 240.0, "critical_threshold": 270.0, "city": "Jakarta Timur"},
-    "Duren Sawit": {"latitude": -6.2228, "longitude": 106.9282, "normal_avg": 300.0, "warning_threshold": 370.0, "critical_threshold": 410.0, "city": "Jakarta Timur"},
-    "Jatinegara": {"latitude": -6.2222, "longitude": 106.8682, "normal_avg": 240.0, "warning_threshold": 300.0, "critical_threshold": 330.0, "city": "Jakarta Timur"},
-    "Kramat Jati": {"latitude": -6.2722, "longitude": 106.8682, "normal_avg": 220.0, "warning_threshold": 270.0, "critical_threshold": 300.0, "city": "Jakarta Timur"},
-    "Makasar": {"latitude": -6.2622, "longitude": 106.8782, "normal_avg": 160.0, "warning_threshold": 200.0, "critical_threshold": 220.0, "city": "Jakarta Timur"},
-    "Matraman": {"latitude": -6.2022, "longitude": 106.8582, "normal_avg": 130.0, "warning_threshold": 160.0, "critical_threshold": 180.0, "city": "Jakarta Timur"},
-    "Pasar Rebo": {"latitude": -6.3122, "longitude": 106.8522, "normal_avg": 150.0, "warning_threshold": 190.0, "critical_threshold": 210.0, "city": "Jakarta Timur"},
-    "Pulo Gadung": {"latitude": -6.1922, "longitude": 106.8922, "normal_avg": 220.0, "warning_threshold": 270.0, "critical_threshold": 300.0, "city": "Jakarta Timur"},
+    "Cakung": {"latitude": -6.1828, "longitude": 106.9482, "population_jiwa": 559000, "normal_avg": 350.0, "warning_threshold": 430.0, "critical_threshold": 470.0, "city": "Jakarta Timur"},
+    "Cipayung": {"latitude": -6.3128, "longitude": 106.9022, "population_jiwa": 290000, "normal_avg": 140.0, "warning_threshold": 180.0, "critical_threshold": 200.0, "city": "Jakarta Timur"},
+    "Ciracas": {"latitude": -6.3228, "longitude": 106.8782, "population_jiwa": 310000, "normal_avg": 190.0, "warning_threshold": 240.0, "critical_threshold": 270.0, "city": "Jakarta Timur"},
+    "Duren Sawit": {"latitude": -6.2228, "longitude": 106.9282, "population_jiwa": 420000, "normal_avg": 300.0, "warning_threshold": 370.0, "critical_threshold": 410.0, "city": "Jakarta Timur"},
+    "Jatinegara": {"latitude": -6.2222, "longitude": 106.8682, "population_jiwa": 315000, "normal_avg": 240.0, "warning_threshold": 300.0, "critical_threshold": 330.0, "city": "Jakarta Timur"},
+    "Kramat Jati": {"latitude": -6.2722, "longitude": 106.8682, "population_jiwa": 300000, "normal_avg": 220.0, "warning_threshold": 270.0, "critical_threshold": 300.0, "city": "Jakarta Timur"},
+    "Makasar": {"latitude": -6.2622, "longitude": 106.8782, "population_jiwa": 210000, "normal_avg": 160.0, "warning_threshold": 200.0, "critical_threshold": 220.0, "city": "Jakarta Timur"},
+    "Matraman": {"latitude": -6.2022, "longitude": 106.8582, "population_jiwa": 175000, "normal_avg": 130.0, "warning_threshold": 160.0, "critical_threshold": 180.0, "city": "Jakarta Timur"},
+    "Pasar Rebo": {"latitude": -6.3122, "longitude": 106.8522, "population_jiwa": 220000, "normal_avg": 150.0, "warning_threshold": 190.0, "critical_threshold": 210.0, "city": "Jakarta Timur"},
+    "Pulo Gadung": {"latitude": -6.1922, "longitude": 106.8922, "population_jiwa": 300000, "normal_avg": 220.0, "warning_threshold": 270.0, "critical_threshold": 300.0, "city": "Jakarta Timur"},
 
     # 6. KEPULAUAN SERIBU (2 Kecamatan) - Total: 20 Ton
-    "Kepulauan Seribu Utara": {"latitude": -5.5722, "longitude": 106.5522, "normal_avg": 11.0, "warning_threshold": 15.0, "critical_threshold": 18.0, "city": "Kepulauan Seribu"},
-    "Kepulauan Seribu Selatan": {"latitude": -5.7722, "longitude": 106.6522, "normal_avg": 9.0, "warning_threshold": 12.0, "critical_threshold": 15.0, "city": "Kepulauan Seribu"}
+    "Kepulauan Seribu Utara": {"latitude": -5.5722, "longitude": 106.5522, "population_jiwa": 16000, "normal_avg": 11.0, "warning_threshold": 15.0, "critical_threshold": 18.0, "city": "Kepulauan Seribu"},
+    "Kepulauan Seribu Selatan": {"latitude": -5.7722, "longitude": 106.6522, "population_jiwa": 13000, "normal_avg": 9.0, "warning_threshold": 12.0, "critical_threshold": 15.0, "city": "Kepulauan Seribu"}
 }
 
 ALLOWED_LOCATIONS = list(KECAMATAN_DATABASE.keys())
@@ -129,7 +129,8 @@ ALLOWED_LOCATIONS = list(KECAMATAN_DATABASE.keys())
 class PredictionRequest(BaseModel):
     forecast_days: int = Field(7, ge=1, le=30, description="Forecast horizon in days (1-30)")
     rainfall_mm: float = Field(0.0, ge=0, description="Precipitation override. 0.0 means Auto (Open-Meteo)")
-    event_scale: int = Field(0, ge=0, le=5, description="Manual event crowd scale (0=none, 5=massive)")
+    event_scale: Optional[int] = Field(0, ge=0, description="Legacy crowd scale (optional fallback)")
+    jumlah_jiwa: Optional[int] = Field(None, ge=0, description="Target headcount / population override (Jumlah Jiwa)")
     location: str = Field(..., description="Target sub-district (Kecamatan)")
     start_date: Optional[str] = Field(None, description="Start date: YYYY-MM-DD")
     granularity: str = Field("daily", pattern="^(daily|hourly)$", description="Granularity")
@@ -305,10 +306,13 @@ async def load_assets():
                 if str(r.get("ada_event", "1")) == "1":
                     dk = str(r.get("tanggal", "")).strip()
                     if dk:
+                        raw_jiwa = float(r.get("jumlah_jiwa", r.get("skala_keramaian", 0)))
+                        crowd_jiwa = raw_jiwa * 20000.0 if (0 < raw_jiwa <= 5) else raw_jiwa
                         events_data[dk] = {
                             "event_name": str(r.get("nama_event", "")),
                             "location": str(r.get("lokasi", "")),
-                            "crowd_scale": float(r.get("skala_keramaian", 0))
+                            "crowd_scale": crowd_jiwa,
+                            "jumlah_jiwa": crowd_jiwa
                         }
             logger.info(f"✅ Event calendar loaded: {len(events_data)} entries")
     except Exception as e:
@@ -514,7 +518,17 @@ async def predict_waste_volume(req: PredictionRequest):
         # Fetch live weather forecast from Open-Meteo API
         weather_forecast = await fetch_rainfall_forecast(config["latitude"], config["longitude"], req.forecast_days)
         
-        # Calibrations Setup
+        # Calibrations & Headcount Setup
+        baseline_pop = float(config.get("population_jiwa", 100000))
+        
+        # User input target headcount / population override (Jumlah Jiwa)
+        if req.jumlah_jiwa is not None and req.jumlah_jiwa > 0:
+            target_pop = float(req.jumlah_jiwa)
+        elif req.event_scale and req.event_scale > 0:
+            target_pop = baseline_pop + (req.event_scale * 20000.0 if req.event_scale <= 5 else float(req.event_scale))
+        else:
+            target_pop = float(baseline_pop)
+            
         dataset_mean = df_history["Volume_Total_Ton"].mean()
         real_baseline = config["normal_avg"]
         calibration_factor = real_baseline / dataset_mean
@@ -548,17 +562,18 @@ async def predict_waste_volume(req: PredictionRequest):
                 if rain_val > 5.0: 
                     rain_m = 1.0 + min(rain_val * 0.002, 0.20)
                 
-                # Events multiplier
+                # Events multiplier from headcount (Jumlah Jiwa)
                 evt = events_data.get(d_str)
-                evt_m = 1.0
+                event_pop = 0.0
                 info = None
-                if evt and evt["crowd_scale"] > 0 and (req.location.lower() in evt["location"].lower() or evt["location"].lower() == "jakarta"):
-                    evt_m = 1.0 + 0.10 + min(evt["crowd_scale"] * 0.05, 0.25)
-                    info = f"{evt['event_name']} @ {evt['location']}"
-                elif req.event_scale > 0:
-                    evt_m = 1.0 + req.event_scale * 0.10
+                if evt and (req.location.lower() in evt["location"].lower() or evt["location"].lower() == "jakarta"):
+                    event_pop = float(evt.get("jumlah_jiwa", evt.get("crowd_scale", 0.0)))
+                    info = f"{evt['event_name']} ({int(event_pop):,} Jiwa) @ {evt['location']}"
                 
-                raw_prediction = base * rain_m * evt_m
+                total_day_jiwa = target_pop + event_pop
+                pop_scaling_factor = total_day_jiwa / baseline_pop
+                
+                raw_prediction = base * rain_m * pop_scaling_factor
                 calibrated_volume = round(float(raw_prediction * calibration_factor), 2)
                 
                 total_vol += calibrated_volume
@@ -591,15 +606,21 @@ async def predict_waste_volume(req: PredictionRequest):
                 rain_lag1 = req.rainfall_mm if (req.rainfall_mm > 0.0 and i == 1) else weather_forecast.get((curr_date - timedelta(days=1)).strftime("%Y-%m-%d"), 0.0)
                 
                 evt = events_data.get(d_str)
-                has_event = 1 if (evt and (req.location.lower() in evt["location"].lower() or evt["location"].lower() == "jakarta")) else 0
-                crowd = float(evt["crowd_scale"]) if has_event else (float(req.event_scale) if i == 0 else 0.0)
-                info = f"{evt['event_name']} @ {evt['location']}" if has_event else None
+                event_pop = 0.0
+                info = None
+                if evt and (req.location.lower() in evt["location"].lower() or evt["location"].lower() == "jakarta"):
+                    event_pop = float(evt.get("jumlah_jiwa", evt.get("crowd_scale", 0.0)))
+                    info = f"{evt['event_name']} ({int(event_pop):,} Jiwa) @ {evt['location']}"
+                
+                total_day_jiwa = target_pop + event_pop
+                pop_scaling_factor = total_day_jiwa / baseline_pop
+                has_event = 1 if (event_pop > 0 or target_pop > baseline_pop) else 0
                 
                 # Fitur dataframe construction matching train.py
                 mrt_riders = 85000 if curr_date.weekday() < 5 else 45000
                 features = pd.DataFrame([{
                     'Penumpang_MRT': mrt_riders,
-                    'Ada_Event': has_event or (1 if (req.event_scale > 0 and i == 0) else 0),
+                    'Ada_Event': has_event,
                     'Curah_Hujan_mm': rain_val,
                     'Hujan_Kemarin': rain_lag1,
                     'Hari_Dalam_Minggu': curr_date.weekday(),
@@ -608,7 +629,7 @@ async def predict_waste_volume(req: PredictionRequest):
                 }])
                 
                 raw_pred = float(model_gbr.predict(features)[0])
-                calibrated_volume = round(float(raw_pred * calibration_factor), 2)
+                calibrated_volume = round(float(raw_pred * calibration_factor * pop_scaling_factor), 2)
                 
                 total_vol += calibrated_volume
                 risk = get_risk_status(calibrated_volume, req.location)

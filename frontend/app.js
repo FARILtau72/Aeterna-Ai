@@ -72,6 +72,7 @@ const forecastVal = document.getElementById("forecast-val");
 const rainOverride = document.getElementById("rain-override");
 const rainOverrideVal = document.getElementById("rain-override-val");
 const eventOverride = document.getElementById("event-override");
+const eventOverrideVal = document.getElementById("event-override-val");
 const predictBtn = document.getElementById("predict-btn");
 const exportBtn = document.getElementById("export-btn");
 
@@ -202,9 +203,25 @@ if (rainOverride) {
     });
 }
 
+if (eventOverride) {
+    eventOverride.addEventListener("input", (e) => {
+        const val = parseInt(e.target.value);
+        if (eventOverrideVal) {
+            eventOverrideVal.textContent = `${val.toLocaleString()} Jiwa`;
+        }
+    });
+}
+
 if (locationSelect) {
     locationSelect.addEventListener("change", (e) => {
         selectedLocation = e.target.value;
+        const pop = KECAMATAN_DATABASE[selectedLocation]?.population_jiwa || 100000;
+        if (eventOverride) {
+            eventOverride.value = pop;
+        }
+        if (eventOverrideVal) {
+            eventOverrideVal.textContent = `${pop.toLocaleString()} Jiwa (BPS)`;
+        }
         updateActiveMapMarker(selectedLocation);
         panToLocation(selectedLocation);
         fetchLiveWeather(selectedLocation);
@@ -418,7 +435,8 @@ async function runPrediction() {
     const payload = {
         forecast_days: parseInt(forecastSlider.value),
         rainfall_mm: parseFloat(rainValue),
-        event_scale: parseInt(eventOverride.value),
+        jumlah_jiwa: parseInt(eventOverride.value),
+        event_scale: 0,
         location: selectedLocation,
         model_type: modelSelect.value,
         granularity: forecastSlider.value <= 7 ? "hourly" : "daily"

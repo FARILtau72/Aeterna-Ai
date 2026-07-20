@@ -1,32 +1,32 @@
-tanggal,nama_event,lokasi,skala_keramaian
-2026-01-01,Perayaan Tahun Baru,Monas,4
-2026-02-17,Imlek Festival,Glodok,2
-2026-03-18,H-3 Lebaran,Jakarta,4
-2026-03-22,Idul Fitri,Jakarta,5
-2026-04-10,Jakarta Art Festival,JIExpo,2
-2026-05-01,May Day Rally,Monas,2
-2026-06-11,PRJ Opening,JIExpo,5
-2026-06-13,BTN Marathon 2026,Jalan Protokol,3
-2026-06-14,PRJ Weekend,JIExpo,4
-2026-06-21,PRJ Peak Weekend,JIExpo,5
-2026-06-28,PRJ Mid-Event Weekend,JIExpo,4
-2026-07-01,DWP 2026 Jakarta,Kemayoran,5
-2026-07-02,INAGRITECH 2026,Kemayoran,4
-2026-07-02,"INAMARINE, INAWELDING & RAILWAYTECH INDONESIA 2026",Kemayoran,4
-2026-07-08,BritCham Indonesia's Golf Tournament,Kebayoran Lama,2
-2026-07-08,Canada Cup 2026,Kebayoran Lama,2
-2026-07-11,Uji Coba Sistem AI (Demo Event),Gambir,4
-2026-07-12,Konser Musik Spektakuler,Menteng,3
-2026-07-13,Japan Edu Expo 2026,Setiabudi,4
-2026-07-13,Anime Festival Asia Indonesia 2026,Tanah Abang,5
-2026-07-13,𝐑𝐎𝐒𝐄𝐓𝐎𝐏𝐈𝐀 𝐀𝐒𝐈𝐀 𝐓𝐎𝐔𝐑 𝟐𝟎𝟐𝟔,Tanah Abang,5
-2026-07-14,Bangor Run Jakarta 2026,Tanah Abang,3
-2026-07-14,Run For Animals 2026,Cipayung,3
-2026-07-14,Solar Run 2026,Gambir,3
-2026-07-14,Tangy’s Story Adventures | WCIJ Trial Class Experience,Kebayoran Lama,2
-2026-07-20,PRJ Final Weekend,JIExpo,5
-2026-08-17,HUT RI ke-81,Monas,4
-2026-09-15,Food & Culture Expo,Ancol,2
-2026-11-25,Ancol Music Fest,Ancol,3
-2026-12-20,Christmas Market,Bundaran HI,3
-2026-12-31,Countdown Jakarta 2027,Monas,4
+tanggal,nama_event,lokasi,jumlah_jiwa
+2026-01-01,Perayaan Tahun Baru,Monas,100000
+2026-02-17,Imlek Festival,Glodok,25000
+2026-03-18,H-3 Lebaran,Jakarta,80000
+2026-03-22,Idul Fitri,Jakarta,150000
+2026-04-10,Jakarta Art Festival,JIExpo,20000
+2026-05-01,May Day Rally,Monas,30000
+2026-06-11,PRJ Opening,JIExpo,120000
+2026-06-13,BTN Marathon 2026,Jalan Protokol,40000
+2026-06-14,PRJ Weekend,JIExpo,80000
+2026-06-21,PRJ Peak Weekend,JIExpo,150000
+2026-06-28,PRJ Mid-Event Weekend,JIExpo,75000
+2026-07-01,DWP 2026 Jakarta,Kemayoran,100000
+2026-07-02,INAGRITECH 2026,Kemayoran,50000
+2026-07-02,"INAMARINE, INAWELDING & RAILWAYTECH INDONESIA 2026",Kemayoran,45000
+2026-07-08,BritCham Indonesia's Golf Tournament,Kebayoran Lama,15000
+2026-07-08,Canada Cup 2026,Kebayoran Lama,15000
+2026-07-11,Uji Coba Sistem AI (Demo Event),Gambir,60000
+2026-07-12,Konser Musik Spektakuler,Menteng,35000
+2026-07-13,Japan Edu Expo 2026,Setiabudi,50000
+2026-07-13,Anime Festival Asia Indonesia 2026,Tanah Abang,120000
+2026-07-13,𝐑𝐎𝐒𝐄𝐓𝐎𝐏𝐈𝐀 𝐀𝐒𝐈𝐀 𝐓𝐎𝐔𝐑 𝟐𝟎𝟐𝟔,Tanah Abang,110000
+2026-07-14,Bangor Run Jakarta 2026,Tanah Abang,30000
+2026-07-14,Run For Animals 2026,Cipayung,25000
+2026-07-14,Solar Run 2026,Gambir,30000
+2026-07-14,Tangy’s Story Adventures | WCIJ Trial Class Experience,Kebayoran Lama,10000
+2026-07-20,PRJ Final Weekend,JIExpo,140000
+2026-08-17,HUT RI ke-81,Monas,90000
+2026-09-15,Food & Culture Expo,Ancol,25000
+2026-11-25,Ancol Music Fest,Ancol,40000
+2026-12-20,Christmas Market,Bundaran HI,35000
+2026-12-31,Countdown Jakarta 2027,Monas,110000
