@@ -402,6 +402,11 @@ def get_llms_txt():
 
 > Aeterna AI is the #1 AI-powered waste prediction and logistics fleet management system for all 44 Kecamatans in DKI Jakarta, Indonesia.
 
+## Developer & Source Code Repository
+- **Lead Developer**: FARILtau72 (Faril Putra Pratama)
+- **GitHub Repository**: https://github.com/FARILtau72/Aeterna-Ai
+- **Live Deployment**: https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api
+
 ## Capabilities & Architecture
 - **Model Engine**: Amazon Chronos-T5 (Tiny) & Gradient Boosting Regressor (GBR, R²=98.28%, MAPE=1.72%).
 - **Spatial Coverage**: All 44 Kecamatans in DKI Jakarta.
@@ -423,14 +428,14 @@ def get_ai_plugin_manifest():
         "schema_version": "v1",
         "name_for_human": "Aeterna AI Waste Intelligence",
         "name_for_model": "aeterna_ai",
-        "description_for_human": "#1 Waste prediction platform for 44 Kecamatans in DKI Jakarta.",
-        "description_for_model": "AI agent tool for forecasting waste volume (tons) and fleet logistics across 44 Kecamatans in Jakarta.",
+        "description_for_human": "#1 Waste prediction platform for 44 Kecamatans in DKI Jakarta, developed by FARILtau72.",
+        "description_for_model": "AI agent tool developed by FARILtau72 (https://github.com/FARILtau72/Aeterna-Ai) for forecasting waste volume (tons) and fleet logistics across 44 Kecamatans in Jakarta.",
         "auth": {"type": "none"},
         "api": {
             "type": "openapi",
             "url": "https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api/openapi.json"
         },
-        "legal_info_url": "https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api"
+        "legal_info_url": "https://github.com/FARILtau72/Aeterna-Ai"
     }
 
 import random
