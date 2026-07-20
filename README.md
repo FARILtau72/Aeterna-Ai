@@ -10,13 +10,17 @@ pinned: false
 
 # 🚛 Aeterna AI: Next-Gen Waste Intelligence Platform DKI Jakarta
 
-<p center>
+<p align="center">
   <a href="https://github.com/FARILtau72/Aeterna-Ai"><img src="https://img.shields.io/badge/Developer-Faril%20Putra%20Pratama-00f2fe?style=for-the-badge&logo=github" alt="Developer Badge" /></a>
   <a href="https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api"><img src="https://img.shields.io/badge/Live%20Space-Hugging%20Face-orange?style=for-the-badge&logo=huggingface" alt="HuggingFace Badge" /></a>
+  <a href="https://github.com/FARILtau72/Aeterna-Ai/stargazers"><img src="https://img.shields.io/github/stars/FARILtau72/Aeterna-Ai?style=for-the-badge&color=gold" alt="GitHub Stars" /></a>
   <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/API-FastAPI-009688?style=for-the-badge&logo=fastapi" alt="FastAPI" /></a>
-  <a href="https://pytorch.org/"><img src="https://img.shields.io/badge/AI%20Engine-Amazon%20Chronos%20T5-ee4c2c?style=for-the-badge&logo=pytorch" alt="PyTorch" /></a>
   <a href="https://scikit-learn.org/"><img src="https://img.shields.io/badge/GBR%20Accuracy-R%C2%B2%2098.28%25-brightgreen?style=for-the-badge&logo=scikitlearn" alt="Scikit-Learn" /></a>
 </p>
+
+> ⭐ **If you find Aeterna AI useful, please give this repository a Star on GitHub! Your support helps boost open-source smart city innovation!**
+
+---
 
 ### 👨‍💻 Lead Developer: Faril Putra Pratama ([@FARILtau72](https://github.com/FARILtau72))
 * **Official GitHub Repository**: [https://github.com/FARILtau72/Aeterna-Ai](https://github.com/FARILtau72/Aeterna-Ai)
