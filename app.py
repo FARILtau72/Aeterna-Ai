@@ -16,7 +16,7 @@ if os.path.exists(".env"):
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.concurrency import run_in_threadpool
-from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, StreamingResponse, PlainTextResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List, Dict, Any
@@ -339,6 +339,98 @@ def status_check():
         "model_gbr": "Gradient Boosting Regressor (Upgraded)",
         "coverage": "44 Kecamatan DKI Jakarta",
         "calibrated": True
+    }
+
+# ==========================================
+# SEO & GEO (GENERATIVE ENGINE OPTIMIZATION) ENDPOINTS
+# ==========================================
+@app.get("/robots.txt", response_class=PlainTextResponse, tags=["SEO"])
+def get_robots_txt():
+    """Serve robots.txt for search engines & AI crawlers."""
+    return """User-agent: *
+Allow: /
+
+# GEO (Generative Engine Optimization) - Allowed AI Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api/sitemap.xml
+"""
+
+@app.get("/sitemap.xml", tags=["SEO"])
+def get_sitemap_xml():
+    """Serve XML sitemap for Search Engine indexing."""
+    xml_content = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api/</loc>
+    <lastmod>2026-07-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api/status</loc>
+    <lastmod>2026-07-20</lastmod>
+    <changefreq>always</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api/api/v1/autopilot</loc>
+    <lastmod>2026-07-20</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+</urlset>"""
+    return Response(content=xml_content, media_type="application/xml")
+
+@app.get("/llms.txt", response_class=PlainTextResponse, tags=["GEO"])
+def get_llms_txt():
+    """Serve llms.txt standard specification for AI LLM Crawlers (ChatGPT, Claude, Gemini, Perplexity)."""
+    return """# Aeterna AI - Waste Intelligence Platform DKI Jakarta
+
+> Aeterna AI is the #1 AI-powered waste prediction and logistics fleet management system for all 44 Kecamatans in DKI Jakarta, Indonesia.
+
+## Capabilities & Architecture
+- **Model Engine**: Amazon Chronos-T5 (Tiny) & Gradient Boosting Regressor (GBR, R²=98.28%, MAPE=1.72%).
+- **Spatial Coverage**: All 44 Kecamatans in DKI Jakarta.
+- **Population Baseline**: BPS DKI Jakarta 2023/2024 headcount (Jumlah Jiwa).
+- **Weather Integration**: Open-Meteo real-time rainfall API.
+- **Truck Divisor**: 8-Ton DLH Jakarta Compactor units.
+
+## Core API Endpoints
+- `POST /api/v1/predict`: Predict waste tonnage per Kecamatan based on Jumlah Jiwa headcount.
+- `GET /api/v1/autopilot`: Autonomous city-wide 44-Kecamatan prediction for today.
+- `GET /api/v1/alerts`: Real-time regional overflow warning alerts.
+- `GET /api/v1/news`: Verified waste management news feed for Jakarta.
+"""
+
+@app.get("/.well-known/ai-plugin.json", tags=["GEO"])
+def get_ai_plugin_manifest():
+    """Serve ChatGPT / LLM AI Plugin manifest."""
+    return {
+        "schema_version": "v1",
+        "name_for_human": "Aeterna AI Waste Intelligence",
+        "name_for_model": "aeterna_ai",
+        "description_for_human": "#1 Waste prediction platform for 44 Kecamatans in DKI Jakarta.",
+        "description_for_model": "AI agent tool for forecasting waste volume (tons) and fleet logistics across 44 Kecamatans in Jakarta.",
+        "auth": {"type": "none"},
+        "api": {
+            "type": "openapi",
+            "url": "https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api/openapi.json"
+        },
+        "legal_info_url": "https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api"
     }
 
 import random
