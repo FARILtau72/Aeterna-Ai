@@ -48,30 +48,44 @@ Platform ini mengubah paradigma pengelolaan sampah dari **reaktif** (menangani s
 
 ---
 
-## 🏗️ Arsitektur Sistem (Clean Architecture)
+## 🏗️ Arsitektur Sistem (Single-Container Full-Stack Architecture)
+
+Sistem ini didesain menggunakan arsitektur full-stack terpadu berbasis **Python FastAPI & Vanilla JavaScript** yang ringan, cepat, dan hemat memori:
 
 ```
-                                  +-----------------------------------+
-                                  |         NEXT.JS FRONTEND          |
-                                  |   (Hosted on Vercel Global CDN)   |
-                                  +-----------------------------------+
-                                                    |
-                                                    | HTTPS Requests
-                                                    v
-                                  +-----------------------------------+
-                                  |          LARAVEL BACKEND          |
-                                  |     (API Controller & Gateway)    |
-                                  +-----------------------------------+
-                                                    |
-                                                    | REST Proxy API
-                                                    v
 +---------------------------------------------------------------------------------------------------+
-|                                  PYTHON ML MICROSERVICE CONTAINER                                 |
-|                               (Docker - Hosted on Hugging Face Spaces)                            |
+|                                 AETERNA AI PLATFORM CONTAINER                                     |
+|                             (Hosted on Hugging Face Spaces & Docker)                              |
 |                                                                                                   |
-|  [ FastAPI ] --> [ GBR Model (GridSearchCV) ] & [ Amazon Chronos-T5 ] --> [ Open-Meteo API Sync ] |
+|   +---------------------------------------+     +---------------------------------------------+   |
+|   |         CYBER HUD DASHBOARD UI        |     |             FASTAPI BACKEND ENGINE          |   |
+|   | (HTML5, Vanilla CSS3, Leaflet.js Map) | <-> |    (Async REST Endpoints & Web Controller)   |   |
+|   +---------------------------------------+     +---------------------------------------------+   |
+|                                                                |                                  |
+|                                         +----------------------+----------------------+           |
+|                                         |                                             |           |
+|                                         v                                             v           |
+|                         +-------------------------------+             +-------------------------------+
+|                         |    AMAZON CHRONOS-T5 (TINY)   |             |   GRADIENT BOOSTING REGRESSOR |
+|                         | (Time-Series Neural Network)  |             |     (GBR R²=98.28%, MAPE=1.72%) |
+|                         +-------------------------------+             +-------------------------------+
+|                                         |                                             |           |
+|                                         +----------------------+----------------------+           |
+|                                                                |                                  |
+|                                                                v                                  |
+|                                             +-------------------------------------+               |
+|                                             |         EXTERNAL DATA SYNC          |               |
+|                                             |  - BPS Jakarta 2024 (Jumlah Jiwa)   |               |
+|                                             |  - Open-Meteo Realtime Rainfall API |               |
+|                                             +-------------------------------------+               |
 +---------------------------------------------------------------------------------------------------+
 ```
+
+### Component Stack:
+* **Frontend Layer**: HTML5, Vanilla CSS3 (*Dark Glassmorphism Theme*), Vanilla JavaScript ES6+, dan **Leaflet.js** untuk visualisasi peta spasial 44 Kecamatan DKI Jakarta.
+* **Backend Layer**: **Python 3.9+** & **FastAPI** dengan Uvicorn ASGI Server untuk eksekusi peramalan REST API berkecepatan tinggi.
+* **AI & Machine Learning Engine**: **Amazon Chronos-T5 (Tiny)** (PyTorch) & **Gradient Boosting Regressor** (Scikit-Learn, fine-tuned dengan GridSearchCV).
+* **Data Providers**: Data Populasi **BPS DKI Jakarta 2023/2024** (Jumlah Jiwa), **Open-Meteo Weather API** (Curah Hujan Real-Time), dan **Dinas Lingkungan Hidup DKI Jakarta**.
 
 ---
 
