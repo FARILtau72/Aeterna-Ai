@@ -394,6 +394,18 @@ def get_sitemap_xml():
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.aeternaai.biz.id/llms.txt</loc>
+    <lastmod>2026-07-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.aeternaai.biz.id/llms-full.txt</loc>
+    <lastmod>2026-07-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://www.aeternaai.biz.id/api/v1/autopilot</loc>
     <lastmod>2026-07-20</lastmod>
     <changefreq>hourly</changefreq>

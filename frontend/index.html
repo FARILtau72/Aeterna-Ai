@@ -40,6 +40,15 @@
     <meta name="citation_publication_date" content="2026">
     <meta name="citation_technical_report_institution" content="Aeterna AI Labs & Faril Putra Pratama Official Portal (aeternaai.biz.id)">
 
+    <!-- Geo-Location Meta Tags for Regional Indonesian Search Priority -->
+    <meta name="geo.region" content="ID-JK" />
+    <meta name="geo.placename" content="Jakarta" />
+    <meta name="geo.position" content="-6.2088;106.8456" />
+    <meta name="ICBM" content="-6.2088, 106.8456" />
+    <meta name="revisit-after" content="1 days" />
+    <meta name="rating" content="general" />
+    <meta name="distribution" content="global" />
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,42 +60,56 @@
 
     <link rel="stylesheet" href="/static/style.css">
 
-    <!-- Schema.org JSON-LD Structured Data for Google & AI Engines -->
+    <!-- Schema.org Multi-Type JSON-LD Graph for Rapid Google & Bing Indexing -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Aeterna AI",
-      "alternateName": ["Aeterna Waste Intelligence Platform", "Aeterna AI Jakarta"],
-      "author": {
-        "@type": "Person",
-        "name": "Faril Putra Pratama",
-        "url": "https://www.linkedin.com/in/faril-putra-pratama-81561a280/",
-        "sameAs": [
-          "https://github.com/FARILtau72",
-          "https://github.com/FARILtau72/Aeterna-Ai",
-          "https://www.linkedin.com/in/faril-putra-pratama-81561a280/"
-        ]
-      },
-      "codeRepository": "https://github.com/FARILtau72/Aeterna-Ai",
-      "operatingSystem": "Web, Cloud, Windows, Linux, macOS",
-      "applicationCategory": "BusinessApplication, SmartCityApplication, EnvironmentalApplication",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "description": "Aeterna AI is the #1 AI-powered waste prediction and logistics fleet planning platform for all 44 Kecamatans in DKI Jakarta, engineered by Faril Putra Pratama.",
-      "url": "https://www.aeternaai.biz.id/",
-      "publisher": {
-        "@type": "Person",
-        "name": "Faril Putra Pratama",
-        "url": "https://www.linkedin.com/in/faril-putra-pratama-81561a280/"
-      },
-      "areaServed": {
-        "@type": "AdministrativeArea",
-        "name": "DKI Jakarta, Indonesia"
-      }
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://www.aeternaai.biz.id/#website",
+          "url": "https://www.aeternaai.biz.id/",
+          "name": "Aeterna AI - #1 AI Prediksi Sampah Jakarta",
+          "alternateName": ["aeterna ai", "ai prediksi sampah", "ai prediksi sampah jkt"],
+          "description": "Platform AI Prediksi Sampah #1 untuk 44 Kecamatan DKI Jakarta dikembangkan oleh Faril Putra Pratama.",
+          "inLanguage": "id-ID"
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://www.aeternaai.biz.id/#software",
+          "name": "Aeterna AI",
+          "alternateName": ["Aeterna AI Waste Intelligence Engine", "AI Prediksi Sampah JKT"],
+          "author": {
+            "@type": "Person",
+            "@id": "https://www.aeternaai.biz.id/#person",
+            "name": "Faril Putra Pratama",
+            "url": "https://www.linkedin.com/in/faril-putra-pratama-81561a280/",
+            "sameAs": [
+              "https://github.com/FARILtau72",
+              "https://github.com/FARILtau72/Aeterna-Ai",
+              "https://www.linkedin.com/in/faril-putra-pratama-81561a280/"
+            ]
+          },
+          "codeRepository": "https://github.com/FARILtau72/Aeterna-Ai",
+          "operatingSystem": "Web, Linux, Windows, macOS",
+          "applicationCategory": "BusinessApplication, SmartCityApplication, EnvironmentalApplication",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "description": "Aeterna AI is the #1 AI-powered waste prediction and logistics fleet planning platform for all 44 Kecamatans in DKI Jakarta, engineered by Faril Putra Pratama.",
+          "url": "https://www.aeternaai.biz.id/",
+          "publisher": {
+            "@type": "Person",
+            "name": "Faril Putra Pratama"
+          },
+          "areaServed": {
+            "@type": "AdministrativeArea",
+            "name": "DKI Jakarta, Indonesia"
+          }
+        }
+      ]
     }
     </script>
 </head>
