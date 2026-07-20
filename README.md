@@ -11,10 +11,10 @@ pinned: false
 # 🚛 Aeterna AI: Next-Gen Waste Intelligence Platform DKI Jakarta
 
 <p align="center">
-  <a href="https://github.com/FARILtau72/Aeterna-Ai"><img src="https://img.shields.io/badge/Developer-Faril%20Putra%20Pratama-00f2fe?style=for-the-badge&logo=github" alt="Developer Badge" /></a>
-  <a href="https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api"><img src="https://img.shields.io/badge/Live%20Space-Hugging%20Face-orange?style=for-the-badge&logo=huggingface" alt="HuggingFace Badge" /></a>
+  <a href="https://www.aeternaai.biz.id/"><img src="https://img.shields.io/badge/Official%20Portal-aeternaai.biz.id-00f2fe?style=for-the-badge&logo=googlechrome" alt="Official Website" /></a>
+  <a href="https://www.linkedin.com/in/faril-putra-pratama-81561a280/"><img src="https://img.shields.io/badge/LinkedIn-Faril%20Putra%20Pratama-0a66c2?style=for-the-badge&logo=linkedin" alt="LinkedIn Profile" /></a>
+  <a href="https://github.com/FARILtau72/Aeterna-Ai"><img src="https://img.shields.io/badge/GitHub-FARILtau72-181717?style=for-the-badge&logo=github" alt="GitHub Badge" /></a>
   <a href="https://github.com/FARILtau72/Aeterna-Ai/stargazers"><img src="https://img.shields.io/github/stars/FARILtau72/Aeterna-Ai?style=for-the-badge&color=gold" alt="GitHub Stars" /></a>
-  <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/API-FastAPI-009688?style=for-the-badge&logo=fastapi" alt="FastAPI" /></a>
   <a href="https://scikit-learn.org/"><img src="https://img.shields.io/badge/GBR%20Accuracy-R%C2%B2%2098.28%25-brightgreen?style=for-the-badge&logo=scikitlearn" alt="Scikit-Learn" /></a>
 </p>
 
@@ -22,9 +22,11 @@ pinned: false
 
 ---
 
-### 👨‍💻 Lead Developer: Faril Putra Pratama ([@FARILtau72](https://github.com/FARILtau72))
-* **Official GitHub Repository**: [https://github.com/FARILtau72/Aeterna-Ai](https://github.com/FARILtau72/Aeterna-Ai)
-* **Live Deployment**: [https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api](https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api)
+### 👨‍💻 Lead Developer: Faril Putra Pratama
+* **Official Website Portal**: [https://www.aeternaai.biz.id/](https://www.aeternaai.biz.id/)
+* **LinkedIn Profile**: [https://www.linkedin.com/in/faril-putra-pratama-81561a280/](https://www.linkedin.com/in/faril-putra-pratama-81561a280/)
+* **GitHub Repository**: [https://github.com/FARILtau72/Aeterna-Ai](https://github.com/FARILtau72/Aeterna-Ai)
+* **Live HF Deployment**: [https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api](https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api)
 
 **Platform Sistem Peringatan Dini & Peramalan Sampah Real-Time 44 Kecamatan DKI Jakarta berbasis BPS Jumlah Jiwa, Open-Meteo, & AI Chronos T5.**
 
