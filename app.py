@@ -294,11 +294,12 @@ async def load_assets():
         else:
             logger.warning("⚠️ model_sampah_advanced.pkl not found")
         
-        df_history = pd.read_csv("dataset_vibe_coder_2026.csv")
+        csv_path = "data/dataset_vibe_coder_2026.csv" if os.path.exists("data/dataset_vibe_coder_2026.csv") else "dataset_vibe_coder_2026.csv"
+        df_history = pd.read_csv(csv_path)
         df_history["TANGGAL"] = pd.to_datetime(df_history["TANGGAL"]).dt.strftime("%Y-%m-%d")
-        logger.info(f"✅ Baseline dataset loaded: {len(df_history)} records")
+        logger.info(f"✅ Baseline dataset loaded from {csv_path}: {len(df_history)} records")
         
-        event_file = "event_jakarta_2026.txt"
+        event_file = "data/event_jakarta_2026.txt" if os.path.exists("data/event_jakarta_2026.txt") else "event_jakarta_2026.txt"
         if os.path.exists(event_file):
             df_e = pd.read_csv(event_file)
             df_e.columns = [c.strip().lower() for c in df_e.columns]
@@ -545,7 +546,7 @@ def generate_dynamic_news_fallback(today_date: datetime) -> List[Dict[str, Any]]
 @app.get("/api/v1/news", response_model=List[NewsItem], tags=["News"])
 async def get_latest_news():
     """Returns the latest dynamic news generated via Conduit AI, falling back to local database on error"""
-    news_file = "latest_waste_news.json"
+    news_file = "data/latest_waste_news.json" if os.path.exists("data/latest_waste_news.json") else "latest_waste_news.json"
     
     # 1. Try fetching dynamically from Conduit LLM
     try:
