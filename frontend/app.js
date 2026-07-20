@@ -486,7 +486,7 @@ function updateDashboardData(data, confScore, message) {
     updateMarkerRisk(selectedLocation, maxRisk);
     drawTransitRoute(selectedLocation);
 
-    if (statTrucks) statTrucks.innerHTML = `${data.logistics_plan.trucks_needed} <span class="unit">Trucks (15T)</span>`;
+    if (statTrucks) statTrucks.innerHTML = `${data.logistics_plan.trucks_needed} <span class="unit">Trucks (8T)</span>`;
 
     const startDateStr = results[0].date;
     const endDateStr = results[results.length - 1].date;
