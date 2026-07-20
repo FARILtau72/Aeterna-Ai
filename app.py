@@ -288,11 +288,12 @@ async def load_assets():
         pipeline = ChronosPipeline.from_pretrained("amazon/chronos-t5-tiny", device_map="cpu", torch_dtype=torch.float32)
         logger.info("✅ Chronos pipeline loaded")
         
-        if os.path.exists("model_sampah_advanced.pkl"):
-            model_gbr = joblib.load("model_sampah_advanced.pkl")
-            logger.info("✅ Gradient Boosting model loaded")
+        model_path = "models/model_sampah_advanced.pkl" if os.path.exists("models/model_sampah_advanced.pkl") else "model_sampah_advanced.pkl"
+        if os.path.exists(model_path):
+            model_gbr = joblib.load(model_path)
+            logger.info(f"✅ Gradient Boosting model loaded from {model_path}")
         else:
-            logger.warning("⚠️ model_sampah_advanced.pkl not found")
+            logger.warning(f"⚠️ {model_path} not found")
         
         csv_path = "data/dataset_vibe_coder_2026.csv" if os.path.exists("data/dataset_vibe_coder_2026.csv") else "dataset_vibe_coder_2026.csv"
         df_history = pd.read_csv(csv_path)
