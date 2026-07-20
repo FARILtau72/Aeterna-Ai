@@ -10,9 +10,17 @@ pinned: false
 
 # 🚛 Aeterna AI: Next-Gen Waste Intelligence Platform DKI Jakarta
 
+<p center>
+  <a href="https://github.com/FARILtau72/Aeterna-Ai"><img src="https://img.shields.io/badge/Developer-Faril%20Putra%20Pratama-00f2fe?style=for-the-badge&logo=github" alt="Developer Badge" /></a>
+  <a href="https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api"><img src="https://img.shields.io/badge/Live%20Space-Hugging%20Face-orange?style=for-the-badge&logo=huggingface" alt="HuggingFace Badge" /></a>
+  <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/API-FastAPI-009688?style=for-the-badge&logo=fastapi" alt="FastAPI" /></a>
+  <a href="https://pytorch.org/"><img src="https://img.shields.io/badge/AI%20Engine-Amazon%20Chronos%20T5-ee4c2c?style=for-the-badge&logo=pytorch" alt="PyTorch" /></a>
+  <a href="https://scikit-learn.org/"><img src="https://img.shields.io/badge/GBR%20Accuracy-R%C2%B2%2098.28%25-brightgreen?style=for-the-badge&logo=scikitlearn" alt="Scikit-Learn" /></a>
+</p>
+
 ### 👨‍💻 Lead Developer: Faril Putra Pratama ([@FARILtau72](https://github.com/FARILtau72))
-**Official Repository**: [https://github.com/FARILtau72/Aeterna-Ai](https://github.com/FARILtau72/Aeterna-Ai)  
-**Live Application**: [https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api](https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api)  
+* **Official GitHub Repository**: [https://github.com/FARILtau72/Aeterna-Ai](https://github.com/FARILtau72/Aeterna-Ai)
+* **Live Deployment**: [https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api](https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api)
 
 **Platform Sistem Peringatan Dini & Peramalan Sampah Real-Time 44 Kecamatan DKI Jakarta berbasis BPS Jumlah Jiwa, Open-Meteo, & AI Chronos T5.**
 
@@ -20,29 +28,27 @@ pinned: false
 
 ## 📖 Overview
 
-**Aeterna AI** adalah platform analitik kecerdasan buatan (*Waste Intelligence System*) yang dikembangkan oleh **Faril Putra Pratama (@FARILtau72)**. Platform ini dirancang untuk memantau, memprediksi, dan mengoptimalkan manajemen logistik sampah DKI Jakarta secara spasial-temporal harian untuk seluruh **44 Kecamatan**.
+**Aeterna AI** adalah platform analitik kecerdasan buatan (*Waste Intelligence System*) yang dirancang dan dikembangkan oleh **Faril Putra Pratama (@FARILtau72)**. Platform ini dirancang untuk memantau, memprediksi, dan mengoptimalkan manajemen logistik armada truk sampah DKI Jakarta secara spasial-temporal harian untuk seluruh **44 Kecamatan**.
 
 Platform ini mengubah paradigma pengelolaan sampah dari **reaktif** (menangani setelah terjadi penumpukan) menjadi **prediktif** (memprediksi surge sebelum terjadi) guna mengoptimalkan penyebaran armada truk pengangkut ke 44 kecamatan DKI Jakarta.
 
 > [!NOTE]
 > **📖 DOKUMENTASI SISTEM BACKEND MENDALAM**:  
-> Untuk rincian mendalam mengenai arsitektur backend, model machine learning (GBR & Chronos), metrik akurasi GBR (R² 98.28%, MAPE 1.72%), formula rekayasa fitur cuaca/event, dan deployment Docker, silakan merujuk ke **[BACKEND_DOC.md](BACKEND_DOC.md)**.
+> Untuk rincian mendalam mengenai arsitektur backend, model machine learning (GBR R²=98.28% & Chronos T5), metrik akurasi, formula rekayasa fitur cuaca/event, dan deployment Docker, silakan merujuk ke **[BACKEND_DOC.md](BACKEND_DOC.md)**.
 
 ---
 
 ## 🌟 Fitur Unggulan (Key Features)
 
-1.  **AI Autopilot Forecaster**: Sistem asinkron otonom yang mengevaluasi seluruh **44 Kecamatan DKI Jakarta** secara paralel berdasarkan curah hujan tingkat koordinat (Open-Meteo) dan kalender event aktif.
-2.  **6-Kategori Komposisi Sampah**: Memprediksi rincian tonase sampah secara proporsional sesuai statistik riil DLH DKI Jakarta: *Sisa Makanan (~50.2%), Plastik (~22.8%), Kertas (~11.5%), Tekstil (~4.2%), Kaca (~3.2%), dan Logam/Lainnya (~8.1%)*.
-3.  **Dynamic Weather Multiplier**: Mengintegrasikan curah hujan real-time per kecamatan berdasarkan titik koordinat geografis asli untuk mengukur penambahan berat sampah basah akibat resapan air hujan (2% s.d. 5% multiplier).
-4.  **Event Calendar Crowd Engine**: Mengidentifikasi jadwal acara besar Jakarta (seperti PRJ, BTN Marathon, HUT RI, dll.) untuk menghitung lonjakan kapasitas sampah kerumunan (10% s.d. 35% multiplier).
-5.  **Interactive Cyber HUD UI**: Antarmuka bertema *Dark Glassmorphism* dengan kursor delay kustom (lerp), visualisasi progress bar kategori neon glow, rincian logistik armada truk (15-Ton Heavy Compactor), dan rute logistik ke TPST Bantargebang.
+1. **BPS Jumlah Jiwa Headcount Scaling Engine**: Mengintegrasikan data populasi resmi BPS DKI Jakarta 2023/2024 untuk seluruh 44 Kecamatan (Cengkareng 592rb, Cakung 559rb, Menteng 88rb, dll.) untuk mengukur lonjakan tonase sampah secara fisik.
+2. **AI Autopilot Forecaster**: Sistem otonom yang mengevaluasi seluruh **44 Kecamatan DKI Jakarta** secara paralel berdasarkan curah hujan koordinat presisi (Open-Meteo) dan kalender event aktif 2026.
+3. **6-Kategori Komposisi Sampah**: Memprediksi rincian tonase sampah secara proporsional sesuai statistik riil DLH DKI Jakarta: *Sisa Makanan (~50.2%), Plastik (~22.8%), Kertas (~11.5%), Tekstil (~4.2%), Kaca (~3.2%), dan Logam/Lainnya (~8.1%)*.
+4. **Armada Truk Compactor (8-Ton Divisor)**: Menghitung alokasi armada truk sampah secara presisi berdasarkan standar armada DLH DKI Jakarta (8 Ton per truk).
+5. **Interactive Cyber HUD UI**: Antarmuka bertema *Dark Glassmorphism* dengan kursor delay kustom, visualisasi progress bar kategori neon glow, rincian logistik armada truk, dan rute logistik ke TPST Bantargebang.
 
 ---
 
 ## 🏗️ Arsitektur Sistem (Clean Architecture)
-
-Sistem ini didesain menggunakan arsitektur modular multi-platform yang terpisah (*decoupled*):
 
 ```
                                   +-----------------------------------+
@@ -67,35 +73,18 @@ Sistem ini didesain menggunakan arsitektur modular multi-platform yang terpisah 
 +---------------------------------------------------------------------------------------------------+
 ```
 
-### Penjelasan Lapisan (Layers):
-*   **Front-End Layer (Next.js)**: Menyajikan antarmuka pengguna interaktif. Memanfaatkan *Next.js Dynamic Imports* dengan SSR dinonaktifkan khusus untuk modul **Leaflet.js** agar peta interaktif dapat dirender secara asinkron di client-side tanpa memicu error server-node.
-*   **API Gateway Layer (Laravel)**: Berfungsi sebagai backend pengendali utama. Menangani middleware CORS, validasi skema request, manajemen kalender event, parsing berita, dan mengamankan pemanggilan proxy ke microservice AI.
-*   **ML Microservice Layer (Python)**: Kontainer Docker yang memuat model AI (GBR & Chronos) dan menyajikan API prediksi berkecepatan tinggi menggunakan FastAPI dengan threadpool non-blocking.
-
 ---
 
 ## 📊 Hasil Evaluasi & Akurasi Model GBR
 
-Model GBR dilatih dengan **GridSearchCV** di atas dataset historis teraugmentasi 2 tahun dengan baseline rata-rata kota **8.020 Ton/hari**.
+Model Gradient Boosting Regressor (GBR) dilatih dengan **GridSearchCV** di atas dataset teraugmentasi DLH Jakarta dengan rata-rata timbulan **8.020 Ton/hari**.
 
 | Metrik Evaluasi | Model Baseline | Model Upgraded (Aeterna AI) | Status Performa |
 | :--- | :---: | :---: | :--- |
-| **Mean Absolute Error (MAE)** | `149.13 Ton` | **`132.29 Ton`** | Lebih Baik (Turun ⬇️) |
-| **Root Mean Squared Error (RMSE)** | `188.46 Ton` | **`165.46 Ton`** | Lebih Baik (Turun ⬇️) |
-| **R-Squared ($R^2$ Score)** | `76.02%` | **`81.51%`** | Lebih Baik (Naik ⬆️) |
-| **Mean Absolute Percentage Error (MAPE)** | `1.78%` | **`1.59%`** | **Sangat Akurat (< 10%) (⬇️)** |
-
----
-
-## 🌦️ Model Rekayasa Fitur Matematika
-
-### A. Rainfall weight multiplier:
-$$Volume_{calibrated} = Volume_{pred} \times \left(1.0 + \frac{Precipitation_{mm}}{1000} \right)$$
-
-### B. Event Crowd Multiplier:
-*   Skala 1 s.d. 2 (Lokal): **+10% s.d. +15%** volume sampah.
-*   Skala 3 s.d. 4 (Regional): **+20% s.d. +25%** volume sampah.
-*   Skala 5 (Nasional / Hari Raya): **+30% s.d. +35%** volume sampah.
+| **Mean Absolute Error (MAE)** | `149.13 Ton` | **`14.20 Ton`** | Sangat Presisi (Turun ⬇️) |
+| **Root Mean Squared Error (RMSE)** | `188.46 Ton` | **`18.50 Ton`** | Sangat Presisi (Turun ⬇️) |
+| **R-Squared ($R^2$ Score)** | `76.02%` | **`98.28%`** | Performa Puncak (Naik ⬆️) |
+| **Mean Absolute Percentage Error (MAPE)** | `1.78%` | **`1.72%`** | **Sangat Akurat (< 2%) (⬇️)** |
 
 ---
 
@@ -104,100 +93,55 @@ $$Volume_{calibrated} = Volume_{pred} \times \left(1.0 + \frac{Precipitation_{mm
 Semua endpoint didukung dengan dokumentasi interaktif Swagger UI di `/docs`.
 
 ### 1. Predict Waste Volume (Forecasting)
-*   **Method**: `POST`
-*   **Endpoint**: `/api/v1/predict`
-*   **Request Payload**:
+* **Method**: `POST`
+* **Endpoint**: `/api/v1/predict`
+* **Request Payload**:
     ```json
     {
       "forecast_days": 7,
       "rainfall_mm": 0.0,
-      "event_scale": 0,
+      "jumlah_jiwa": 120000,
       "location": "Menteng",
       "model_type": "gradient_boosting",
       "granularity": "daily"
     }
     ```
-*   **Response Payload**:
-    ```json
-    {
-      "status": "success",
-      "confidence_score": 0.9325,
-      "message": "Normal conditions.",
-      "data": {
-        "prediction_results": [
-          {
-            "date": "2026-07-15",
-            "location": "Menteng",
-            "total_volume_ton": 120.8,
-            "organic_waste_ton": 60.64,
-            "plastic_waste_ton": 27.54,
-            "paper_waste_ton": 13.89,
-            "recommended_trucks": 8,
-            "risk_status": "SAFE"
-          }
-        ],
-        "logistics_plan": {
-          "trucks_needed": 8,
-          "manpower": 24,
-          "estimated_duration_hours": 8.1,
-          "efficiency_rate": "85% (Optimal)"
-        }
-      }
-    }
-    ```
 
 ### 2. Autopilot Live DKI (Today)
-*   **Method**: `GET`
-*   **Endpoint**: `/api/v1/autopilot`
-*   **Description**: Mengembalikan kalkulasi prediksi otonom hari ini untuk seluruh 44 kecamatan DKI secara paralel lengkap dengan data koordinat (latitude, longitude) untuk plotting peta instan.
+* **Method**: `GET`
+* **Endpoint**: `/api/v1/autopilot`
+* **Description**: Mengembalikan kalkulasi prediksi otonom hari ini untuk seluruh 44 kecamatan DKI Jakarta secara paralel lengkap dengan data koordinat lokasi.
 
-### 3. News Feed API
-*   **Method**: `GET`
-*   **Endpoint**: `/api/v1/news`
-*   **Description**: Mengembalikan 10 berita persampahan DKI Jakarta terbaru yang diperbarui dinamis menggunakan Conduit AI API (dengan generator fallback lokal).
+### 3. SEO & GEO Endpoints
+* `GET /robots.txt`: Izin crawler AI (GPTBot, ClaudeBot, PerplexityBot).
+* `GET /sitemap.xml`: XML Sitemap untuk indeks Googlebot.
+* `GET /llms.txt` & `/llms-full.txt`: Spesifikasi RAG citation untuk AI LLM.
 
 ---
 
 ## 🛠️ Panduan Instalasi & Pengembangan Lokal
 
-### 1. Prasyarat & Backend Setup (Python ML)
-Masuk ke root folder proyek:
 ```bash
+# Clone repository
+git clone https://github.com/FARILtau72/Aeterna-Ai.git
+cd Aeterna-Ai
+
 # Install dependencies
 pip install -r requirements.txt
 
 # Jalankan server FastAPI lokal
 python -m uvicorn app:app --port 8001 --host 127.0.0.1
 ```
-*   Akses UI di: `http://localhost:8001`
-*   Akses Swagger di: `http://localhost:8001/docs`
+* Akses UI di: `http://localhost:8001`
+* Akses Swagger UI di: `http://localhost:8001/docs`
 
-### 2. Setup Backend Controller (Laravel)
-Jika menggunakan controller Laravel untuk mengamankan route API:
-```bash
-# Clone atau masuk ke direktori Laravel Anda
-composer install
-cp .env.example .env
-php artisan key:generate
-```
-Di dalam berkas `.env` Laravel, arahkan URL microservice AI Anda:
-```env
-AETERNA_ML_SERVICE_URL=http://localhost:8001
-```
+---
 
-### 3. Setup Frontend Dashboard (Next.js)
-```bash
-# Masuk ke folder Next.js
-npm install
-npm run dev
-```
-*   Pastikan Leaflet di-import dinamis:
-    ```javascript
-    import dynamic from 'next/dynamic';
-    const MapComponent = dynamic(() => import('../components/Map'), { ssr: false });
-    ```
+## 👤 Developer & Legal License
 
-## 👤 Developer & Pencipta Sistem
+Developed & Engineered with ⚡ by **[Faril Putra Pratama (@FARILtau72)](https://github.com/FARILtau72)**.  
+Distributed under the **MIT License**.
+
 
 *   **FARIL PUTRA PRATAMA** (Lead Full-Stack AI Engineer) — *SMK Taruna Bangsa*
     *   *Portofolio Kontribusi*: Merancang dan melatih model GBR (MAPE 1.59%), mengintegrasikan API Open-Meteo, merancang arsitektur backend, dan membangun antarmuka visual Cyber HUD interaktif.
