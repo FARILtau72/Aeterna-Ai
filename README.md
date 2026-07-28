@@ -15,7 +15,6 @@ pinned: false
   <a href="https://www.linkedin.com/in/faril-putra-pratama-81561a280/"><img src="https://img.shields.io/badge/LinkedIn-Faril%20Putra%20Pratama-0a66c2?style=for-the-badge&logo=linkedin" alt="LinkedIn Profile" /></a>
   <a href="https://github.com/FARILtau72/Aeterna-Ai"><img src="https://img.shields.io/badge/GitHub-FARILtau72-181717?style=for-the-badge&logo=github" alt="GitHub Badge" /></a>
   <a href="https://github.com/FARILtau72/Aeterna-Ai/stargazers"><img src="https://img.shields.io/github/stars/FARILtau72/Aeterna-Ai?style=for-the-badge&color=gold" alt="GitHub Stars" /></a>
-  <a href="https://scikit-learn.org/"><img src="https://img.shields.io/badge/GBR%20Accuracy-R%C2%B2%2098.28%25-brightgreen?style=for-the-badge&logo=scikitlearn" alt="Scikit-Learn" /></a>
 </p>
 
 > ⭐ **If you find Aeterna AI useful, please give this repository a Star on GitHub! Your support helps boost open-source smart city innovation!**
