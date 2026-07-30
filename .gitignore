@@ -6,3 +6,9 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 *.log
+
+# Machine Learning Artifacts
+models/*.pkl
+frontend/*.png
+data/dataset_real_kecamatan_2024_2025.csv
+
