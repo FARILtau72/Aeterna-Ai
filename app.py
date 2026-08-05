@@ -297,10 +297,20 @@ async def load_assets():
 
         if not os.path.exists(model_path) or not os.path.exists(meta_path):
             logger.info("⚡ Model/Metadata not found. Triggering automated dataset generation and Spatial ML training...")
+            import sys
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            scripts_dir = os.path.join(current_dir, "scripts")
+            if current_dir not in sys.path:
+                sys.path.insert(0, current_dir)
+            if scripts_dir not in sys.path:
+                sys.path.insert(0, scripts_dir)
+            
             try:
-                import scripts.build_and_train as builder
-            except ImportError:
                 import build_and_train as builder
+                builder.run_pipeline()
+            except ImportError:
+                import scripts.build_and_train as builder
+                builder.run_pipeline()
 
         if os.path.exists(model_path):
             model_gbr = joblib.load(model_path)

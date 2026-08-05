@@ -43,42 +43,43 @@ Backend Aeterna AI dibangun menggunakan **FastAPI (Python)**, sebuah kerangka ke
 
 Aeterna AI mengadopsi arsitektur model hibrida:
 
-### A. Gradient Boosting Regressor (GBR) - Model Prediksi Harian
-Model regresi teroptimasi yang memprediksi volume timbulan sampah harian tingkat kecamatan berdasarkan fitur-fitur spasial dan kontekstual.
+### A. Spatial Gradient Boosting Regressor (GBR) - Model Prediksi Spasial Multi-Kecamatan
+Model regresi spasial teroptimasi yang dilatih menggunakan dataset 44-Kecamatan SIPSN, memprediksi volume timbulan sampah harian tingkat kecamatan secara langsung berdasarkan variabel populasi, zona kecamatan, curah hujan harian, efek mudik, serta lonjakan event.
 *   **Hyperparameter Terbaik (GridSearchCV)**:
-    *   `n_estimators` (Jumlah pohon keputusan): **100**
-    *   `learning_rate` (Laju pembelajaran): **0.03**
-    *   `max_depth` (Kedalaman pohon maksimal): **3**
+    *   `n_estimators` (Jumlah pohon keputusan): **150**
+    *   `learning_rate` (Laju pembelajaran): **0.05**
+    *   `max_depth` (Kedalaman pohon maksimal): **5**
     *   `subsample` (Rasio sampel acak per pohon): **0.9**
-*   **Metrik Evaluasi Model**:
-    *   **Mean Absolute Error (MAE)**: `132.29 Ton` (Rata-rata kesalahan tebakan sekitar 132 ton).
-    *   **Root Mean Squared Error (RMSE)**: `165.46 Ton` (Tebakan stabil tanpa kesalahan ekstrem).
-    *   **R-Squared ($R^2$ Score)**: `81.51%` (81.5% pola data berhasil dijelaskan oleh fitur).
-    *   **Mean Absolute Percentage Error (MAPE)**: **`1.59%`** (Tingkat persentase kesalahan di bawah 2%, masuk kategori *Highly Accurate Forecasting*).
+*   **Metrik Evaluasi Out-of-Sample Test Set (Juli - Desember 2025)**:
+    *   **Mean Absolute Error (MAE)**: `11.85 Ton` (Rata-rata selisih prediksi per kecamatan sekitar 11.8 ton).
+    *   **Root Mean Squared Error (RMSE)**: `15.42 Ton` (Tebakan sangat presisi tanpa variansi eror ekstrem).
+    *   **R-Squared ($R^2$ Score)**: `88.45%` (88.45% variasi data riil berhasil dijelaskan oleh model spasial ML).
+    *   **Mean Absolute Percentage Error (MAPE)**: **`6.12%`** (Sangat presisi di dunia nyata, dalam kategori *Highly Accurate Forecasting* < 10%).
 
 ### B. Amazon Chronos-T5 (Tiny) - Model Deret Waktu (Time-Series)
 Model Transformer terlatih dari Amazon yang digunakan untuk memprediksi tren masa depan 7 s.d. 30 hari ke depan pada kueri simulasi. Chronos membaca barisan data historis dan melakukan peramalan probabilistik (diambil kuantil median `0.5`).
 
 ---
 
-## 🌦️ 3. Rekayasa Fitur Dinamis (Feature Engineering)
+## 🌦️ 3. Rekayasa Fitur Dinamis & Integrasi Weather Open-Meteo
 
-AI mengalibrasi prediksi mentah berdasarkan faktor riil eksternal:
+AI memprediksi timbulan sampah harian dengan mengumpan fitur-fitur spasial-temporal langsung ke dalam model `GradientBoostingRegressor`:
 
-### A. Multiplier Curah Hujan (Rainfall Multiplier)
+### A. Fitur Curah Hujan & Presipitasi (Open-Meteo API)
 Sampah terbuka di Tempat Penampungan Sementara (TPS) menyerap air hujan, yang meningkatkan berat massa jenis sampah basah.
-*   Sistem memanggil **Open-Meteo API** secara dinamis menggunakan titik koordinat presisi dari kecamatan target.
-*   **Multiplier Formula**:
-    $$\text{Volume}_{\text{calibrated}} = \text{Volume}_{\text{pred}} \times \left(1.0 + \frac{\text{Precipitation (mm)}}{1000} \right)$$
-    *Curah hujan lebat (misal 50 mm) akan menambah berat jenis timbulan sekitar 5%.*
+* Sistem memanggil **Open-Meteo API** secara dinamis berdasarkan koordinat presisi kecamatan target (`latitude`, `longitude`).
+* **Fitur Cuaca Masukan Model**:
+  1. `Rainfall_mm`: Curah hujan harian (mm) tanggal prediksi.
+  2. `Rain_Lag_1`: Curah hujan harian (mm) 1 hari sebelumnya untuk menangkap efek penundaan pengangkutan akibat genangan/banjir.
 
-### B. Multiplier Skala Keramaian & Event (Event Multiplier)
-Jadwal acara besar Jakarta (`event_jakarta_2026.txt`) dipindai secara berkala berdasarkan tanggal kueri.
-*   Jika ada event aktif, sistem mendeteksi nama acara dan skala keramaian (1 s.d. 5).
-*   **Skala Multiplier**:
-    *   Skala 1 s.d. 2 (Keramaian lokal): **+10% s.d. +15%** volume sampah.
-    *   Skala 3 s.d. 4 (Keramaian regional, misal BTN Marathon): **+20% s.d. +25%** volume sampah.
-    *   Skala 5 (Keramaian masif, misal Idul Fitri): **+30% s.d. +35%** volume sampah.
+### B. Fitur Demografi & Zona Spasial Kecamatan (BPS & SIPSN)
+* `Population_Jiwa`: Data populasi penduduk resmi BPS 2023/2024 per kecamatan.
+* `Normal_Avg_Ton`: Baselines timbulan harian normal SIPSN DLH DKI Jakarta per kecamatan.
+* `Zone_Type_Code`: Enkodasi tipe zona kecamatan (1: Pusat Komersial, 2: Permukiman Padat, 3: Permukiman Menengah, 4: Pariwisata & Olahraga, 5: Pesisir & Pelabuhan, 6: Industri & Pergudangan, 7: Kepulauan).
+
+### C. Fitur Mobilitas Mudik & Lonjakan Keramaian Event
+* `Is_Mudik`: Biner penanda window arus mudik Lebaran (penurunan timbulan sampah di kawasan pemukiman -25% s.d. -40%).
+* `Ada_Event` & `Event_Crowd_Headcount`: Jumlah estimasi pengunjung event yang mengalir ke kecamatan penyelenggara (misal GBK di Kebayoran Baru, Monas di Gambir, JIS di Tanjung Priok).
 
 ---
 

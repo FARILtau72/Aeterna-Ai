@@ -8,7 +8,11 @@ import joblib
 import sys
 import io
 import os
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+    HAS_MATPLOTLIB = True
+except ImportError:
+    HAS_MATPLOTLIB = False
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -148,30 +152,33 @@ for name, imp in sorted(zip(feature_cols, importances), key=lambda x: x[1], reve
 # ==========================================
 # 6. MODEL PERFORMANCE PLOT GENERATION
 # ==========================================
-print("\n[Plot] Membuat Visualisasi Scatter Plot Actual vs Predicted...")
-plt.figure(figsize=(10, 6))
-plt.scatter(y_test, pred_test, alpha=0.4, color='#00f2fe', edgecolors='#0072ff', label='Stacking Regressor Predictions')
-
-# Perfect prediction line (y = x)
-min_val = min(y_test.min(), pred_test.min())
-max_val = max(y_test.max(), pred_test.max())
-plt.plot([min_val, max_val], [min_val, max_val], color='#ff007f', linestyle='--', linewidth=2, label='Perfect Prediction')
-
-plt.title('Stacking Regressor: Actual vs Predicted Waste Volume (DKI Jakarta)', fontsize=14, color='#0f172a', pad=15)
-plt.xlabel('Actual Waste Volume (tons)', fontsize=12)
-plt.ylabel('Predicted Waste Volume (tons)', fontsize=12)
-plt.grid(True, linestyle=':', alpha=0.6)
-plt.legend(loc='upper left')
-
-# Dark theme styling adjustments
-plt.tight_layout()
-
-# Ensure target directories exist
-os.makedirs("frontend", exist_ok=True)
-plot_path = "frontend/model_actual_vs_predicted.png"
-plt.savefig(plot_path, dpi=150)
-plt.close()
-print(f"[Plot] Saved performance plot to '{plot_path}'!")
+if HAS_MATPLOTLIB:
+    print("\n[Plot] Membuat Visualisasi Scatter Plot Actual vs Predicted...")
+    plt.figure(figsize=(10, 6))
+    plt.scatter(y_test, pred_test, alpha=0.4, color='#00f2fe', edgecolors='#0072ff', label='Stacking Regressor Predictions')
+    
+    # Perfect prediction line (y = x)
+    min_val = min(y_test.min(), pred_test.min())
+    max_val = max(y_test.max(), pred_test.max())
+    plt.plot([min_val, max_val], [min_val, max_val], color='#ff007f', linestyle='--', linewidth=2, label='Perfect Prediction')
+    
+    plt.title('Stacking Regressor: Actual vs Predicted Waste Volume (DKI Jakarta)', fontsize=14, color='#0f172a', pad=15)
+    plt.xlabel('Actual Waste Volume (tons)', fontsize=12)
+    plt.ylabel('Predicted Waste Volume (tons)', fontsize=12)
+    plt.grid(True, linestyle=':', alpha=0.6)
+    plt.legend(loc='upper left')
+    
+    # Dark theme styling adjustments
+    plt.tight_layout()
+    
+    # Ensure target directories exist
+    os.makedirs("frontend", exist_ok=True)
+    plot_path = "frontend/model_actual_vs_predicted.png"
+    plt.savefig(plot_path, dpi=150)
+    plt.close()
+    print(f"[Plot] Saved performance plot to '{plot_path}'!")
+else:
+    print("\n[Plot] Skipping visualization plot generation because matplotlib is not installed.")
 
 # Save model artifacts
 os.makedirs("models", exist_ok=True)
