@@ -305,12 +305,11 @@ async def load_assets():
             if scripts_dir not in sys.path:
                 sys.path.insert(0, scripts_dir)
             
-            try:
-                import build_and_train as builder
-                builder.run_pipeline()
-            except ImportError:
-                import scripts.build_and_train as builder
-                builder.run_pipeline()
+            import scripts.build_and_train as builder
+            builder.run_pipeline()
+        # Re-evaluate paths in case the files were newly generated during startup
+        model_path = "models/model_sampah_advanced.pkl" if os.path.exists("models/model_sampah_advanced.pkl") else "model_sampah_advanced.pkl"
+        meta_path = "models/model_metadata.pkl" if os.path.exists("models/model_metadata.pkl") else "model_metadata.pkl"
 
         if os.path.exists(model_path):
             model_gbr = joblib.load(model_path)
