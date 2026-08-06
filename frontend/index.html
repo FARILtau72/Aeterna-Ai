@@ -214,31 +214,176 @@
 
         <!-- Sumber Data & Akuntabilitas -->
         <section class="container data-sources-section">
-            <h2 class="section-title">TRANSPARANSI SUMBER DATA</h2>
-            <div class="panel sources-panel">
-                <div class="sources-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1.5rem;">
-                    <div class="source-item">
-                        <h4 style="color:var(--cyan); margin-bottom:0.5rem; font-family:var(--font-display);">1. Timbulan Sampah</h4>
-                        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Data baseline disesuaikan dengan volume total ~8.020 Ton/hari dari <strong>Dinas Lingkungan Hidup (DLH) DKI Jakarta</strong> dan SIPSN Kementerian LHK.</p>
+            <h2 class="section-title">TRANSPARANSI DATA & METODE PENGUMPULAN</h2>
+            <div class="panel sources-panel" style="margin-bottom: 2rem;">
+                <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom: 1.5rem; font-family:var(--font-body); line-height: 1.6;">
+                    Aeterna AI mengintegrasikan berbagai macam data sekunder dan primer untuk menghasilkan prediksi pembuangan sampah yang presisi secara harian bagi wilayah administrasi DKI Jakarta.
+                </p>
+                <div class="sources-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1.5rem;">
+                    <div class="source-item panel" style="background:var(--soft-surface); border: 2px solid var(--border-color); padding: 1.2rem; border-radius: 12px;">
+                        <span style="font-size: 1.8rem; display:block; margin-bottom: 8px;">🏛️</span>
+                        <h4 style="color:var(--primary); margin-bottom:0.5rem; font-family:var(--font-display); font-weight: 800;">1. SIPSN & DLH DKI Jakarta</h4>
+                        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Data baseline disesuaikan dengan volume total **9.059 Ton/hari** dari Dinas Lingkungan Hidup DKI Jakarta tahun 2026.</p>
                     </div>
-                    <div class="source-item">
-                        <h4 style="color:var(--cyan); margin-bottom:0.5rem; font-family:var(--font-display);">2. Prediksi Cuaca</h4>
-                        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Data curah hujan ditarik live menggunakan <strong>Open-Meteo API</strong> berdasarkan koordinat geografis presisi masing-masing kecamatan.</p>
+                    <div class="source-item panel" style="background:var(--soft-surface); border: 2px solid var(--border-color); padding: 1.2rem; border-radius: 12px;">
+                        <span style="font-size: 1.8rem; display:block; margin-bottom: 8px;">🌧️</span>
+                        <h4 style="color:var(--primary); margin-bottom:0.5rem; font-family:var(--font-display); font-weight: 800;">2. BMKG & Open-Meteo API</h4>
+                        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Data curah hujan ditarik live menggunakan koordinat geografis presisi masing-masing kecamatan (resolusi 11 km).</p>
                     </div>
-                    <div class="source-item">
-                        <h4 style="color:var(--cyan); margin-bottom:0.5rem; font-family:var(--font-display);">3. Kalender Event & Transit</h4>
-                        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Pola mobilitas disimulasikan dari ridership harian <strong>MRT Jakarta</strong> (~85.000) dan kalender acara Jakarta untuk mengukur lonjakan kerumunan.</p>
+                    <div class="source-item panel" style="background:var(--soft-surface); border: 2px solid var(--border-color); padding: 1.2rem; border-radius: 12px;">
+                        <span style="font-size: 1.8rem; display:block; margin-bottom: 8px;">👥</span>
+                        <h4 style="color:var(--primary); margin-bottom:0.5rem; font-family:var(--font-display); font-weight: 800;">3. Proyeksi BPS & MRT Jakarta</h4>
+                        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Simulasi volume mobilitas disesuaikan dengan populasi registrasi BPS dan ridership transit harian.</p>
                     </div>
-                    <div class="source-item">
-                        <h4 style="color:var(--cyan); margin-bottom:0.5rem; font-family:var(--font-display);">4. Jarak Pengangkutan</h4>
-                        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Jarak tempuh dihitung menggunakan <strong>Haversine Formula</strong> dari koordinat kecamatan ke TPST Bantargebang dengan faktor jalan winding 1.35x.</p>
+                    <div class="source-item panel" style="background:var(--soft-surface); border: 2px solid var(--border-color); padding: 1.2rem; border-radius: 12px;">
+                        <span style="font-size: 1.8rem; display:block; margin-bottom: 8px;">🛣️</span>
+                        <h4 style="color:var(--primary); margin-bottom:0.5rem; font-family:var(--font-display); font-weight: 800;">4. Haversine & Winding Routing</h4>
+                        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Jarak logistik dihitung dari koordinat pusat kecamatan ke TPST Bantargebang dengan faktor winding jalan raya sebesar 1.35x.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ingestion Pipeline Flow Visual -->
+            <div class="panel flow-visual-panel" style="margin-bottom: 2rem;">
+                <h3 class="panel-subtitle" style="margin-bottom: 1.5rem;">ALIRAN PENGOLAHAN DATA (DATA PIPELINE FLOW)</h3>
+                <div class="pipeline-flow-container">
+                    <div class="flow-step">
+                        <div class="flow-icon">📥 Ingest</div>
+                        <div class="flow-title">Data Ingestion</div>
+                        <div class="flow-desc">Ditarik dari API Cuaca, BPS Jumlah Jiwa, & Kalender Acara Jakarta</div>
+                    </div>
+                    <div class="flow-arrow">➡️</div>
+                    <div class="flow-step">
+                        <div class="flow-icon">⚙️ Process</div>
+                        <div class="flow-title">Feature Engineering</div>
+                        <div class="flow-desc">Ekstraksi Lag Hujan, Is_Weekend, Is_Mudik, & Skala Crowd Event</div>
+                    </div>
+                    <div class="flow-arrow">➡️</div>
+                    <div class="flow-step">
+                        <div class="flow-icon">🧠 Predict</div>
+                        <div class="flow-title">Stacking Inference</div>
+                        <div class="flow-desc">Evaluasi prediksi spasial ensembles harian 44 Kecamatan</div>
+                    </div>
+                    <div class="flow-arrow">➡️</div>
+                    <div class="flow-step">
+                        <div class="flow-icon">🚛 Dispatch</div>
+                        <div class="flow-title">Logistics Planning</div>
+                        <div class="flow-desc">Hasil tonase & rekomendasi armada truk dikirim ke dashboard</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metodologi & Arsitektur ML -->
+        <section class="container ml-architecture-section" style="margin-bottom: 2.5rem;">
+            <h2 class="section-title">METODOLOGI & ARSITEKTUR MACHINE LEARNING</h2>
+            <div class="ml-grid-layout">
+                <!-- Stack diagram panel -->
+                <div class="panel diagram-panel">
+                    <h3 class="panel-subtitle" style="margin-bottom: 1.5rem;">STRUKTUR MODEL ENSEMBLE STACKING REGRESSOR</h3>
+                    <div class="stacking-diagram">
+                        <div class="diagram-layer input-layer">
+                            <span class="layer-title">Input Features</span>
+                            <div class="layer-nodes">
+                                <span class="node-tag">Population</span>
+                                <span class="node-tag">Rainfall</span>
+                                <span class="node-tag">Rain Lag 1</span>
+                                <span class="node-tag">Is_Weekend</span>
+                                <span class="node-tag">Normal_Avg</span>
+                                <span class="node-tag">Is_Mudik</span>
+                            </div>
+                        </div>
+                        
+                        <div class="diagram-connector">⬇️</div>
+                        
+                        <div class="diagram-layer base-layer">
+                            <span class="layer-title">Base Estimators (Ensemble)</span>
+                            <div class="layer-estimators">
+                                <div class="estimator-card">
+                                    <span class="est-name">Decision Tree</span>
+                                    <span class="est-desc">Deteksi relasi non-linear & percabangan fitur cuaca</span>
+                                </div>
+                                <div class="estimator-card">
+                                    <span class="est-name">Random Forest</span>
+                                    <span class="est-desc">Ensemble bagging mengurangi varians prediksi outlier</span>
+                                </div>
+                                <div class="estimator-card">
+                                    <span class="est-name">Gradient Boosting (GBR)</span>
+                                    <span class="est-desc">Optimasi boosting linier memperbaiki residu eror</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="diagram-connector">⬇️</div>
+                        
+                        <div class="diagram-layer meta-layer">
+                            <span class="layer-title">Meta-Estimator</span>
+                            <div class="estimator-card meta-card">
+                                <span class="est-name">Ridge Regressor (L2 Penalty)</span>
+                                <span class="est-desc">Menggabungkan tebakan base model untuk mencegah overfitting</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Model Performance Panel -->
+                <div class="panel metrics-panel">
+                    <h3 class="panel-subtitle" style="margin-bottom: 1.5rem;">METRIK PERFORMA MODEL (EVALUASI KRONOLOGIS)</h3>
+                    <div class="metrics-dashboard-grid">
+                        <div class="metric-score-card">
+                            <span class="score-num" style="color:var(--primary);">96.41%</span>
+                            <span class="score-label">R² Score (Akurasi Varian)</span>
+                        </div>
+                        <div class="metric-score-card">
+                            <span class="score-num" style="color:var(--secondary);">6.01%</span>
+                            <span class="score-label">MAPE (Error Persentase)</span>
+                        </div>
+                        <div class="metric-score-card">
+                            <span class="score-num" style="color:var(--red);">12.63 T</span>
+                            <span class="score-label">MAE (Absolute Error harian)</span>
+                        </div>
+                        <div class="metric-score-card">
+                            <span class="score-num" style="color:var(--text-main);">16.97 T</span>
+                            <span class="score-label">RMSE (Penalti Deviasi)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="divider" style="margin:1rem 0;"></div>
+                    
+                    <h4 style="color:var(--primary); margin-bottom:0.8rem; font-family:var(--font-display); font-size:0.9rem; text-transform:uppercase;">Feature Importance Breakdown:</h4>
+                    <div class="features-importance-list">
+                        <div class="feat-importance-item">
+                            <span class="feat-name">Normal Average</span>
+                            <div class="bar-container"><div class="bar" style="width: 92.2%; background: var(--primary);"></div></div>
+                            <span class="feat-percent">92.24%</span>
+                        </div>
+                        <div class="feat-importance-item">
+                            <span class="feat-name">Zona Wilayah</span>
+                            <div class="bar-container"><div class="bar" style="width: 15%; background: var(--secondary-container);"></div></div>
+                            <span class="feat-percent">2.32%</span>
+                        </div>
+                        <div class="feat-importance-item">
+                            <span class="feat-name">Populasi Jiwa</span>
+                            <div class="bar-container"><div class="bar" style="width: 13%; background: var(--sky-blue);"></div></div>
+                            <span class="feat-percent">2.19%</span>
+                        </div>
+                        <div class="feat-importance-item">
+                            <span class="feat-name">Lebaran (Is_Mudik)</span>
+                            <div class="bar-container"><div class="bar" style="width: 11%; background: var(--red);"></div></div>
+                            <span class="feat-percent">1.92%</span>
+                        </div>
+                        <div class="feat-importance-item">
+                            <span class="feat-name">Curah Hujan</span>
+                            <div class="bar-container"><div class="bar" style="width: 6%; background: var(--leaf-green);"></div></div>
+                            <span class="feat-percent">0.66%</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Development Author Section -->
-        <section class="container developers-section">
+        <section class="container developers-section" style="margin-bottom: 2.5rem;">
             <h2 class="section-title">AETERNA AI LEAD DEVELOPER</h2>
             <div class="developers-grid" style="display: flex; justify-content: center;">
                 <div class="panel developer-card" style="max-width: 600px; width: 100%;">

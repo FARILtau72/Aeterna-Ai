@@ -1527,3 +1527,267 @@ footer {
     45% { transform: rotate(-15deg) scale(1.1); }
 }
 
+/* ==========================================
+   HOMEPAGE EXPANDED PIPELINE & ARCHITECTURE
+   ========================================== */
+.pipeline-flow-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.flow-step {
+    background: #ffffff;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.2rem;
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 107, 95, 0.01);
+    transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.25s;
+}
+
+.flow-step:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: 0 8px 20px rgba(0, 107, 95, 0.05);
+}
+
+.flow-icon {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+}
+
+.flow-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--primary);
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+}
+
+.flow-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.flow-arrow {
+    font-size: 1.5rem;
+    color: var(--border-color);
+    user-select: none;
+}
+
+@media (max-width: 768px) {
+    .pipeline-flow-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .flow-arrow {
+        text-align: center;
+        transform: rotate(90deg);
+        margin: 6px 0;
+    }
+}
+
+/* Stacking Architecture Grid */
+.ml-grid-layout {
+    display: grid;
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: 24px;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 992px) {
+    .ml-grid-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.stacking-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.diagram-layer {
+    width: 100%;
+    background: var(--soft-surface);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.2rem;
+    text-align: center;
+}
+
+.layer-title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
+}
+
+.layer-nodes {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.node-tag {
+    background: #ffffff;
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-main);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.diagram-connector {
+    font-size: 1.2rem;
+    color: var(--border-color);
+    user-select: none;
+}
+
+.layer-estimators {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 100%;
+}
+
+@media (max-width: 576px) {
+    .layer-estimators {
+        grid-template-columns: 1fr;
+    }
+}
+
+.estimator-card {
+    background: #ffffff;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.estimator-card .est-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--primary);
+    font-size: 0.85rem;
+}
+
+.estimator-card .est-desc {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+}
+
+.meta-card {
+    max-width: 320px;
+    margin: 0 auto;
+    background: var(--bg-panel);
+    border-color: var(--primary);
+    box-shadow: 0 4px 10px rgba(0, 107, 95, 0.08);
+}
+
+/* Metrics Dashboard Cards */
+.metrics-dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.metric-score-card {
+    background: var(--soft-surface);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.01);
+}
+
+.metric-score-card .score-num {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 4px;
+}
+
+.metric-score-card .score-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Feature Importance Horizontal Chart */
+.features-importance-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 0.5rem;
+}
+
+.feat-importance-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 0.8rem;
+}
+
+.feat-importance-item .feat-name {
+    flex: 1.8;
+    font-weight: 700;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.feat-importance-item .bar-container {
+    flex: 3;
+    background: var(--border-color);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    opacity: 0.85;
+}
+
+.feat-importance-item .bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease-out;
+}
+
+.feat-importance-item .feat-percent {
+    flex: 0.8;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--text-main);
+    text-align: right;
+}
+
+
