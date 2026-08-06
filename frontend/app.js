@@ -241,7 +241,7 @@ function initMap() {
         minZoom: 9
     }).setView([-6.175, 106.825], 11.5);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         maxZoom: 20
     }).addTo(map);
 
@@ -842,7 +842,7 @@ class DataParticle {
         }
     }
     draw() {
-        ctx.fillStyle = `rgba(0, 240, 255, ${this.alpha})`;
+        ctx.fillStyle = `rgba(0, 107, 95, ${this.alpha})`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -868,7 +868,7 @@ class RainDrop {
         }
     }
     draw() {
-        ctx.strokeStyle = `rgba(0, 240, 255, ${this.alpha})`;
+        ctx.strokeStyle = `rgba(0, 107, 95, ${this.alpha})`;
         ctx.lineWidth = this.weight;
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);
