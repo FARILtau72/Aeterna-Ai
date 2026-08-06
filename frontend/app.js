@@ -401,10 +401,10 @@ async function fetchLiveWeather(loc) {
         
         if (weatherAlert) {
             if (precipToday > 30) {
-                weatherAlert.textContent = "HEAVY RAIN 🟡";
+                weatherAlert.textContent = "HEAVY RAIN";
                 weatherAlert.className = "highlight text-warning";
             } else if (precipToday > 50) {
-                weatherAlert.textContent = "FLOOD DANGER 🔴";
+                weatherAlert.textContent = "FLOOD RISK ALERT";
                 weatherAlert.className = "highlight text-red";
             } else {
                 weatherAlert.textContent = "Normal conditions";
@@ -524,7 +524,7 @@ function updateDashboardData(data, confScore, message) {
 
     const eventDay = results.find(r => r.event_info !== null);
     if (eventDay) {
-        if (eventDescText) eventDescText.innerHTML = `⚠️ <strong>${eventDay.event_info}</strong> on ${eventDay.date}. Heavy crowd expected near site.`;
+        if (eventDescText) eventDescText.innerHTML = `<strong>${eventDay.event_info}</strong> on ${eventDay.date}. Heavy crowd expected near site.`;
         const eBox = document.getElementById("event-box");
         if (eBox) eBox.style.borderColor = "var(--red)";
     } else {

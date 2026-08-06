@@ -166,11 +166,25 @@
                     </div>
                 </div>
 
-                <!-- Eco-Joy Interactive CSS Animation -->
+                <!-- Eco-Joy Interactive CSS Animation (Custom Shapes) -->
                 <div class="eco-animation-container">
                     <div class="monitoring-center">
-                        <div class="monitoring-person" title="Faril Putra Pratama (Monitoring)">🧑‍💻</div>
-                        <div class="monitoring-screen">📊 Aeterna AI: active</div>
+                        <div class="monitoring-avatar" title="Faril Putra Pratama (Monitoring)">
+                            <div class="avatar-head"></div>
+                            <div class="avatar-body"></div>
+                        </div>
+                        <div class="monitoring-screen-visual">
+                            <div class="screen-header">
+                                <span class="dot red-dot"></span>
+                                <span class="dot green-dot"></span>
+                            </div>
+                            <div class="screen-chart">
+                                <div class="chart-bar bar-1"></div>
+                                <div class="chart-bar bar-2"></div>
+                                <div class="chart-bar bar-3"></div>
+                            </div>
+                            <span class="screen-label">AETERNA AI</span>
+                        </div>
                         <div class="monitoring-waves">
                             <span class="wave"></span>
                             <span class="wave"></span>
@@ -178,8 +192,16 @@
                     </div>
                     
                     <div class="animation-road">
-                        <div class="eco-truck">🚛</div>
-                        <div class="trash-bin">🗑️</div>
+                        <div class="vector-truck">
+                            <div class="truck-cabin"></div>
+                            <div class="truck-box"></div>
+                            <div class="truck-wheel wheel-1"></div>
+                            <div class="truck-wheel wheel-2"></div>
+                        </div>
+                        <div class="vector-bin">
+                            <div class="bin-lid"></div>
+                            <div class="bin-body"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -221,23 +243,23 @@
                 </p>
                 <div class="sources-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1.5rem;">
                     <div class="source-item panel" style="background:var(--soft-surface); border: 2px solid var(--border-color); padding: 1.2rem; border-radius: 12px;">
-                        <span style="font-size: 1.8rem; display:block; margin-bottom: 8px;">🏛️</span>
-                        <h4 style="color:var(--primary); margin-bottom:0.5rem; font-family:var(--font-display); font-weight: 800;">1. SIPSN & DLH DKI Jakarta</h4>
+                        <span class="source-num">01</span>
+                        <h4 style="color:var(--primary); margin-bottom:0.5rem; font-family:var(--font-display); font-weight: 800; margin-top: 10px;">SIPSN & DLH DKI Jakarta</h4>
                         <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Data baseline disesuaikan dengan volume total **9.059 Ton/hari** dari Dinas Lingkungan Hidup DKI Jakarta tahun 2026.</p>
                     </div>
                     <div class="source-item panel" style="background:var(--soft-surface); border: 2px solid var(--border-color); padding: 1.2rem; border-radius: 12px;">
-                        <span style="font-size: 1.8rem; display:block; margin-bottom: 8px;">🌧️</span>
-                        <h4 style="color:var(--primary); margin-bottom:0.5rem; font-family:var(--font-display); font-weight: 800;">2. BMKG & Open-Meteo API</h4>
+                        <span class="source-num">02</span>
+                        <h4 style="color:var(--primary); margin-bottom:0.5rem; font-family:var(--font-display); font-weight: 800; margin-top: 10px;">BMKG & Open-Meteo API</h4>
                         <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Data curah hujan ditarik live menggunakan koordinat geografis presisi masing-masing kecamatan (resolusi 11 km).</p>
                     </div>
                     <div class="source-item panel" style="background:var(--soft-surface); border: 2px solid var(--border-color); padding: 1.2rem; border-radius: 12px;">
-                        <span style="font-size: 1.8rem; display:block; margin-bottom: 8px;">👥</span>
-                        <h4 style="color:var(--primary); margin-bottom:0.5rem; font-family:var(--font-display); font-weight: 800;">3. Proyeksi BPS & MRT Jakarta</h4>
+                        <span class="source-num">03</span>
+                        <h4 style="color:var(--primary); margin-bottom:0.5rem; font-family:var(--font-display); font-weight: 800; margin-top: 10px;">Proyeksi BPS & MRT Jakarta</h4>
                         <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Simulasi volume mobilitas disesuaikan dengan populasi registrasi BPS dan ridership transit harian.</p>
                     </div>
                     <div class="source-item panel" style="background:var(--soft-surface); border: 2px solid var(--border-color); padding: 1.2rem; border-radius: 12px;">
-                        <span style="font-size: 1.8rem; display:block; margin-bottom: 8px;">🛣️</span>
-                        <h4 style="color:var(--primary); margin-bottom:0.5rem; font-family:var(--font-display); font-weight: 800;">4. Haversine & Winding Routing</h4>
+                        <span class="source-num">04</span>
+                        <h4 style="color:var(--primary); margin-bottom:0.5rem; font-family:var(--font-display); font-weight: 800; margin-top: 10px;">Haversine & Winding Routing</h4>
                         <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Jarak logistik dihitung dari koordinat pusat kecamatan ke TPST Bantargebang dengan faktor winding jalan raya sebesar 1.35x.</p>
                     </div>
                 </div>
@@ -248,25 +270,25 @@
                 <h3 class="panel-subtitle" style="margin-bottom: 1.5rem;">ALIRAN PENGOLAHAN DATA (DATA PIPELINE FLOW)</h3>
                 <div class="pipeline-flow-container">
                     <div class="flow-step">
-                        <div class="flow-icon">📥 Ingest</div>
+                        <div class="flow-icon-text">Ingest</div>
                         <div class="flow-title">Data Ingestion</div>
                         <div class="flow-desc">Ditarik dari API Cuaca, BPS Jumlah Jiwa, & Kalender Acara Jakarta</div>
                     </div>
-                    <div class="flow-arrow">➡️</div>
+                    <div class="flow-arrow">&rarr;</div>
                     <div class="flow-step">
-                        <div class="flow-icon">⚙️ Process</div>
+                        <div class="flow-icon-text">Process</div>
                         <div class="flow-title">Feature Engineering</div>
                         <div class="flow-desc">Ekstraksi Lag Hujan, Is_Weekend, Is_Mudik, & Skala Crowd Event</div>
                     </div>
-                    <div class="flow-arrow">➡️</div>
+                    <div class="flow-arrow">&rarr;</div>
                     <div class="flow-step">
-                        <div class="flow-icon">🧠 Predict</div>
+                        <div class="flow-icon-text">Predict</div>
                         <div class="flow-title">Stacking Inference</div>
                         <div class="flow-desc">Evaluasi prediksi spasial ensembles harian 44 Kecamatan</div>
                     </div>
-                    <div class="flow-arrow">➡️</div>
+                    <div class="flow-arrow">&rarr;</div>
                     <div class="flow-step">
-                        <div class="flow-icon">🚛 Dispatch</div>
+                        <div class="flow-icon-text">Dispatch</div>
                         <div class="flow-title">Logistics Planning</div>
                         <div class="flow-desc">Hasil tonase & rekomendasi armada truk dikirim ke dashboard</div>
                     </div>
@@ -294,7 +316,7 @@
                             </div>
                         </div>
                         
-                        <div class="diagram-connector">⬇️</div>
+                        <div class="diagram-connector">&darr;</div>
                         
                         <div class="diagram-layer base-layer">
                             <span class="layer-title">Base Estimators (Ensemble)</span>
@@ -314,7 +336,7 @@
                             </div>
                         </div>
                         
-                        <div class="diagram-connector">⬇️</div>
+                        <div class="diagram-connector">&darr;</div>
                         
                         <div class="diagram-layer meta-layer">
                             <span class="layer-title">Meta-Estimator</span>
