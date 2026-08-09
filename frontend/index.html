@@ -200,27 +200,27 @@
         <section class="container crisis-story-section" style="margin-top: 4rem; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 3rem; position: relative;">
             
             <!-- Sticky Left Panel (Waste Tower Visualizer) -->
-            <div class="sticky-visualizer-panel" style="position: sticky; top: 120px; height: 450px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(5, 12, 10, 0.4); border: 1px solid var(--border-color); border-radius: 16px; padding: 2rem; overflow: hidden; box-shadow: 0 0 30px rgba(16, 185, 129, 0.05);">
-                <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: #FFF; margin-bottom: 1.5rem; letter-spacing: 1px; text-transform: uppercase;">JAKARTA DAILY ACCUMULATION TOWER</h3>
+            <div class="sticky-visualizer-panel" style="position: sticky; top: 120px; height: 450px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 2rem; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);">
+                <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: var(--text-main); margin-bottom: 1.5rem; letter-spacing: 1px; text-transform: uppercase;">JAKARTA DAILY ACCUMULATION TOWER</h3>
                 
                 <!-- The Wireframe Tower -->
-                <div class="waste-tower-outline" style="position: relative; width: 140px; height: 260px; border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 12px 12px 0 0; background: rgba(255,255,255,0.01); overflow: hidden; display: flex; align-items: flex-end;">
+                <div class="waste-tower-outline" style="position: relative; width: 140px; height: 260px; border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 12px 12px 0 0; background: rgba(0,0,0,0.02); overflow: hidden; display: flex; align-items: flex-end;">
                     <!-- Raising Waste Fill -->
-                    <div id="waste-pile-fill" style="width: 100%; height: 10%; background: linear-gradient(180deg, var(--yellow) 0%, #78350F 100%); opacity: 0.85; transition: height 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);">
+                    <div id="waste-pile-fill" style="width: 100%; height: 10%; background: linear-gradient(180deg, var(--yellow) 0%, #b45309 100%); opacity: 0.85; transition: height 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);">
                         <!-- Bubbles/Particles inside fill -->
-                        <div class="waste-steam" style="position: absolute; top: -10px; left: 0; width: 100%; height: 12px; background: rgba(245, 158, 11, 0.6); filter: blur(4px); animation: steam-pulse 1.5s infinite alternate; pointer-events: none;"></div>
+                        <div class="waste-steam" style="position: absolute; top: -10px; left: 0; width: 100%; height: 12px; background: rgba(245, 158, 11, 0.4); filter: blur(4px); animation: steam-pulse 1.5s infinite alternate; pointer-events: none;"></div>
                     </div>
                     
                     <!-- Height Markers -->
-                    <div style="position: absolute; right: 10px; top: 10px; font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.3); pointer-events: none;">CRITICAL</div>
-                    <div style="position: absolute; right: 10px; top: 120px; font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.3); pointer-events: none;">WARNING</div>
-                    <div style="position: absolute; right: 10px; top: 230px; font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.3); pointer-events: none;">NORMAL</div>
+                    <div style="position: absolute; right: 10px; top: 10px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); opacity: 0.6; pointer-events: none;">CRITICAL</div>
+                    <div style="position: absolute; right: 10px; top: 120px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); opacity: 0.6; pointer-events: none;">WARNING</div>
+                    <div style="position: absolute; right: 10px; top: 230px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); opacity: 0.6; pointer-events: none;">NORMAL</div>
                 </div>
                 
                 <!-- Live Ticking Indicator -->
                 <div class="tower-status" style="margin-top: 1.5rem; text-align: center;">
                     <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Simulated Tonnage</div>
-                    <div style="font-family: var(--font-mono); font-size: 1.8rem; color: var(--yellow); font-weight: bold; text-shadow: 0 0 10px rgba(245,158,11,0.2);" id="simulated-tons-val">905 Tons</div>
+                    <div style="font-family: var(--font-mono); font-size: 1.8rem; color: var(--yellow); font-weight: bold;" id="simulated-tons-val">905 Tons</div>
                 </div>
             </div>
 
@@ -228,23 +228,23 @@
             <div class="story-scroll-cards" style="display: flex; flex-direction: column; gap: 6rem; padding-bottom: 8rem;">
                 
                 <!-- Card 1 -->
-                <div class="story-card panel" data-height="25" data-tons="2264" style="padding: 2.2rem; min-height: 250px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; background: rgba(8,18,14,0.6); border:1px solid var(--border-color); border-radius:12px;">
+                <div class="story-card panel" data-height="25" data-tons="2264" style="padding: 2.2rem; min-height: 250px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; border:1px solid var(--border-color); border-radius:12px;">
                     <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; display: block;">STAGE 01: MORNING LOADS (09:00 AM)</span>
-                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: #FFF; margin-bottom: 0.8rem;">2.264 TON SAMPAH TERKUMPUL</h3>
+                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--text-main); margin-bottom: 0.8rem;">2.264 TON SAMPAH TERKUMPUL</h3>
                     <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">Memasuki jam kerja awal, tumpukan sampah dari pasar tradisional dan wilayah residensial se-DKI Jakarta mulai berdatangan di TPS. Kecepatan pengangkutan sangat krusial agar TPS lokal tidak mengalami kelumpuhan penumpukan.</p>
                 </div>
 
                 <!-- Card 2 -->
-                <div class="story-card panel" data-height="55" data-tons="4982" style="padding: 2.2rem; min-height: 250px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; background: rgba(8,18,14,0.6); border:1px solid var(--border-color); border-radius:12px;">
+                <div class="story-card panel" data-height="55" data-tons="4982" style="padding: 2.2rem; min-height: 250px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; border:1px solid var(--border-color); border-radius:12px;">
                     <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; display: block;">STAGE 02: MID-DAY PEAK (03:00 PM)</span>
-                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: #FFF; margin-bottom: 0.8rem;">4.982 TON SAMPAH TERKUMPUL</h3>
+                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--text-main); margin-bottom: 0.8rem;">4.982 TON SAMPAH TERKUMPUL</h3>
                     <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">Di siang hari, aktivitas logistik pengiriman sampah ke TPST Bantargebang memuncak. Kepadatan lalu lintas jalan tol Jakarta-Bekasi dan antrean panjang truk di gerbang timbang Bantargebang mulai memicu bottleneck operasional pengangkutan.</p>
                 </div>
 
                 <!-- Card 3 -->
-                <div class="story-card panel" data-height="95" data-tons="9059" style="padding: 2.2rem; min-height: 250px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; background: rgba(8,18,14,0.6); border:1px solid var(--border-color); border-radius:12px;">
+                <div class="story-card panel" data-height="95" data-tons="9059" style="padding: 2.2rem; min-height: 250px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; border:1px solid var(--border-color); border-radius:12px;">
                     <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--red); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; display: block;">STAGE 03: EOD OVERLOAD (11:59 PM)</span>
-                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: #FFF; margin-bottom: 0.8rem;">9.059 TON SAMPAH HARIAN</h3>
+                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--text-main); margin-bottom: 0.8rem;">9.059 TON SAMPAH HARIAN</h3>
                     <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">Sebelum hari berakhir, total timbulan sampah DKI mencapai kapasitas maksimalnya. TPST Bantargebang yang kini melebihi daya tampung aman (ketinggian gunungan sampah di atas 50 meter) berada pada status siaga kritis. Di sinilah Aeterna AI memitigasi krisis tersebut dengan analisis logistik prediktif.</p>
                 </div>
 
@@ -540,21 +540,21 @@
                 </div>
             </div>
         </section>
-        <!-- Developer & Architect Bio Card -->
+        <!-- Developer Bio Card -->
         <section class="container developer-container" style="margin-top: 2rem; margin-bottom: 2.5rem;">
-            <div class="panel developer-panel" style="border: 1px solid rgba(0, 242, 254, 0.4); background: rgba(5, 15, 25, 0.75); border-radius: 12px; padding: 1.8rem; text-align: center; box-shadow: 0 8px 32px rgba(0, 242, 254, 0.15); backdrop-filter: blur(10px);">
-                <h3 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: #ffffff; letter-spacing: 1.5px; margin-bottom: 0.8rem; text-transform: uppercase;">FARIL PUTRA PRATAMA</h3>
-                <p style="color: rgba(255, 255, 255, 0.85); font-size: 0.92rem; line-height: 1.6; max-width: 780px; margin: 0 auto 1.2rem auto; font-family: var(--font-sans);">
+            <div class="panel developer-panel" style="text-align: center; padding: 2.2rem;">
+                <h3 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: var(--text-main); letter-spacing: 1.5px; margin-bottom: 0.8rem; text-transform: uppercase;">FARIL PUTRA PRATAMA</h3>
+                <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; max-width: 780px; margin: 0 auto 1.5rem auto; font-family: var(--font-body);">
                     Merancang dan membangun seluruh arsitektur Aeterna AI dari ujung ke ujung. Meliputi riset data, pelatihan model cerdas GBR &amp; GridSearchCV, pembuatan arsitektur micro-service asinkron, hingga visualisasi antarmuka HUD Glassmorphism interaktif.
                 </p>
                 <div style="display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap;">
-                    <a href="https://github.com/FARILtau72/Aeterna-Ai" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 242, 254, 0.12); color: #00f2fe; border: 1px solid rgba(0, 242, 254, 0.4); padding: 8px 20px; border-radius: 6px; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; text-decoration: none; transition: all 0.3s ease;">
+                    <a href="https://github.com/FARILtau72/Aeterna-Ai" target="_blank" rel="noopener noreferrer" class="action-btn" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 10px 22px;">
                         <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                        GitHub Repository
+                        GitHub
                     </a>
-                    <a href="https://www.linkedin.com/in/faril-putra-pratama-81561a280/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; background: rgba(10, 102, 194, 0.2); color: #00a0dc; border: 1px solid rgba(10, 102, 194, 0.5); padding: 8px 20px; border-radius: 6px; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; text-decoration: none; transition: all 0.3s ease;">
+                    <a href="https://www.linkedin.com/in/faril-putra-pratama-81561a280/" target="_blank" rel="noopener noreferrer" class="action-btn secondary-btn" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 10px 22px;">
                         <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.762-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                        LinkedIn Profile
+                        LinkedIn
                     </a>
                 </div>
             </div>

@@ -842,7 +842,7 @@ class DataParticle {
         }
     }
     draw() {
-        ctx.fillStyle = `rgba(0, 240, 255, ${this.alpha})`;
+        ctx.fillStyle = `rgba(5, 150, 105, ${this.alpha * 0.4})`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -868,7 +868,7 @@ class RainDrop {
         }
     }
     draw() {
-        ctx.strokeStyle = `rgba(0, 240, 255, ${this.alpha})`;
+        ctx.strokeStyle = `rgba(5, 150, 105, ${this.alpha * 0.4})`;
         ctx.lineWidth = this.weight;
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);
