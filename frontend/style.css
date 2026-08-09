@@ -1,22 +1,22 @@
-/* CSS Variables for Bright Eco-Sustainability Theming */
+/* CSS Variables for Dark Cyber-Eco Gaming HUD Theming */
 :root {
-    --bg-void: #EAF4E8; /* Lightest soft mint green (warm, no glare) */
-    --bg-panel: #FFFFFF; /* Pure White Card for high contrast surface */
-    --border-color: #D0E7CD; /* Soft leaf border */
-    --border-hover: #A9D08E; /* Meadow green on hover */
+    --bg-void: #070C08; /* Deep rich forest black */
+    --bg-panel: rgba(14, 22, 16, 0.82); /* Glassmorphic dark green-charcoal */
+    --border-color: rgba(112, 173, 71, 0.18); /* Glowing forest green border */
+    --border-hover: rgba(112, 173, 71, 0.4); /* Brighter glowing green on hover */
     
-    --text-main: #2C402B; /* Dark forest green (professional, soft on the eyes) */
-    --text-muted: #688566; /* Muted olive-sage green */
+    --text-main: #F1F8F0; /* Soft mint off-white (highly readable on dark backgrounds) */
+    --text-muted: #88A385; /* Soft sage green (for label metadata) */
     
-    /* Professional Eco-Urban Colors based on custom palette */
-    --cyan: #548235; /* Dark Leaf Green (Primary Accent) */
-    --cyan-glow: rgba(84, 130, 53, 0.15);
+    /* Vibrant Eco Game Accent Tones from User Palette */
+    --cyan: #70AD47; /* Meadow Green (Primary Accent) */
+    --cyan-glow: rgba(112, 173, 71, 0.35);
     --green: #70AD47; /* Meadow Green */
-    --green-glow: rgba(112, 173, 71, 0.1);
-    --yellow: #C59124; /* Soft Gold Amber */
-    --yellow-glow: rgba(197, 145, 36, 0.1);
-    --red: #C53929; /* Soft Crimson Red */
-    --red-glow: rgba(197, 57, 41, 0.15);
+    --green-glow: rgba(112, 173, 71, 0.25);
+    --yellow: #F59E0B; /* Vibrant Gold Amber */
+    --yellow-glow: rgba(245, 158, 11, 0.2);
+    --red: #EF4444; /* Crimson Red */
+    --red-glow: rgba(239, 68, 68, 0.2);
     
     /* Fonts */
     --font-display: 'Outfit', 'Space Grotesk', system-ui, sans-serif;
@@ -50,23 +50,23 @@ body {
     height: 100%;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.18;
+    opacity: 0.12;
 }
 
 /* Header */
 header {
     width: 100%;
     padding: 1.2rem 2.5rem;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(7, 12, 8, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border-color);
     z-index: 10;
     position: relative;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .logo-container {
@@ -80,7 +80,7 @@ header {
     font-size: 1.8rem;
     font-weight: 800;
     letter-spacing: 2px;
-    background: linear-gradient(135deg, #0F172A 40%, var(--cyan) 100%);
+    background: linear-gradient(135deg, #FFFFFF 40%, var(--cyan) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -96,10 +96,10 @@ header {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     color: var(--text-muted);
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.05);
     padding: 2px 8px;
     border-radius: 4px;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .system-status {
@@ -116,7 +116,7 @@ header {
 
 .status-indicator.online {
     background-color: var(--cyan);
-    box-shadow: 0 0 8px rgba(5, 150, 105, 0.3);
+    box-shadow: 0 0 8px var(--cyan-glow);
 }
 
 .status-label {
@@ -148,13 +148,15 @@ header {
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.01);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
     transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .panel:hover {
     border-color: var(--border-hover);
-    box-shadow: 0 10px 25px rgba(5, 150, 105, 0.05), 0 2px 4px rgba(5, 150, 105, 0.01);
+    box-shadow: 0 10px 25px rgba(112, 173, 71, 0.1) !important;
 }
 
 .panel-title {
@@ -194,7 +196,7 @@ header {
 
 .form-control {
     width: 100%;
-    background: #FFFFFF;
+    background: rgba(0, 0, 0, 0.3);
     border: 1px solid var(--border-color);
     color: var(--text-main);
     padding: 10px 14px;
@@ -354,14 +356,14 @@ header {
     font-size: 10px;
     font-weight: bold;
     color: var(--text-main);
-    background: #FFFFFF;
+    background: rgba(14, 22, 16, 0.95);
     padding: 2px 6px;
     border-radius: 4px;
     border: 1px solid var(--border-color);
     white-space: nowrap;
     pointer-events: none;
     transition: color 0.3s, border-color 0.3s;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Hover and Active State */
@@ -411,23 +413,27 @@ header {
     border: 1px solid var(--border-color) !important;
     border-radius: 8px !important;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
 }
 
 .leaflet-bar a {
-    background-color: #FFFFFF !important;
+    background-color: rgba(14, 22, 16, 0.95) !important;
     color: var(--text-main) !important;
     border-bottom: 1px solid var(--border-color) !important;
     transition: background-color 0.2s, color 0.2s;
 }
 
 .leaflet-bar a:hover {
-    background-color: rgba(5, 150, 105, 0.08) !important;
+    background-color: rgba(112, 173, 71, 0.2) !important;
     color: var(--cyan) !important;
 }
 
 .leaflet-container {
     background: var(--bg-void) !important;
+}
+
+.leaflet-tile {
+    filter: invert(1) hue-rotate(80deg) brightness(0.9) contrast(1.15);
 }
 
 /* Stats Cards */
@@ -947,7 +953,7 @@ footer {
     font-size: 1.8rem;
     font-family: var(--font-display);
     font-weight: 800;
-    color: #FFF;
+    color: var(--text-main);
 }
 
 /* Features Grid */
@@ -961,7 +967,7 @@ footer {
     font-weight: 700;
     letter-spacing: 1.5px;
     margin-bottom: 2rem;
-    color: #FFF;
+    color: var(--text-main);
     border-left: 3px solid var(--cyan);
     padding-left: 10px;
 }
