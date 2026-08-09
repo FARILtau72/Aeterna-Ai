@@ -1054,4 +1054,85 @@ window.sortWaste = sortWaste;
 // Initialize the game automatically
 document.addEventListener("DOMContentLoaded", () => {
     loadNextWasteItem();
+    initCrisisStoryScroller();
 });
+
+// ==========================================
+// CINEMATIC CRISIS STORYTELLING SCROLLER
+// ==========================================
+function initCrisisStoryScroller() {
+    const storyCards = document.querySelectorAll(".story-card");
+    const wasteFill = document.getElementById("waste-pile-fill");
+    const tonsVal = document.getElementById("simulated-tons-val");
+    
+    if (!storyCards.length || !wasteFill || !tonsVal) return;
+
+    // Use IntersectionObserver to detect which card is currently active/visible in the center of screen
+    const observerOptions = {
+        root: null,
+        rootMargin: "-25% 0px -40% 0px", // Focus on the middle of the screen
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Highlight active card
+                storyCards.forEach(c => {
+                    c.style.borderColor = "var(--border-color)";
+                    c.style.background = "rgba(8,18,14,0.6)";
+                    c.style.boxShadow = "none";
+                });
+                entry.target.style.borderColor = "var(--cyan)";
+                entry.target.style.background = "rgba(16, 185, 129, 0.08)";
+                entry.target.style.boxShadow = "0 0 15px rgba(16, 185, 129, 0.1)";
+                
+                // Get parameters
+                const targetHeight = entry.target.getAttribute("data-height");
+                const targetTons = entry.target.getAttribute("data-tons");
+                
+                // Set fill height and text counter
+                wasteFill.style.height = `${targetHeight}%`;
+                
+                // If it is the last critical card, change color to red
+                if (targetHeight === "95") {
+                    wasteFill.style.background = "linear-gradient(180deg, var(--red) 0%, #7f1d1d 100%)";
+                    wasteFill.style.boxShadow = "0 0 20px rgba(239, 68, 68, 0.4)";
+                } else {
+                    wasteFill.style.background = "linear-gradient(180deg, var(--yellow) 0%, #78350F 100%)";
+                    wasteFill.style.boxShadow = "0 0 20px rgba(245, 158, 11, 0.3)";
+                }
+                
+                // Animate tons text value counter
+                animateTonsCounter(parseInt(tonsVal.textContent.replace(/,/g, "")), parseInt(targetTons));
+            }
+        });
+    }, observerOptions);
+
+    storyCards.forEach(card => observer.observe(card));
+}
+
+function animateTonsCounter(start, end) {
+    const tonsVal = document.getElementById("simulated-tons-val");
+    if (!tonsVal) return;
+    
+    const duration = 800; // ms
+    const startTime = performance.now();
+    
+    function update(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Ease out quadratic
+        const easeProgress = progress * (2 - progress);
+        const current = Math.round(start + (end - start) * easeProgress);
+        
+        tonsVal.textContent = `${current.toLocaleString('en-US')} Tons`;
+        
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        }
+    }
+    
+    requestAnimationFrame(update);
+}

@@ -196,6 +196,61 @@
             </div>
         </section>
 
+        <!-- Cinematic Waste Crisis Scroll Section -->
+        <section class="container crisis-story-section" style="margin-top: 4rem; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 3rem; position: relative;">
+            
+            <!-- Sticky Left Panel (Waste Tower Visualizer) -->
+            <div class="sticky-visualizer-panel" style="position: sticky; top: 120px; height: 450px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(5, 12, 10, 0.4); border: 1px solid var(--border-color); border-radius: 16px; padding: 2rem; overflow: hidden; box-shadow: 0 0 30px rgba(16, 185, 129, 0.05);">
+                <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: #FFF; margin-bottom: 1.5rem; letter-spacing: 1px; text-transform: uppercase;">JAKARTA DAILY ACCUMULATION TOWER</h3>
+                
+                <!-- The Wireframe Tower -->
+                <div class="waste-tower-outline" style="position: relative; width: 140px; height: 260px; border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 12px 12px 0 0; background: rgba(255,255,255,0.01); overflow: hidden; display: flex; align-items: flex-end;">
+                    <!-- Raising Waste Fill -->
+                    <div id="waste-pile-fill" style="width: 100%; height: 10%; background: linear-gradient(180deg, var(--yellow) 0%, #78350F 100%); opacity: 0.85; transition: height 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);">
+                        <!-- Bubbles/Particles inside fill -->
+                        <div class="waste-steam" style="position: absolute; top: -10px; left: 0; width: 100%; height: 12px; background: rgba(245, 158, 11, 0.6); filter: blur(4px); animation: steam-pulse 1.5s infinite alternate; pointer-events: none;"></div>
+                    </div>
+                    
+                    <!-- Height Markers -->
+                    <div style="position: absolute; right: 10px; top: 10px; font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.3); pointer-events: none;">CRITICAL</div>
+                    <div style="position: absolute; right: 10px; top: 120px; font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.3); pointer-events: none;">WARNING</div>
+                    <div style="position: absolute; right: 10px; top: 230px; font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.3); pointer-events: none;">NORMAL</div>
+                </div>
+                
+                <!-- Live Ticking Indicator -->
+                <div class="tower-status" style="margin-top: 1.5rem; text-align: center;">
+                    <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Simulated Tonnage</div>
+                    <div style="font-family: var(--font-mono); font-size: 1.8rem; color: var(--yellow); font-weight: bold; text-shadow: 0 0 10px rgba(245,158,11,0.2);" id="simulated-tons-val">905 Tons</div>
+                </div>
+            </div>
+
+            <!-- Scrolling Narrative Cards -->
+            <div class="story-scroll-cards" style="display: flex; flex-direction: column; gap: 6rem; padding-bottom: 8rem;">
+                
+                <!-- Card 1 -->
+                <div class="story-card panel" data-height="25" data-tons="2264" style="padding: 2.2rem; min-height: 250px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; background: rgba(8,18,14,0.6); border:1px solid var(--border-color); border-radius:12px;">
+                    <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; display: block;">STAGE 01: MORNING LOADS (09:00 AM)</span>
+                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: #FFF; margin-bottom: 0.8rem;">2.264 TON SAMPAH TERKUMPUL</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">Memasuki jam kerja awal, tumpukan sampah dari pasar tradisional dan wilayah residensial se-DKI Jakarta mulai berdatangan di TPS. Kecepatan pengangkutan sangat krusial agar TPS lokal tidak mengalami kelumpuhan penumpukan.</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="story-card panel" data-height="55" data-tons="4982" style="padding: 2.2rem; min-height: 250px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; background: rgba(8,18,14,0.6); border:1px solid var(--border-color); border-radius:12px;">
+                    <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; display: block;">STAGE 02: MID-DAY PEAK (03:00 PM)</span>
+                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: #FFF; margin-bottom: 0.8rem;">4.982 TON SAMPAH TERKUMPUL</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">Di siang hari, aktivitas logistik pengiriman sampah ke TPST Bantargebang memuncak. Kepadatan lalu lintas jalan tol Jakarta-Bekasi dan antrean panjang truk di gerbang timbang Bantargebang mulai memicu bottleneck operasional pengangkutan.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="story-card panel" data-height="95" data-tons="9059" style="padding: 2.2rem; min-height: 250px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; background: rgba(8,18,14,0.6); border:1px solid var(--border-color); border-radius:12px;">
+                    <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--red); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; display: block;">STAGE 03: EOD OVERLOAD (11:59 PM)</span>
+                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: #FFF; margin-bottom: 0.8rem;">9.059 TON SAMPAH HARIAN</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">Sebelum hari berakhir, total timbulan sampah DKI mencapai kapasitas maksimalnya. TPST Bantargebang yang kini melebihi daya tampung aman (ketinggian gunungan sampah di atas 50 meter) berada pada status siaga kritis. Di sinilah Aeterna AI memitigasi krisis tersebut dengan analisis logistik prediktif.</p>
+                </div>
+
+            </div>
+        </section>
+
         <!-- Sumber Data & Akuntabilitas -->
         <section class="container data-sources-section">
             <h2 class="section-title">TRANSPARANSI SUMBER DATA</h2>
