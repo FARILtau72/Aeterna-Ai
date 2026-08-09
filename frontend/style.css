@@ -1,22 +1,22 @@
 /* CSS Variables for Bright Eco-Sustainability Theming */
 :root {
-    --bg-void: #F8FAFC; /* Clean bright slate */
-    --bg-panel: #FFFFFF; /* Pure White Card */
-    --border-color: #E2E8F0; /* Soft border */
-    --border-hover: #CBD5E1; /* Darker border on hover */
+    --bg-void: #EAF4E8; /* Lightest soft mint green (warm, no glare) */
+    --bg-panel: #FFFFFF; /* Pure White Card for high contrast surface */
+    --border-color: #D0E7CD; /* Soft leaf border */
+    --border-hover: #A9D08E; /* Meadow green on hover */
     
-    --text-main: #0F172A; /* Slate 900 (Charcoal) */
-    --text-muted: #64748B; /* Slate 500 (Muted) */
+    --text-main: #2C402B; /* Dark forest green (professional, soft on the eyes) */
+    --text-muted: #688566; /* Muted olive-sage green */
     
-    /* Professional Eco-Urban Colors */
-    --cyan: #059669; /* Eco Emerald Green (Primary Accent) */
-    --cyan-glow: rgba(5, 150, 105, 0.15);
-    --green: #10B981; /* Mint Green */
-    --green-glow: rgba(16, 185, 129, 0.1);
-    --yellow: #D97706; /* Warning Amber Orange */
-    --yellow-glow: rgba(217, 119, 6, 0.1);
-    --red: #EF4444; /* Critical Crimson Red */
-    --red-glow: rgba(239, 68, 68, 0.15);
+    /* Professional Eco-Urban Colors based on custom palette */
+    --cyan: #548235; /* Dark Leaf Green (Primary Accent) */
+    --cyan-glow: rgba(84, 130, 53, 0.15);
+    --green: #70AD47; /* Meadow Green */
+    --green-glow: rgba(112, 173, 71, 0.1);
+    --yellow: #C59124; /* Soft Gold Amber */
+    --yellow-glow: rgba(197, 145, 36, 0.1);
+    --red: #C53929; /* Soft Crimson Red */
+    --red-glow: rgba(197, 57, 41, 0.15);
     
     /* Fonts */
     --font-display: 'Outfit', 'Space Grotesk', system-ui, sans-serif;

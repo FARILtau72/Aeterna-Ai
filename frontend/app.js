@@ -1084,19 +1084,19 @@ function initCrisisStoryScroller() {
                     c.style.boxShadow = "none";
                 });
                 entry.target.style.borderColor = "var(--cyan)";
-                entry.target.style.background = "rgba(5, 150, 105, 0.03)";
-                entry.target.style.boxShadow = "0 4px 15px rgba(5, 150, 105, 0.05)";
+                entry.target.style.background = "rgba(84, 130, 53, 0.03)";
+                entry.target.style.boxShadow = "0 4px 15px rgba(84, 130, 53, 0.05)";
                 
                 // Get parameters
                 const targetHeight = entry.target.getAttribute("data-height");
                 const targetTons = entry.target.getAttribute("data-tons");
                 
                 // Determine 3D color based on stage height
-                let colorHex = 0x059669; // Emerald green (stage 1)
+                let colorHex = 0x548235; // Soft green (stage 1)
                 if (targetHeight === "55") {
-                    colorHex = 0xd97706; // Amber (stage 2)
+                    colorHex = 0xC59124; // Soft Gold Amber (stage 2)
                 } else if (targetHeight === "95") {
-                    colorHex = 0xef4444; // Crimson red (stage 3)
+                    colorHex = 0xC53929; // Soft Crimson Red (stage 3)
                 }
                 
                 // Update Three.js 3D silo height and color
@@ -1144,7 +1144,7 @@ let siloMesh, wasteMesh, garbageGroup;
 let isTabActive = true;
 let target3DHeight = 0.1; // 10% initially
 let current3DHeight = 0.1;
-let targetColorHex = 0x059669;
+let targetColorHex = 0x548235;
 
 window.addEventListener("blur", () => { isTabActive = false; });
 window.addEventListener("focus", () => { isTabActive = true; });
@@ -1180,7 +1180,7 @@ function init3DScene() {
     // 1. Silo Outer Wireframe Cylinder
     const siloGeo = new THREE.CylinderGeometry(0.7, 0.7, 2, 16, 1, true);
     const siloMat = new THREE.MeshBasicMaterial({
-        color: 0x059669,
+        color: 0x548235,
         wireframe: true,
         transparent: true,
         opacity: 0.18
@@ -1193,7 +1193,7 @@ function init3DScene() {
     wasteGeo.translate(0, 1, 0); // Translate origin pivot to bottom
     
     const wasteMat = new THREE.MeshPhongMaterial({
-        color: 0x059669,
+        color: 0x548235,
         transparent: true,
         opacity: 0.7,
         shininess: 40,
