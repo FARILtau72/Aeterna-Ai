@@ -129,6 +129,7 @@
             <button class="nav-btn" data-target="page-predictor">SIMULATION TOOL</button>
             <button class="nav-btn" data-target="page-news">NEWS FEED</button>
             <button class="nav-btn" data-target="page-alerts">REGIONAL ALERTS</button>
+            <button class="nav-btn" data-target="page-education">WASTE EDUCATION</button>
         </nav>
         <div class="system-status">
             <span class="status-indicator online"></span>
@@ -533,6 +534,93 @@
                 <div class="alerts-list-group" id="alerts-grid-list">
                     <!-- Dynamically populated with alert rows -->
                     <div class="loading-alerts">Evaluating active regional threshold warnings...</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- WASTE EDUCATION PAGE -->
+    <div id="page-education" class="page-container">
+        <section class="container page-header-section">
+            <h2 class="section-title">WASTE EDUCATION HUB</h2>
+            <p class="section-subtitle">Pelajari dampak penumpukan sampah di DKI Jakarta, durasi dekomposisi material, dan uji ketangkasan pilah sampah Anda secara interaktif.</p>
+        </section>
+
+        <!-- Interactive simulator & info panels -->
+        <section class="container education-grid" style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:1.5rem; margin-top:1.5rem;">
+            <!-- Game Pilah Sampah (Eco-Sorter) -->
+            <div class="panel game-panel" style="display:flex; flex-direction:column; padding:2rem; position:relative; overflow:hidden;">
+                <div class="panel-badge" style="position:absolute; top:1rem; right:1.5rem; background:rgba(0, 240, 255, 0.1); border:1px solid var(--cyan); color:var(--cyan); border-radius:12px; padding:3px 8px; font-size:0.75rem; font-family:var(--font-mono);">INTERACTIVE GAME</div>
+                <h3 class="panel-title" style="margin-bottom:0.5rem;">ECO-SORTER SIMULATOR</h3>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.5rem;">Pilah item sampah ke tempat sampah yang benar untuk mendapatkan skor dan mempelajari fakta daur ulang!</p>
+                
+                <!-- Waste Item Card -->
+                <div class="game-area" style="display:flex; flex-direction:column; align-items:center; background:rgba(0,0,0,0.4); border:1px solid var(--border-color); border-radius:12px; padding:2.5rem; margin-bottom:1.5rem; text-align:center;">
+                    <div id="game-item-icon" style="font-size:4rem; margin-bottom:1rem; filter:drop-shadow(0 0 10px rgba(255,255,255,0.2)); transition:transform 0.3s;">🍼</div>
+                    <h4 id="game-item-name" style="font-family:var(--font-display); font-size:1.3rem; color:#FFF; margin-bottom:0.5rem;">Botol Plastik Bekas</h4>
+                    <p id="game-item-desc" style="font-size:0.85rem; color:var(--text-muted); max-width:300px; min-height:40px;">Botol air mineral kosong berbahan PET.</p>
+                </div>
+                
+                <!-- Target Bins -->
+                <div class="bin-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:1rem;">
+                    <button class="bin-btn organic-bin" onclick="sortWaste('organic')" style="background:rgba(74, 222, 128, 0.05); border:1px solid #4ade80; color:#4ade80; padding:1rem; border-radius:8px; font-family:var(--font-display); font-weight:bold; cursor:pointer; transition:all 0.2s; outline:none;">ORGANIK</button>
+                    <button class="bin-btn inorganic-bin" onclick="sortWaste('inorganic')" style="background:rgba(56, 189, 248, 0.05); border:1px solid #38bdf8; color:#38bdf8; padding:1rem; border-radius:8px; font-family:var(--font-display); font-weight:bold; cursor:pointer; transition:all 0.2s; outline:none;">ANORGANIK</button>
+                    <button class="bin-btn hazard-bin" onclick="sortWaste('hazardous')" style="background:rgba(251, 113, 133, 0.05); border:1px solid #fb7185; color:#fb7185; padding:1rem; border-radius:8px; font-family:var(--font-display); font-weight:bold; cursor:pointer; transition:all 0.2s; outline:none;">BAHAYA (B3)</button>
+                </div>
+                
+                <!-- Game Stats -->
+                <div class="game-stats" style="display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; font-family:var(--font-mono); font-size:0.9rem; padding:0.8rem; background:rgba(255,255,255,0.02); border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
+                    <span>Skor: <strong id="game-score" style="color:var(--cyan); font-size:1.1rem;">0</strong></span>
+                    <span id="game-feedback" style="color:var(--text-muted); font-weight:bold;">Ayo mulai pilah!</span>
+                </div>
+            </div>
+
+            <!-- Fakta Dekomposisi Sampah -->
+            <div class="panel facts-panel" style="display:flex; flex-direction:column; padding:2rem;">
+                <h3 class="panel-title" style="margin-bottom:1rem;">DURASI DEKOMPOSISI ALAM</h3>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.5rem;">Berapa lama alam membutuhkan waktu untuk mengurai barang-barang yang kita buang?</p>
+                
+                <div class="facts-list" style="display:flex; flex-direction:column; gap:1.2rem; flex:1; justify-content:center;">
+                    <div class="fact-item" style="display:flex; align-items:center; gap:1rem;">
+                        <span style="font-size:2rem; background:rgba(255,255,255,0.05); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center;">🍎</span>
+                        <div style="flex:1;">
+                            <h4 style="font-size:0.9rem; color:#FFF; margin-bottom:2px;">Sisa Makanan / Organik</h4>
+                            <div class="progress-bar-bg" style="height:6px; margin:4px 0;"><div class="progress-bar-fill organic" style="width: 5%;"></div></div>
+                            <span style="font-size:0.75rem; color:#4ade80; font-family:var(--font-mono);">1 - 2 Minggu</span>
+                        </div>
+                    </div>
+                    <div class="fact-item" style="display:flex; align-items:center; gap:1rem;">
+                        <span style="font-size:2rem; background:rgba(255,255,255,0.05); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center;">📦</span>
+                        <div style="flex:1;">
+                            <h4 style="font-size:0.9rem; color:#FFF; margin-bottom:2px;">Kertas & Kardus</h4>
+                            <div class="progress-bar-bg" style="height:6px; margin:4px 0;"><div class="progress-bar-fill plastic" style="width: 15%;"></div></div>
+                            <span style="font-size:0.75rem; color:#38bdf8; font-family:var(--font-mono);">2 - 6 Minggu</span>
+                        </div>
+                    </div>
+                    <div class="fact-item" style="display:flex; align-items:center; gap:1rem;">
+                        <span style="font-size:2rem; background:rgba(255,255,255,0.05); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center;">🍼</span>
+                        <div style="flex:1;">
+                            <h4 style="font-size:0.9rem; color:#FFF; margin-bottom:2px;">Botol Plastik PET</h4>
+                            <div class="progress-bar-bg" style="height:6px; margin:4px 0;"><div class="progress-bar-fill other" style="width: 70%; background:#fb923c !important;"></div></div>
+                            <span style="font-size:0.75rem; color:#fb923c; font-family:var(--font-mono);">450 Tahun</span>
+                        </div>
+                    </div>
+                    <div class="fact-item" style="display:flex; align-items:center; gap:1rem;">
+                        <span style="font-size:2rem; background:rgba(255,255,255,0.05); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center;">🔋</span>
+                        <div style="flex:1;">
+                            <h4 style="font-size:0.9rem; color:#FFF; margin-bottom:2px;">Baterai & Logam</h4>
+                            <div class="progress-bar-bg" style="height:6px; margin:4px 0;"><div class="progress-bar-fill critical" style="width: 85%;"></div></div>
+                            <span style="font-size:0.75rem; color:#fb7185; font-family:var(--font-mono);">100 Tahun (Logam) / Berabad-abad (Kimia B3)</span>
+                        </div>
+                    </div>
+                    <div class="fact-item" style="display:flex; align-items:center; gap:1rem;">
+                        <span style="font-size:2rem; background:rgba(255,255,255,0.05); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center;">🫙</span>
+                        <div style="flex:1;">
+                            <h4 style="font-size:0.9rem; color:#FFF; margin-bottom:2px;">Botol Kaca</h4>
+                            <div class="progress-bar-bg" style="height:6px; margin:4px 0;"><div class="progress-bar-fill critical" style="width: 100%; background:#e879f9 !important;"></div></div>
+                            <span style="font-size:0.75rem; color:#e879f9; font-family:var(--font-mono);">1 Juta Tahun / Tidak Hancur</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

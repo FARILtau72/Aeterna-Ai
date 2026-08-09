@@ -1381,6 +1381,55 @@ body::after {
     line-height: 1.6;
 }
 
+/* Interactive Eco-Sorter Game Styling */
+.bin-btn {
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.organic-bin:hover {
+    background: rgba(74, 222, 128, 0.15) !important;
+    box-shadow: 0 0 15px rgba(74, 222, 128, 0.3) !important;
+    transform: translateY(-2px);
+}
+
+.inorganic-bin:hover {
+    background: rgba(56, 189, 248, 0.15) !important;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.3) !important;
+    transform: translateY(-2px);
+}
+
+.hazard-bin:hover {
+    background: rgba(251, 113, 133, 0.15) !important;
+    box-shadow: 0 0 15px rgba(251, 113, 133, 0.3) !important;
+    transform: translateY(-2px);
+}
+
+.bin-btn:active {
+    transform: scale(0.95) !important;
+}
+
+/* Decomposition Facts Styles */
+.fact-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    transition: border-color 0.3s, background 0.3s;
+}
+
+.fact-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(0, 240, 255, 0.2);
+}
+
+/* Media Query overrides for the education hub */
+@media (max-width: 992px) {
+    .education-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+}
+
 /* ==========================================
    COMPREHENSIVE LAYOUT RESPONSIVENESS
    ========================================== */

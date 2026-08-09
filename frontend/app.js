@@ -968,3 +968,90 @@ document.addEventListener("mouseout", (e) => {
         cursorRing.classList.remove("hover-state");
     }
 });
+
+// ==========================================
+// INTERACTIVE ECO-SORTER SIMULATOR (EDUCATION GAME)
+// ==========================================
+const WASTE_ITEMS = [
+    { name: "Botol Plastik PET", category: "inorganic", icon: "🍼", desc: "Botol air mineral kosong berbahan plastik PET. Butuh waktu sekitar 450 tahun untuk terurai alami!" },
+    { name: "Sisa Makanan / Apel", category: "organic", icon: "🍎", desc: "Sampah organik sisa makanan. Mudah terurai dalam 1-2 minggu dan sangat cocok diolah jadi kompos." },
+    { name: "Baterai Bekas", category: "hazardous", icon: "hazardous", desc: "Mengandung bahan kimia berbahaya seperti litium atau kadmium (B3). Harus dipilah khusus!" },
+    { name: "Kardus Bekas", category: "inorganic", icon: "📦", desc: "Kertas/kardus kering yang dapat didaur ulang menjadi bubur kertas baru." },
+    { name: "Botol Kaca", category: "inorganic", icon: "🫙", desc: "Material kaca. Membutuhkan waktu lebih dari 1 juta tahun untuk hancur secara alami di alam." },
+    { name: "Lampu Neon Rusak", category: "hazardous", icon: "hazardous", desc: "Lampu kaca bekas yang mengandung gas merkuri berbahaya. Masuk kategori limbah B3." },
+    { name: "Daun Kering", category: "organic", icon: "🍂", desc: "Limbah organik kebun. Dapat dikeringkan atau ditimbun untuk menyuburkan tanah." },
+    { name: "Masker Medis Bekas", category: "hazardous", icon: "hazardous", desc: "Limbah medis rumah tangga yang berpotensi menularkan penyakit. Masuk kategori limbah B3." },
+    { name: "Kulit Pisang", category: "organic", icon: "🍌", desc: "Sampah dapur basah organik. Mengandung nutrisi mikro alami yang baik untuk tanaman." }
+];
+
+let gameScore = 0;
+let gameItemIndex = 0;
+
+function loadNextWasteItem() {
+    const item = WASTE_ITEMS[gameItemIndex];
+    const iconEl = document.getElementById("game-item-icon");
+    const nameEl = document.getElementById("game-item-name");
+    const descEl = document.getElementById("game-item-desc");
+    
+    if (iconEl && nameEl && descEl) {
+        iconEl.textContent = item.icon;
+        nameEl.textContent = item.name;
+        descEl.textContent = item.desc;
+        
+        // Add a nice cyber flash animation on load
+        iconEl.style.transform = "scale(1.2)";
+        setTimeout(() => { iconEl.style.transform = "scale(1)"; }, 150);
+    }
+}
+
+function sortWaste(chosenCategory) {
+    const item = WASTE_ITEMS[gameItemIndex];
+    const feedbackEl = document.getElementById("game-feedback");
+    const scoreEl = document.getElementById("game-score");
+    const gameArea = document.querySelector(".game-area");
+    
+    if (chosenCategory === item.category) {
+        gameScore += 10;
+        if (feedbackEl) {
+            feedbackEl.textContent = "BENAR! +10 Poin";
+            feedbackEl.style.color = "#4ade80";
+        }
+        if (gameArea) {
+            gameArea.style.border = "1px solid #4ade80";
+            gameArea.style.boxShadow = "0 0 20px rgba(74, 222, 128, 0.3)";
+        }
+    } else {
+        gameScore = Math.max(0, gameScore - 5);
+        let correctText = item.category === "organic" ? "ORGANIK" : item.category === "inorganic" ? "ANORGANIK" : "BAHAYA (B3)";
+        if (feedbackEl) {
+            feedbackEl.textContent = `SALAH! Kategori Asli: ${correctText}`;
+            feedbackEl.style.color = "#fb7185";
+        }
+        if (gameArea) {
+            gameArea.style.border = "1px solid #fb7185";
+            gameArea.style.boxShadow = "0 0 20px rgba(251, 113, 133, 0.3)";
+        }
+    }
+    
+    if (scoreEl) scoreEl.textContent = gameScore;
+    
+    // Add visual feedback timeout
+    setTimeout(() => {
+        if (gameArea) {
+            gameArea.style.border = "1px solid var(--border-color)";
+            gameArea.style.boxShadow = "none";
+        }
+    }, 800);
+    
+    // Go to next item
+    gameItemIndex = (gameItemIndex + 1) % WASTE_ITEMS.length;
+    setTimeout(loadNextWasteItem, 1000);
+}
+
+// Bind to window to allow HTML inline onclick calls
+window.sortWaste = sortWaste;
+
+// Initialize the game automatically
+document.addEventListener("DOMContentLoaded", () => {
+    loadNextWasteItem();
+});
