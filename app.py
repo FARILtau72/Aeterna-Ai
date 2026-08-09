@@ -319,10 +319,12 @@ async def load_assets():
             model_meta = joblib.load(meta_path)
             logger.info(f"✅ Model metadata loaded: Metrics={model_meta.get('metrics', {})}")
         
-        csv_path = "data/dataset_vibe_coder_2026.csv" if os.path.exists("data/dataset_vibe_coder_2026.csv") else "dataset_vibe_coder_2026.csv"
+        csv_path = "data/dataset_real_kecamatan_2024_2025.csv" if os.path.exists("data/dataset_real_kecamatan_2024_2025.csv") else "dataset_real_kecamatan_2024_2025.csv"
         df_history = pd.read_csv(csv_path)
+        if "Tanggal" in df_history.columns:
+            df_history.rename(columns={"Tanggal": "TANGGAL"}, inplace=True)
         df_history["TANGGAL"] = pd.to_datetime(df_history["TANGGAL"]).dt.strftime("%Y-%m-%d")
-        logger.info(f"✅ Baseline dataset loaded from {csv_path}: {len(df_history)} records")
+        logger.info(f"✅ Real DLH Jakarta baseline dataset loaded from {csv_path}: {len(df_history)} records")
         
         event_file = "data/event_jakarta_2026.txt" if os.path.exists("data/event_jakarta_2026.txt") else "event_jakarta_2026.txt"
         if os.path.exists(event_file):
@@ -702,27 +704,32 @@ async def predict_waste_volume(req: PredictionRequest):
         else:
             target_pop = float(baseline_pop)
             
-        dataset_mean = df_history["Volume_Total_Ton"].mean()
+        # Filter baseline dataset for the target location to use real location-specific history
+        df_loc = df_history[df_history["Location"] == req.location]
+        if df_loc.empty:
+            df_loc = df_history[df_history["Location"] == "Menteng"]
+        df_loc = df_loc.sort_values("TANGGAL").reset_index(drop=True)
+        
+        dataset_mean = df_loc["Volume_Sampah_Ton"].mean()
         real_baseline = config["normal_avg"]
         calibration_factor = real_baseline / dataset_mean
         
-        o_r = (df_history["Vol_Sisa_Makanan_Ton"] / df_history["Volume_Total_Ton"]).mean()
-        p_r = (df_history["Vol_Plastik_Ton"] / df_history["Volume_Total_Ton"]).mean()
-        
-        # Remaining ratios from official DLH Jakarta statistics:
-        paper_r = 0.115
-        metal_r = 0.021
-        glass_r = 0.032
-        textile_r = 0.042
-        other_r = max(0.01, 1.0 - (o_r + p_r + paper_r + metal_r + glass_r + textile_r))
+        # DLH Jakarta and SIPSN official composition ratios
+        o_r = 0.502 # Organic ~50.2%
+        p_r = 0.228 # Plastic ~22.8%
+        paper_r = 0.115 # Paper ~11.5%
+        metal_r = 0.021 # Metal ~2.1%
+        glass_r = 0.032 # Glass ~3.2%
+        textile_r = 0.042 # Textile ~4.2%
+        other_r = 0.060 # Others ~6.0%
         
         results = []
         total_vol = 0.0
         max_risk = "SAFE"
         
-        # Chronos Forecasting Pipeline
+        # Chronos Forecasting Pipeline (Using real location-specific time-series data)
         if req.model_type == "chronos":
-            ctx = torch.tensor(df_history["Volume_Total_Ton"].values[-500:], dtype=torch.float32)
+            ctx = torch.tensor(df_loc["Volume_Sampah_Ton"].values[-500:], dtype=torch.float32)
             forecast_vals = await run_in_threadpool(perform_inference, ctx, req.forecast_days)
             
             for i, base in enumerate(forecast_vals):
