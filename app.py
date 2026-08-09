@@ -224,9 +224,10 @@ def parse_flexible_date(date_input: str, default_year: int = 2026) -> pd.Timesta
 
 def get_risk_status(volume: float, location: str) -> str:
     config = KECAMATAN_DATABASE.get(location, KECAMATAN_DATABASE["Menteng"])
-    if volume > config["critical_threshold"]:
+    norm = config["normal_avg"]
+    if volume > norm * 1.30:
         return "CRITICAL"
-    elif volume > config["warning_threshold"]:
+    elif volume > norm * 1.12:
         return "WARNING"
     return "SAFE"
 
@@ -742,10 +743,25 @@ async def predict_waste_volume(req: PredictionRequest):
                     event_pop = float(evt.get("jumlah_jiwa", evt.get("crowd_scale", 0.0)))
                     info = f"{evt['event_name']} ({int(event_pop):,} Jiwa) @ {evt['location']}"
                 
+                if info is None:
+                    if rain_val > 15.0:
+                        info = f"Rain Impact ({rain_val} mm)"
+                    elif curr_date.weekday() >= 5:
+                        info = "Weekend Activity"
+                    else:
+                        info = "Routine Operations"
+                
                 total_day_jiwa = target_pop + event_pop
                 pop_scaling_factor = total_day_jiwa / baseline_pop
                 
                 raw_prediction = base * rain_m * pop_scaling_factor
+                
+                # Apply stable pseudo-random daily variance (±2.5%) to simulate real human activity fluctuations
+                import hashlib
+                seed_val = int(hashlib.md5(f"{d_str}_{req.location}".encode()).hexdigest(), 16)
+                daily_variance = 1.0 + ((seed_val % 100) - 50) / 2000.0
+                raw_prediction *= daily_variance
+                
                 calibrated_volume = round(float(raw_prediction * calibration_factor), 2)
                 
                 total_vol += calibrated_volume
@@ -761,7 +777,7 @@ async def predict_waste_volume(req: PredictionRequest):
                     paper_waste_ton=round(calibrated_volume*paper_r, 2), metal_waste_ton=round(calibrated_volume*metal_r, 2),
                     glass_waste_ton=round(calibrated_volume*glass_r, 2), textile_waste_ton=round(calibrated_volume*textile_r, 2),
                     other_waste_ton=round(calibrated_volume*other_r, 2),
-                    recommended_trucks=max(1, int(np.ceil(calibrated_volume/8))),
+                    recommended_trucks=max(1, int(np.ceil(calibrated_volume/15))),
                     risk_status=risk, event_info=info, hourly_breakdown=hourly
                 ))
         
@@ -789,6 +805,14 @@ async def predict_waste_volume(req: PredictionRequest):
                 if evt and (req.location.lower() in evt["location"].lower() or evt["location"].lower() == "jakarta"):
                     event_pop = float(evt.get("jumlah_jiwa", evt.get("crowd_scale", 0.0)))
                     info = f"{evt['event_name']} ({int(event_pop):,} Jiwa) @ {evt['location']}"
+                
+                if info is None:
+                    if rain_val > 15.0:
+                        info = f"Rain Impact ({rain_val} mm)"
+                    elif curr_date.weekday() >= 5:
+                        info = "Weekend Activity"
+                    else:
+                        info = "Routine Operations"
                 
                 total_day_jiwa = target_pop + event_pop
                 has_event = 1 if (event_pop > 0) else 0
@@ -819,6 +843,12 @@ async def predict_waste_volume(req: PredictionRequest):
                 pop_extrapolate_factor = target_pop / baseline_pop
                 raw_pred *= pop_extrapolate_factor
                 
+                # Apply stable pseudo-random daily variance (±2.5%) to simulate real human activity fluctuations
+                import hashlib
+                seed_val = int(hashlib.md5(f"{d_str}_{req.location}".encode()).hexdigest(), 16)
+                daily_variance = 1.0 + ((seed_val % 100) - 50) / 2000.0
+                raw_pred *= daily_variance
+                
                 calibrated_volume = round(max(0.1, raw_pred), 2)
                 
                 total_vol += calibrated_volume
@@ -834,7 +864,7 @@ async def predict_waste_volume(req: PredictionRequest):
                     paper_waste_ton=round(calibrated_volume*paper_r, 2), metal_waste_ton=round(calibrated_volume*metal_r, 2),
                     glass_waste_ton=round(calibrated_volume*glass_r, 2), textile_waste_ton=round(calibrated_volume*textile_r, 2),
                     other_waste_ton=round(calibrated_volume*other_r, 2),
-                    recommended_trucks=max(1, int(np.ceil(calibrated_volume/8))),
+                    recommended_trucks=max(1, int(np.ceil(calibrated_volume/15))),
                     risk_status=risk, event_info=info, hourly_breakdown=hourly
                 ))
         
@@ -855,7 +885,7 @@ async def predict_waste_volume(req: PredictionRequest):
                 logistics_plan=LogisticsPlan(
                     trucks_needed=trucks,
                     manpower=trucks*3,
-                    estimated_duration_hours=round(total_vol/8, 1),
+                    estimated_duration_hours=round(total_vol/15, 1),
                     efficiency_rate="85% (Optimal)"
                 )
             )
@@ -878,6 +908,7 @@ async def predict_waste_volume_csv(req: PredictionRequest):
         "Organic Waste (Tons)", "Plastic Waste (Tons)", 
         "Paper Waste (Tons)", "Metal Waste (Tons)",
         "Glass Waste (Tons)", "Textile Waste (Tons)",
+        "Other Waste (Tons)",
         "Risk Status", "Event Info", "Recommended Trucks (15T)"
     ])
     
@@ -887,6 +918,7 @@ async def predict_waste_volume_csv(req: PredictionRequest):
             r.organic_waste_ton, r.plastic_waste_ton,
             r.paper_waste_ton, r.metal_waste_ton,
             r.glass_waste_ton, r.textile_waste_ton,
+            r.other_waste_ton,
             r.risk_status, r.event_info or "", r.recommended_trucks
         ])
         
@@ -986,16 +1018,24 @@ async def get_autopilot_data():
             'Event_Crowd_Headcount': float(event_pop)
         }])
         
-        # Predict directly using Spatial GBR model
+        # Predict directly using Spatial GBR model with daily variance seed
         if model_gbr is not None:
             raw_pred = float(model_gbr.predict(features)[0])
+            
+            # Apply stable pseudo-random daily variance (±2.5%)
+            import hashlib
+            seed_val = int(hashlib.md5(f"{d_str}_{loc}".encode()).hexdigest(), 16)
+            daily_variance = 1.0 + ((seed_val % 100) - 50) / 2000.0
+            raw_pred *= daily_variance
+            
             calibrated_volume = round(max(0.1, raw_pred), 2)
         else:
             calibrated_volume = round(float(config["normal_avg"]), 2)
             
-        trucks = max(1, int(np.ceil(calibrated_volume / 8)))
+        trucks = max(1, int(np.ceil(calibrated_volume / 15)))
         
-        status = "CRITICAL" if calibrated_volume > config["critical_threshold"] else "WARNING" if calibrated_volume > config["warning_threshold"] else "SAFE"
+        norm = config["normal_avg"]
+        status = "CRITICAL" if calibrated_volume > norm * 1.30 else "WARNING" if calibrated_volume > norm * 1.12 else "SAFE"
         
         total_vol += calibrated_volume
         total_trucks += trucks
@@ -1014,6 +1054,15 @@ async def get_autopilot_data():
     kecamatan_results.sort(key=lambda x: x["volume_ton"], reverse=True)
     top_5 = kecamatan_results[:5]
     
+    # Custom event description fallback for Autopilot
+    event_label = "Routine Operations"
+    if evt:
+        event_label = evt["event_name"]
+    elif rainy_count > 10:
+        event_label = "Heavy Rainy Weather"
+    elif today.weekday() >= 5:
+        event_label = "Weekend Activity"
+        
     return {
         "status": "success",
         "date": d_str,
@@ -1021,5 +1070,5 @@ async def get_autopilot_data():
         "total_trucks": total_trucks,
         "top_kecamatan": top_5,
         "rainy_regions": rainy_count,
-        "event_today": evt["event_name"] if evt else None
+        "event_today": event_label
     }
