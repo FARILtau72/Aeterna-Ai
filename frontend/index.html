@@ -58,6 +58,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
+    <!-- Three.js 3D Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <link rel="stylesheet" href="/static/style.css">
 
     <!-- Schema.org Multi-Type JSON-LD Graph for Rapid Google & Bing Indexing -->
@@ -203,18 +206,12 @@
             <div class="sticky-visualizer-panel" style="position: sticky; top: 120px; height: 450px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 2rem; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);">
                 <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: var(--text-main); margin-bottom: 1.5rem; letter-spacing: 1px; text-transform: uppercase;">JAKARTA DAILY ACCUMULATION TOWER</h3>
                 
-                <!-- The Wireframe Tower -->
-                <div class="waste-tower-outline" style="position: relative; width: 140px; height: 260px; border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 12px 12px 0 0; background: rgba(0,0,0,0.02); overflow: hidden; display: flex; align-items: flex-end;">
-                    <!-- Raising Waste Fill -->
-                    <div id="waste-pile-fill" style="width: 100%; height: 10%; background: linear-gradient(180deg, var(--yellow) 0%, #b45309 100%); opacity: 0.85; transition: height 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);">
-                        <!-- Bubbles/Particles inside fill -->
-                        <div class="waste-steam" style="position: absolute; top: -10px; left: 0; width: 100%; height: 12px; background: rgba(245, 158, 11, 0.4); filter: blur(4px); animation: steam-pulse 1.5s infinite alternate; pointer-events: none;"></div>
-                    </div>
-                    
-                    <!-- Height Markers -->
-                    <div style="position: absolute; right: 10px; top: 10px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); opacity: 0.6; pointer-events: none;">CRITICAL</div>
-                    <div style="position: absolute; right: 10px; top: 120px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); opacity: 0.6; pointer-events: none;">WARNING</div>
-                    <div style="position: absolute; right: 10px; top: 230px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); opacity: 0.6; pointer-events: none;">NORMAL</div>
+                <!-- The 3D Three.js Container -->
+                <div id="threejs-waste-container" style="width: 220px; height: 280px; position: relative; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.01); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden;">
+                    <!-- Static Overlay height labels inside 3D scene -->
+                    <div style="position: absolute; right: 12px; top: 12px; font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); opacity: 0.6; z-index: 2; pointer-events: none;">CRITICAL</div>
+                    <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); opacity: 0.6; z-index: 2; pointer-events: none;">WARNING</div>
+                    <div style="position: absolute; right: 12px; bottom: 12px; font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); opacity: 0.6; z-index: 2; pointer-events: none;">NORMAL</div>
                 </div>
                 
                 <!-- Live Ticking Indicator -->

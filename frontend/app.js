@@ -1055,6 +1055,7 @@ window.sortWaste = sortWaste;
 document.addEventListener("DOMContentLoaded", () => {
     loadNextWasteItem();
     initCrisisStoryScroller();
+    init3DScene();
 });
 
 // ==========================================
@@ -1062,10 +1063,9 @@ document.addEventListener("DOMContentLoaded", () => {
 // ==========================================
 function initCrisisStoryScroller() {
     const storyCards = document.querySelectorAll(".story-card");
-    const wasteFill = document.getElementById("waste-pile-fill");
     const tonsVal = document.getElementById("simulated-tons-val");
     
-    if (!storyCards.length || !wasteFill || !tonsVal) return;
+    if (!storyCards.length || !tonsVal) return;
 
     // Use IntersectionObserver to detect which card is currently active/visible in the center of screen
     const observerOptions = {
@@ -1080,28 +1080,27 @@ function initCrisisStoryScroller() {
                 // Highlight active card
                 storyCards.forEach(c => {
                     c.style.borderColor = "var(--border-color)";
-                    c.style.background = "rgba(8,18,14,0.6)";
+                    c.style.background = "var(--bg-panel)";
                     c.style.boxShadow = "none";
                 });
                 entry.target.style.borderColor = "var(--cyan)";
-                entry.target.style.background = "rgba(16, 185, 129, 0.08)";
-                entry.target.style.boxShadow = "0 0 15px rgba(16, 185, 129, 0.1)";
+                entry.target.style.background = "rgba(5, 150, 105, 0.03)";
+                entry.target.style.boxShadow = "0 4px 15px rgba(5, 150, 105, 0.05)";
                 
                 // Get parameters
                 const targetHeight = entry.target.getAttribute("data-height");
                 const targetTons = entry.target.getAttribute("data-tons");
                 
-                // Set fill height and text counter
-                wasteFill.style.height = `${targetHeight}%`;
-                
-                // If it is the last critical card, change color to red
-                if (targetHeight === "95") {
-                    wasteFill.style.background = "linear-gradient(180deg, var(--red) 0%, #7f1d1d 100%)";
-                    wasteFill.style.boxShadow = "0 0 20px rgba(239, 68, 68, 0.4)";
-                } else {
-                    wasteFill.style.background = "linear-gradient(180deg, var(--yellow) 0%, #78350F 100%)";
-                    wasteFill.style.boxShadow = "0 0 20px rgba(245, 158, 11, 0.3)";
+                // Determine 3D color based on stage height
+                let colorHex = 0x059669; // Emerald green (stage 1)
+                if (targetHeight === "55") {
+                    colorHex = 0xd97706; // Amber (stage 2)
+                } else if (targetHeight === "95") {
+                    colorHex = 0xef4444; // Crimson red (stage 3)
                 }
+                
+                // Update Three.js 3D silo height and color
+                update3DHeight(parseInt(targetHeight), colorHex);
                 
                 // Animate tons text value counter
                 animateTonsCounter(parseInt(tonsVal.textContent.replace(/,/g, "")), parseInt(targetTons));
@@ -1135,4 +1134,167 @@ function animateTonsCounter(start, end) {
     }
     
     requestAnimationFrame(update);
+}
+
+// ==========================================
+// THREE.JS 3D LANDFILL OVERLOAD VISUALIZER
+// ==========================================
+let scene3D, camera3D, renderer3D;
+let siloMesh, wasteMesh, garbageGroup;
+let isTabActive = true;
+let target3DHeight = 0.1; // 10% initially
+let current3DHeight = 0.1;
+let targetColorHex = 0x059669;
+
+window.addEventListener("blur", () => { isTabActive = false; });
+window.addEventListener("focus", () => { isTabActive = true; });
+
+function init3DScene() {
+    const container = document.getElementById("threejs-waste-container");
+    if (!container) return;
+    
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    
+    // Scene
+    scene3D = new THREE.Scene();
+    
+    // Camera
+    camera3D = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    camera3D.position.set(0, 0.4, 3.5);
+    
+    // Renderer
+    renderer3D = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer3D.setSize(width, height);
+    renderer3D.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize mobile
+    container.appendChild(renderer3D.domElement);
+    
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    scene3D.add(ambientLight);
+    
+    const pointLight = new THREE.PointLight(0xffffff, 0.6, 50);
+    pointLight.position.set(2, 4, 3);
+    scene3D.add(pointLight);
+    
+    // 1. Silo Outer Wireframe Cylinder
+    const siloGeo = new THREE.CylinderGeometry(0.7, 0.7, 2, 16, 1, true);
+    const siloMat = new THREE.MeshBasicMaterial({
+        color: 0x059669,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.18
+    });
+    siloMesh = new THREE.Mesh(siloGeo, siloMat);
+    scene3D.add(siloMesh);
+    
+    // 2. Liquid Waste Cylindrical Fill
+    const wasteGeo = new THREE.CylinderGeometry(0.66, 0.66, 2, 24, 1);
+    wasteGeo.translate(0, 1, 0); // Translate origin pivot to bottom
+    
+    const wasteMat = new THREE.MeshPhongMaterial({
+        color: 0x059669,
+        transparent: true,
+        opacity: 0.7,
+        shininess: 40,
+        flatShading: true
+    });
+    wasteMesh = new THREE.Mesh(wasteGeo, wasteMat);
+    wasteMesh.position.y = -1.0; // Place bottom of liquid at bottom of silo
+    wasteMesh.scale.y = 0.1;
+    scene3D.add(wasteMesh);
+    
+    // 3. Floating low-poly garbage elements inside liquid
+    garbageGroup = new THREE.Group();
+    garbageGroup.position.y = -1.0;
+    scene3D.add(garbageGroup);
+    
+    const geometries = [
+        new THREE.DodecahedronGeometry(0.07),
+        new THREE.BoxGeometry(0.08, 0.08, 0.08),
+        new THREE.TetrahedronGeometry(0.08)
+    ];
+    
+    for (let i = 0; i < 12; i++) {
+        const randomGeo = geometries[Math.floor(Math.random() * geometries.length)];
+        const randomMat = new THREE.MeshPhongMaterial({
+            color: 0x475569, // Slate color
+            flatShading: true,
+            transparent: true,
+            opacity: 0.85
+        });
+        const mesh = new THREE.Mesh(randomGeo, randomMat);
+        
+        // Random placement inside silo cylinder range
+        mesh.position.set(
+            (Math.random() - 0.5) * 0.8,
+            Math.random() * 1.8,
+            (Math.random() - 0.5) * 0.8
+        );
+        mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+        
+        garbageGroup.add(mesh);
+    }
+    
+    // Resize support
+    window.addEventListener("resize", () => {
+        if (!container) return;
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        camera3D.aspect = w / h;
+        camera3D.updateProjectionMatrix();
+        renderer3D.setSize(w, h);
+    });
+    
+    // Run optimized loop
+    animate3D();
+}
+
+function update3DHeight(percent, colorHex) {
+    target3DHeight = Math.max(0.05, percent / 100);
+    targetColorHex = colorHex;
+}
+
+function animate3D() {
+    requestAnimationFrame(animate3D);
+    
+    // OPTIMIZATION: Do not render if tab is out of focus or if Home page is hidden
+    const homePage = document.getElementById("page-home");
+    const container = document.getElementById("threejs-waste-container");
+    if (!isTabActive || !homePage || !homePage.classList.contains("active") || !container || container.offsetParent === null) {
+        return;
+    }
+    
+    if (wasteMesh) {
+        // Smoothly scale height towards target (lerp)
+        current3DHeight += (target3DHeight - current3DHeight) * 0.08;
+        wasteMesh.scale.y = current3DHeight;
+        
+        // Smoothly interpolate liquid color (lerp)
+        wasteMesh.material.color.lerp(new THREE.Color(targetColorHex), 0.08);
+        
+        // Float particles up and down inside current liquid boundaries
+        if (garbageGroup) {
+            garbageGroup.children.forEach((child, idx) => {
+                // Keep inside fluid vertical bounds
+                if (child.position.y > current3DHeight * 2) {
+                    child.position.y -= 0.008;
+                } else if (child.position.y < 0.05) {
+                    child.position.y += 0.008;
+                }
+                // Bobbing effect
+                child.position.y += Math.sin(Date.now() * 0.001 + idx) * 0.0005;
+                
+                child.rotation.x += 0.004;
+                child.rotation.y += 0.004;
+            });
+        }
+    }
+    
+    // Rotate models slowly
+    if (siloMesh) siloMesh.rotation.y += 0.002;
+    if (wasteMesh) wasteMesh.rotation.y -= 0.0015;
+    if (garbageGroup) garbageGroup.rotation.y += 0.001;
+    
+    renderer3D.render(scene3D, camera3D);
 }
