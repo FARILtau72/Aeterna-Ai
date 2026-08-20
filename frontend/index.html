@@ -140,9 +140,8 @@
         </div>
         <nav class="nav-links">
             <button class="nav-btn active" data-target="page-home">HOME</button>
-            <button class="nav-btn" data-target="page-decision">DASHBOARD KEPUTUSAN</button>
             <button class="nav-btn" data-target="page-autopilot">AI AUTOPILOT</button>
-            <button class="nav-btn" data-target="page-predictor">SIMULATION TOOL</button>
+            <button class="nav-btn" data-target="page-predictor">SIMULATION & DECISION TOOL</button>
             <button class="nav-btn" data-target="page-news">NEWS FEED</button>
             <button class="nav-btn" data-target="page-alerts">REGIONAL ALERTS</button>
             <button class="nav-btn" data-target="page-education">WASTE EDUCATION</button>
@@ -382,8 +381,9 @@
         </section>
     </div>
 
-    <!-- DASHBOARD KEPUTUSAN (DECISION SUPPORT & LOGISTICS OPTIMIZER) -->
-    <div id="page-decision" class="page-container">
+    <!-- PREDICTOR & DECISION DASHBOARD PAGE -->
+    <div id="page-predictor" class="page-container">
+        <!-- Top Executive Decision KPIs Header -->
         <section class="container decision-header-section">
             <div class="decision-header-top">
                 <div class="decision-title-group">
@@ -391,17 +391,11 @@
                         <svg class="decision-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00F0FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                         </svg>
-                        Dashboard Keputusan
+                        Dashboard Keputusan &amp; AI Simulator
                     </h2>
-                    <p class="decision-subtitle">Decision Support System berbasis AI untuk optimasi logistik, alokasi armada hulu-hilir, dan efisiensi anggaran DKI Jakarta.</p>
+                    <p class="decision-subtitle">Spatial-temporal forecasting engine &amp; decision support system untuk optimalisasi logistik, alokasi armada hulu-hilir, dan efisiensi anggaran sampah DKI Jakarta.</p>
                 </div>
                 <div class="decision-controls">
-                    <div class="decision-control-item">
-                        <label for="dec-location-select">WILAYAH TARGET:</label>
-                        <select id="dec-location-select" class="form-control dec-select">
-                            <!-- Populated dynamically -->
-                        </select>
-                    </div>
                     <button class="action-btn weather-modal-trigger-btn" onclick="openWeatherModal()">
                         <span class="btn-text">🌦️ Prakiraan Cuaca 7 Hari</span>
                         <span class="btn-glow"></span>
@@ -446,147 +440,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- Decision Body (Daily Workload Map + Fleet & Critical Action) -->
-        <section class="container decision-body-grid">
-            <!-- Left: Peta Beban Kerja Harian (7 Hari) -->
-            <div class="panel dec-workload-panel">
-                <div class="dec-panel-header">
-                    <h3 class="dec-panel-title">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00F0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                        Peta Beban Kerja Harian
-                    </h3>
-                    <span class="dec-panel-badge">Jadwal Shift & Disposisi Armada</span>
-                </div>
-
-                <div id="dec-workload-grid" class="dec-workload-grid">
-                    <!-- Populated dynamically with 7 day cards -->
-                </div>
-            </div>
-
-            <!-- Right: Alokasi Armada Spesifik & Rencana Aksi Kritis -->
-            <div class="dec-sidebar-col">
-                <!-- Alokasi Armada Spesifik -->
-                <div class="panel dec-fleet-panel">
-                    <h3 class="dec-panel-title">Alokasi Armada Spesifik</h3>
-                    <div class="dec-fleet-list">
-                        <!-- Truk Besar Dump Truck -->
-                        <div class="dec-fleet-card dump-truck">
-                            <div class="fleet-icon-box blue-box">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="1" y="3" width="15" height="13"></rect>
-                                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                                </svg>
-                            </div>
-                            <div class="fleet-info">
-                                <div class="fleet-unit-count"><span id="dec-truck-large">125</span> Unit</div>
-                                <div class="fleet-unit-type">Truk Besar (Dump Truck)</div>
-                            </div>
-                        </div>
-
-                        <!-- Armada Kecil Pick-up -->
-                        <div class="dec-fleet-card pickup-truck">
-                            <div class="fleet-icon-box amber-box">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="1" y="3" width="12" height="13"></rect>
-                                    <polygon points="13 8 17 8 20 11 20 16 13 16 13 8"></polygon>
-                                    <circle cx="4.5" cy="18.5" r="2.5"></circle>
-                                    <circle cx="16.5" cy="18.5" r="2.5"></circle>
-                                </svg>
-                            </div>
-                            <div class="fleet-info">
-                                <div class="fleet-unit-count"><span id="dec-truck-small">84</span> Unit</div>
-                                <div class="fleet-unit-type">Armada Kecil (Pick-up)</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Rencana Aksi Kritis -->
-                <div class="panel dec-action-panel">
-                    <h3 class="dec-panel-title action-title">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                            <line x1="12" y1="9" x2="12" y2="13"></line>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                        </svg>
-                        Rencana Aksi Kritis
-                    </h3>
-                    <div class="dec-critical-box" id="dec-critical-box">
-                        <div class="dec-critical-header">
-                            <span class="critical-pulse-dot"></span>
-                            <span id="dec-critical-title" class="dec-critical-title">AKSI HARI JUM (HUJAN LEBAT & BEBAN PUNCAK)</span>
-                        </div>
-                        <ul id="dec-critical-list" class="dec-critical-list">
-                            <!-- Populated dynamically with SOP actions -->
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- AI AUTOPILOT PAGE -->
-    <div id="page-autopilot" class="page-container">
-        <section class="container page-header-section">
-            <h2 class="section-title">AETERNA AI AUTOPILOT FORECASTER</h2>
-            <p class="section-subtitle">Sistem peramalan otonom DKI Jakarta. AI berjalan mandiri memprediksi volume
-                harian dan mengoordinasikan logistik tanpa campur tangan pengguna.</p>
-        </section>
-
-        <!-- Live Metrics Summary -->
-        <section class="container autopilot-grid"
-            style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:1.5rem; margin-top:1.5rem;">
-            <!-- Panel Ringkasan Otonom -->
-            <div class="panel autopilot-summary-panel">
-                <h3 class="panel-title">LIVE CITY-WIDE FORECAST (TODAY)</h3>
-                <div class="stats-row"
-                    style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom:1.5rem; width:100%;">
-                    <div class="panel stat-card text-glow"
-                        style="background: rgba(0, 0, 0, 0.02); display:flex; flex-direction:column; padding:1.2rem; border-radius:8px;">
-                        <span class="card-label">TOTAL DKI JAKARTA VOLUME</span>
-                        <span id="auto-total-volume" class="card-value"
-                            style="font-size:1.8rem; font-weight:800; color:var(--cyan);">Calculating...</span>
-                        <span class="card-meta">Autonomous prediction summation</span>
-                    </div>
-                    <div class="panel stat-card"
-                        style="background: rgba(0, 0, 0, 0.02); display:flex; flex-direction:column; padding:1.2rem; border-radius:8px;">
-                        <span class="card-label">TOTAL DISPATCHED TRUCKS</span>
-                        <span id="auto-total-trucks" class="card-value"
-                            style="font-size:1.8rem; font-weight:800; color:var(--text-main);">Calculating...</span>
-                        <span class="card-meta">Fleet size for all 44 kecamatan</span>
-                    </div>
-                </div>
-
-                <h4
-                    style="color:var(--cyan); margin-bottom:0.8rem; font-family:var(--font-display); font-size:0.95rem; border-left:3px solid var(--cyan); padding-left:8px; text-transform:uppercase;">
-                    Top 5 High-Risk Kecamatan Today:</h4>
-                <div id="auto-risk-list" class="auto-risk-list"
-                    style="display:flex; flex-direction:column; gap:0.8rem;">
-                    <!-- Dynamically populated Top 5 -->
-                </div>
-            </div>
-
-            <!-- Konsol Berpikir AI -->
-            <div class="panel autopilot-console-panel" style="display:flex; flex-direction:column; height:100%;">
-                <h3 class="panel-title">AI THINKING CONSOLE</h3>
-                <div id="autopilot-log"
-                    style="flex:1; background:#0B1310; border:1px solid var(--border-color); border-radius:8px; padding:1.2rem; font-family:var(--font-mono); font-size:0.8rem; color:#22C55E; overflow-y:auto; min-height:260px; line-height:1.6; box-shadow:inset 0 0 10px rgba(0,0,0,0.5);">
-                    <!-- Dynamic logs -->
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- PREDICTOR PAGE -->
-    <div id="page-predictor" class="page-container">
         <main class="dashboard-grid">
             <!-- Panel Kontrol (Sidebar) -->
             <section class="panel control-panel">
@@ -783,6 +636,91 @@
                 </div>
             </section>
         </main>
+
+        <!-- Section: Peta Beban Kerja Harian, Alokasi Armada Spesifik, & Rencana Aksi Kritis -->
+        <section class="container decision-body-grid" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+            <!-- Left: Peta Beban Kerja Harian (7 Hari) -->
+            <div class="panel dec-workload-panel">
+                <div class="dec-panel-header">
+                    <h3 class="dec-panel-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00F0FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Peta Beban Kerja Harian
+                    </h3>
+                    <span class="dec-panel-badge">Jadwal Shift &amp; Disposisi Armada</span>
+                </div>
+
+                <div id="dec-workload-grid" class="dec-workload-grid">
+                    <!-- Populated dynamically with 7 day cards -->
+                </div>
+            </div>
+
+            <!-- Right: Alokasi Armada Spesifik & Rencana Aksi Kritis -->
+            <div class="dec-sidebar-col">
+                <!-- Alokasi Armada Spesifik -->
+                <div class="panel dec-fleet-panel">
+                    <h3 class="dec-panel-title">Alokasi Armada Spesifik</h3>
+                    <div class="dec-fleet-list">
+                        <!-- Truk Besar Dump Truck -->
+                        <div class="dec-fleet-card dump-truck">
+                            <div class="fleet-icon-box blue-box">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="1" y="3" width="15" height="13"></rect>
+                                    <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
+                                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                </svg>
+                            </div>
+                            <div class="fleet-info">
+                                <div class="fleet-unit-count"><span id="dec-truck-large">125</span> Unit</div>
+                                <div class="fleet-unit-type">Truk Besar (Dump Truck)</div>
+                            </div>
+                        </div>
+
+                        <!-- Armada Kecil Pick-up -->
+                        <div class="dec-fleet-card pickup-truck">
+                            <div class="fleet-icon-box amber-box">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="1" y="3" width="12" height="13"></rect>
+                                    <polygon points="13 8 17 8 20 11 20 16 13 16 13 8"></polygon>
+                                    <circle cx="4.5" cy="18.5" r="2.5"></circle>
+                                    <circle cx="16.5" cy="18.5" r="2.5"></circle>
+                                </svg>
+                            </div>
+                            <div class="fleet-info">
+                                <div class="fleet-unit-count"><span id="dec-truck-small">84</span> Unit</div>
+                                <div class="fleet-unit-type">Armada Kecil (Pick-up)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rencana Aksi Kritis -->
+                <div class="panel dec-action-panel">
+                    <h3 class="dec-panel-title action-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        Rencana Aksi Kritis
+                    </h3>
+                    <div class="dec-critical-box" id="dec-critical-box">
+                        <div class="dec-critical-header">
+                            <span class="critical-pulse-dot"></span>
+                            <span id="dec-critical-title" class="dec-critical-title">AKSI HARI JUM (HUJAN LEBAT &amp; BEBAN PUNCAK)</span>
+                        </div>
+                        <ul id="dec-critical-list" class="dec-critical-list">
+                            <!-- Populated dynamically with SOP actions -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- Timeline Harian -->
         <section class="container timeline-container">

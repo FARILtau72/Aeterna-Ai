@@ -173,32 +173,27 @@ function switchPage(pageId) {
         loadAlertsFeed();
     } else if (pageId === "page-autopilot") {
         loadAutopilotFeed();
-    } else if (pageId === "page-decision") {
+    } else if (pageId === "page-predictor") {
+        if (map) setTimeout(() => { map.invalidateSize(); }, 200);
         if (lastPredictionData) {
             updateDecisionDashboard(lastPredictionData, selectedLocation);
-        } else {
-            runPrediction();
         }
-    } else if (pageId === "page-predictor" && map) {
-        setTimeout(() => { map.invalidateSize(); }, 200);
     }
 }
 
 window.switchPage = switchPage;
 
-// Dynamically Populate Dropdowns on Startup
+// Dynamically Populate Dropdown on Startup
 function populateLocationDropdown() {
-    [locationSelect, decLocationSelect].forEach(selectEl => {
-        if (!selectEl) return;
-        selectEl.innerHTML = "";
-        Object.keys(KECAMATAN_DATABASE).forEach(loc => {
-            const opt = document.createElement("option");
-            opt.value = loc;
-            opt.textContent = `${loc} (${KECAMATAN_DATABASE[loc].city})`;
-            selectEl.appendChild(opt);
-        });
-        selectEl.value = selectedLocation;
+    if (!locationSelect) return;
+    locationSelect.innerHTML = "";
+    Object.keys(KECAMATAN_DATABASE).forEach(loc => {
+        const opt = document.createElement("option");
+        opt.value = loc;
+        opt.textContent = `${loc} (${KECAMATAN_DATABASE[loc].city})`;
+        locationSelect.appendChild(opt);
     });
+    locationSelect.value = selectedLocation;
 }
 
 // Calculate Haversine Distance between two coordinate arrays [lat, lon]
@@ -245,25 +240,6 @@ if (eventOverride) {
 if (locationSelect) {
     locationSelect.addEventListener("change", (e) => {
         selectedLocation = e.target.value;
-        if (decLocationSelect) decLocationSelect.value = selectedLocation;
-        const pop = KECAMATAN_DATABASE[selectedLocation]?.population_jiwa || 100000;
-        if (eventOverride) {
-            eventOverride.value = pop;
-        }
-        if (eventOverrideVal) {
-            eventOverrideVal.textContent = `${pop.toLocaleString()} Jiwa (BPS)`;
-        }
-        updateActiveMapMarker(selectedLocation);
-        panToLocation(selectedLocation);
-        fetchLiveWeather(selectedLocation);
-        runPrediction();
-    });
-}
-
-if (decLocationSelect) {
-    decLocationSelect.addEventListener("change", (e) => {
-        selectedLocation = e.target.value;
-        if (locationSelect) locationSelect.value = selectedLocation;
         const pop = KECAMATAN_DATABASE[selectedLocation]?.population_jiwa || 100000;
         if (eventOverride) {
             eventOverride.value = pop;
