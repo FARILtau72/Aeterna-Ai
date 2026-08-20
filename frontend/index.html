@@ -637,9 +637,8 @@
             </section>
         </main>
 
-        <!-- Section: Peta Beban Kerja Harian, Alokasi Armada Spesifik, & Rencana Aksi Kritis -->
-        <section class="container decision-body-grid" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
-            <!-- Left: Peta Beban Kerja Harian (7 Hari) -->
+        <!-- Section 1: Peta Beban Kerja Harian (Full Width) -->
+        <section class="container" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
             <div class="panel dec-workload-panel">
                 <div class="dec-panel-header">
                     <h3 class="dec-panel-title">
@@ -649,7 +648,7 @@
                             <line x1="8" y1="2" x2="8" y2="6"></line>
                             <line x1="3" y1="10" x2="21" y2="10"></line>
                         </svg>
-                        Peta Beban Kerja Harian
+                        Peta Beban Kerja Harian (7 Hari Horizon)
                     </h3>
                     <span class="dec-panel-badge">Jadwal Shift &amp; Disposisi Armada</span>
                 </div>
@@ -658,49 +657,62 @@
                     <!-- Populated dynamically with 7 day cards -->
                 </div>
             </div>
+        </section>
 
-            <!-- Right: Alokasi Armada Spesifik & Rencana Aksi Kritis -->
-            <div class="dec-sidebar-col">
-                <!-- Alokasi Armada Spesifik -->
-                <div class="panel dec-fleet-panel">
-                    <h3 class="dec-panel-title">Alokasi Armada Spesifik</h3>
-                    <div class="dec-fleet-list">
-                        <!-- Truk Besar Dump Truck -->
-                        <div class="dec-fleet-card dump-truck">
-                            <div class="fleet-icon-box blue-box">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="1" y="3" width="15" height="13"></rect>
-                                    <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
-                                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                                </svg>
-                            </div>
-                            <div class="fleet-info">
-                                <div class="fleet-unit-count"><span id="dec-truck-large">125</span> Unit</div>
-                                <div class="fleet-unit-type">Truk Besar (Dump Truck)</div>
-                            </div>
+        <!-- Section 2: Alokasi Armada Spesifik & Rencana Aksi Kritis (2 Columns) -->
+        <section class="container decision-details-grid" style="margin-bottom: 1.5rem;">
+            <!-- Left: Alokasi Armada Spesifik -->
+            <div class="panel dec-fleet-panel">
+                <div class="dec-panel-header">
+                    <h3 class="dec-panel-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="3" width="15" height="13"></rect>
+                            <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
+                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                        </svg>
+                        Alokasi Armada Spesifik
+                    </h3>
+                    <span class="dec-panel-badge">Rasio 60:40 Dump vs Pick-up</span>
+                </div>
+                <div class="dec-fleet-list">
+                    <!-- Truk Besar Dump Truck -->
+                    <div class="dec-fleet-card dump-truck">
+                        <div class="fleet-icon-box blue-box">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="3" width="15" height="13"></rect>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
+                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                            </svg>
                         </div>
+                        <div class="fleet-info">
+                            <div class="fleet-unit-count"><span id="dec-truck-large">125</span> <span class="fleet-unit-suffix">Unit</span></div>
+                            <div class="fleet-unit-type">Truk Besar (Dump Truck 15T)</div>
+                        </div>
+                    </div>
 
-                        <!-- Armada Kecil Pick-up -->
-                        <div class="dec-fleet-card pickup-truck">
-                            <div class="fleet-icon-box amber-box">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="1" y="3" width="12" height="13"></rect>
-                                    <polygon points="13 8 17 8 20 11 20 16 13 16 13 8"></polygon>
-                                    <circle cx="4.5" cy="18.5" r="2.5"></circle>
-                                    <circle cx="16.5" cy="18.5" r="2.5"></circle>
-                                </svg>
-                            </div>
-                            <div class="fleet-info">
-                                <div class="fleet-unit-count"><span id="dec-truck-small">84</span> Unit</div>
-                                <div class="fleet-unit-type">Armada Kecil (Pick-up)</div>
-                            </div>
+                    <!-- Armada Kecil Pick-up -->
+                    <div class="dec-fleet-card pickup-truck">
+                        <div class="fleet-icon-box amber-box">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="3" width="12" height="13"></rect>
+                                <polygon points="13 8 17 8 20 11 20 16 13 16 13 8"></polygon>
+                                <circle cx="4.5" cy="18.5" r="2.5"></circle>
+                                <circle cx="16.5" cy="18.5" r="2.5"></circle>
+                            </svg>
+                        </div>
+                        <div class="fleet-info">
+                            <div class="fleet-unit-count"><span id="dec-truck-small">84</span> <span class="fleet-unit-suffix">Unit</span></div>
+                            <div class="fleet-unit-type">Armada Kecil (Pick-up 2.5T)</div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Rencana Aksi Kritis -->
-                <div class="panel dec-action-panel">
+            <!-- Right: Rencana Aksi Kritis -->
+            <div class="panel dec-action-panel">
+                <div class="dec-panel-header">
                     <h3 class="dec-panel-title action-title">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
@@ -709,15 +721,16 @@
                         </svg>
                         Rencana Aksi Kritis
                     </h3>
-                    <div class="dec-critical-box" id="dec-critical-box">
-                        <div class="dec-critical-header">
-                            <span class="critical-pulse-dot"></span>
-                            <span id="dec-critical-title" class="dec-critical-title">AKSI HARI JUM (HUJAN LEBAT &amp; BEBAN PUNCAK)</span>
-                        </div>
-                        <ul id="dec-critical-list" class="dec-critical-list">
-                            <!-- Populated dynamically with SOP actions -->
-                        </ul>
+                    <span class="dec-panel-badge" style="color: #f87171; border-color: rgba(239, 68, 68, 0.3);">Contingency SOP</span>
+                </div>
+                <div class="dec-critical-box" id="dec-critical-box">
+                    <div class="dec-critical-header">
+                        <span class="critical-pulse-dot"></span>
+                        <span id="dec-critical-title" class="dec-critical-title">AKSI HARI JUM (HUJAN LEBAT &amp; BEBAN PUNCAK)</span>
                     </div>
+                    <ul id="dec-critical-list" class="dec-critical-list">
+                        <!-- Populated dynamically with SOP actions -->
+                    </ul>
                 </div>
             </div>
         </section>
