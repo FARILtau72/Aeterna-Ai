@@ -414,38 +414,41 @@ async function fetchLiveWeather(loc) {
         const precipList = dailyData.precipitation_sum || [];
         const precipToday = precipList[2] || 0;
         
-        let cond = "Cloudy";
-        if (code === 0) cond = "Clear Sky";
-        else if (code > 0 && code < 4) cond = "Partly Cloudy";
-        else if (code >= 51 && code <= 67) cond = "Rainy";
-        else if (code >= 80 && code <= 82) cond = "Showers";
+        let cond = "Cerah Berawan";
+        if (code === 0 && precipToday < 0.5) cond = "Cerah";
+        else if (code <= 2 && precipToday < 0.5) cond = "Cerah Berawan";
+        else if (code <= 3 && precipToday < 0.5) cond = "Berawan";
+        else if (precipToday >= 20.0) cond = "Hujan Lebat";
+        else if (precipToday >= 5.0) cond = "Hujan Sedang";
+        else if (precipToday >= 0.5) cond = "Hujan Ringan";
+        else cond = "Berawan";
 
         if (weatherForecastText) weatherForecastText.textContent = `${temp}°C - ${cond}`;
         if (weatherLocationText) weatherLocationText.textContent = `${loc} (${coord.city})`;
         if (weatherPrecip) weatherPrecip.textContent = `${precipToday.toFixed(1)} mm`;
         
         if (weatherAlert) {
-            if (precipToday > 30) {
-                weatherAlert.textContent = "HEAVY RAIN 🟡";
-                weatherAlert.className = "highlight text-warning";
-            } else if (precipToday > 50) {
+            if (precipToday >= 50) {
                 weatherAlert.textContent = "FLOOD DANGER 🔴";
                 weatherAlert.className = "highlight text-red";
+            } else if (precipToday >= 20) {
+                weatherAlert.textContent = "HEAVY RAIN 🟡";
+                weatherAlert.className = "highlight text-warning";
             } else {
-                weatherAlert.textContent = "Normal conditions";
+                weatherAlert.textContent = "Normal / Aman";
                 weatherAlert.className = "highlight";
             }
         }
     } catch (err) {
         console.warn("Weather fetch timed out/failed. Using fallback forecast.", err);
         // Instant Fallback Weather Data
-        const fallbackTemp = 28.5 + Math.random() * 3.0;
+        const fallbackTemp = 32.5 + Math.random() * 2.0;
         const fallbackPrecip = 0.0;
-        if (weatherForecastText) weatherForecastText.textContent = `${fallbackTemp.toFixed(1)}°C - Partly Cloudy`;
+        if (weatherForecastText) weatherForecastText.textContent = `${fallbackTemp.toFixed(1)}°C - Cerah Berawan`;
         if (weatherLocationText) weatherLocationText.textContent = `${loc} (${coord.city})`;
         if (weatherPrecip) weatherPrecip.textContent = `${fallbackPrecip.toFixed(1)} mm`;
         if (weatherAlert) {
-            weatherAlert.textContent = "Normal conditions";
+            weatherAlert.textContent = "Normal / Aman";
             weatherAlert.className = "highlight";
         }
     }
@@ -779,21 +782,39 @@ async function openWeatherModal(loc) {
                 const tMin = Math.round(tempMin[idx] || 25);
 
                 let icon = "☀️";
-                let condition = "Berawan";
+                let condition = "Cerah";
 
-                if (wCode === 0) {
-                    icon = "☀️"; condition = "Cerah";
-                } else if (wCode >= 1 && wCode <= 3) {
-                    icon = (wCode === 1) ? "☀️" : (wCode === 2) ? "⛅" : "☁️"; condition = "Berawan";
-                } else if (wCode >= 51 && wCode <= 57) {
-                    icon = "🌧️"; condition = "Gerimis";
-                } else if (wCode >= 61 && wCode <= 65) {
-                    icon = "🌧️"; condition = (pVal > 5.0) ? "Hujan Deras" : "Hujan Sedang";
-                } else if (wCode >= 80 && wCode <= 82) {
-                    icon = "🌧️"; condition = (pVal > 6.0) ? "Hujan Deras" : "Hujan Lokal";
-                } else if (wCode >= 95) {
-                    icon = "⛈️"; condition = "Badai Petir";
+                // BMKG Meteorological Standard Interpretation
+                if (wCode >= 95 || (wCode >= 80 && pVal >= 20.0)) {
+                    icon = "⛈️";
+                    condition = "Badai Petir";
+                } else if (pVal >= 20.0) {
+                    icon = "🌧️";
+                    condition = "Hujan Lebat";
+                } else if (pVal >= 5.0) {
+                    icon = "🌧️";
+                    condition = "Hujan Sedang";
+                } else if (pVal >= 1.5) {
+                    icon = "🌦️";
+                    condition = "Hujan Ringan";
+                } else if (pVal >= 0.5) {
+                    icon = "⛅";
+                    condition = "Berawan";
+                } else {
+                    // Under 0.5mm is non-rainy (Cerah / Cerah Berawan)
+                    if (wCode === 0) {
+                        icon = "☀️";
+                        condition = "Cerah";
+                    } else if (wCode <= 2) {
+                        icon = "🌤️";
+                        condition = "Cerah Berawan";
+                    } else {
+                        icon = "⛅";
+                        condition = "Berawan";
+                    }
                 }
+
+                const precipDisplay = pVal >= 0.5 ? `${pVal.toFixed(1)}mm` : '';
 
                 const row = document.createElement("div");
                 row.className = "weather-forecast-row";
@@ -801,7 +822,7 @@ async function openWeatherModal(loc) {
                     <span class="w-row-day">${dayName}</span>
                     <span class="w-row-icon">${icon}</span>
                     <span class="w-row-cond">${condition}</span>
-                    <span class="w-row-precip">${pVal > 0 ? `${pVal.toFixed(1)}mm` : ''}</span>
+                    <span class="w-row-precip">${precipDisplay}</span>
                     <div class="w-row-temp">
                         <span class="w-temp-max">${tMax}°</span>
                         <span class="w-temp-min">${tMin}°</span>
@@ -815,17 +836,17 @@ async function openWeatherModal(loc) {
         console.warn("Open-Meteo weather modal fallback:", err);
         // Fallback matching real Jakarta climate baseline
         const fallbackData = [
-            { day: "Kam", icon: "🌧️", cond: "Hujan Deras", precip: "7.4mm", max: 33, min: 25 },
-            { day: "Jum", icon: "🌧️", cond: "Gerimis", precip: "1.3mm", max: 33, min: 25 },
-            { day: "Sab", icon: "☀️", cond: "Berawan", precip: "", max: 35, min: 24 },
-            { day: "Min", icon: "🌧️", cond: "Gerimis", precip: "0.2mm", max: 34, min: 25 },
-            { day: "Sen", icon: "🌧️", cond: "Gerimis", precip: "1.5mm", max: 34, min: 26 },
-            { day: "Sel", icon: "☁️", cond: "Berawan", precip: "", max: 35, min: 26 },
-            { day: "Rab", icon: "🌧️", cond: "Gerimis", precip: "3.6mm", max: 36, min: 27 }
+            { day: "Kam", icon: "🌦️", cond: "Hujan Ringan", precip: "1.3mm", max: 33, min: 25 },
+            { day: "Jum", icon: "⛅", cond: "Berawan", precip: "", max: 35, min: 25 },
+            { day: "Sab", icon: "🌤️", cond: "Cerah Berawan", precip: "", max: 36, min: 25 },
+            { day: "Min", icon: "☀️", cond: "Cerah", precip: "", max: 34, min: 26 },
+            { day: "Sen", icon: "🌦️", cond: "Hujan Ringan", precip: "1.5mm", max: 33, min: 26 },
+            { day: "Sel", icon: "🌤️", cond: "Cerah Berawan", precip: "", max: 35, min: 26 },
+            { day: "Rab", icon: "🌧️", cond: "Hujan Sedang", precip: "3.6mm", max: 35, min: 27 }
         ];
 
-        if (modalSumTotal) modalSumTotal.textContent = "14.0mm";
-        if (modalSumAvg) modalSumAvg.textContent = "2.0mm/hr";
+        if (modalSumTotal) modalSumTotal.textContent = "6.4mm";
+        if (modalSumAvg) modalSumAvg.textContent = "0.9mm/hr";
         if (modalSumBadge) {
             modalSumBadge.textContent = "KERING";
             modalSumBadge.className = "weather-dryness-badge dry";
