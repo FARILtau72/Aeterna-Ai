@@ -381,6 +381,58 @@
         </section>
     </div>
 
+    <!-- AI AUTOPILOT PAGE -->
+    <div id="page-autopilot" class="page-container">
+        <section class="container page-header-section">
+            <h2 class="section-title">AETERNA AI AUTOPILOT FORECASTER</h2>
+            <p class="section-subtitle">Sistem peramalan otonom DKI Jakarta. AI berjalan mandiri memprediksi volume
+                harian dan mengoordinasikan logistik tanpa campur tangan pengguna.</p>
+        </section>
+
+        <!-- Live Metrics Summary -->
+        <section class="container autopilot-grid"
+            style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:1.5rem; margin-top:1.5rem;">
+            <!-- Panel Ringkasan Otonom -->
+            <div class="panel autopilot-summary-panel">
+                <h3 class="panel-title">LIVE CITY-WIDE FORECAST (TODAY)</h3>
+                <div class="stats-row"
+                    style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom:1.5rem; width:100%;">
+                    <div class="panel stat-card text-glow"
+                        style="background: rgba(0, 0, 0, 0.02); display:flex; flex-direction:column; padding:1.2rem; border-radius:8px;">
+                        <span class="card-label">TOTAL DKI JAKARTA VOLUME</span>
+                        <span id="auto-total-volume" class="card-value"
+                            style="font-size:1.8rem; font-weight:800; color:var(--cyan);">Calculating...</span>
+                        <span class="card-meta">Autonomous prediction summation</span>
+                    </div>
+                    <div class="panel stat-card"
+                        style="background: rgba(0, 0, 0, 0.02); display:flex; flex-direction:column; padding:1.2rem; border-radius:8px;">
+                        <span class="card-label">TOTAL DISPATCHED TRUCKS</span>
+                        <span id="auto-total-trucks" class="card-value"
+                            style="font-size:1.8rem; font-weight:800; color:var(--text-main);">Calculating...</span>
+                        <span class="card-meta">Fleet size for all 44 kecamatan</span>
+                    </div>
+                </div>
+
+                <h4
+                    style="color:var(--cyan); margin-bottom:0.8rem; font-family:var(--font-display); font-size:0.95rem; border-left:3px solid var(--cyan); padding-left:8px; text-transform:uppercase;">
+                    Top 5 High-Risk Kecamatan Today:</h4>
+                <div id="auto-risk-list" class="auto-risk-list"
+                    style="display:flex; flex-direction:column; gap:0.8rem;">
+                    <!-- Dynamically populated Top 5 -->
+                </div>
+            </div>
+
+            <!-- Konsol Berpikir AI -->
+            <div class="panel autopilot-console-panel" style="display:flex; flex-direction:column; height:100%;">
+                <h3 class="panel-title">AI THINKING CONSOLE</h3>
+                <div id="autopilot-log"
+                    style="flex:1; background:#0B1310; border:1px solid var(--border-color); border-radius:8px; padding:1.2rem; font-family:var(--font-mono); font-size:0.8rem; color:#22C55E; overflow-y:auto; min-height:260px; line-height:1.6; box-shadow:inset 0 0 10px rgba(0,0,0,0.5);">
+                    <!-- Dynamic logs -->
+                </div>
+            </div>
+        </section>
+    </div>
+
     <!-- PREDICTOR & DECISION DASHBOARD PAGE -->
     <div id="page-predictor" class="page-container">
         <!-- Top Executive Decision KPIs Header -->
