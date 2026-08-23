@@ -117,34 +117,12 @@ const timelineList = document.getElementById("timeline-list");
 const hourlySection = document.getElementById("hourly-section");
 const hourlyGrid = document.getElementById("hourly-grid");
 
-// Decision Dashboard UI Elements
-const decLocationSelect = document.getElementById("dec-location-select");
-const decTotalVol = document.getElementById("dec-total-vol");
-const decVolStatus = document.getElementById("dec-vol-status");
-const decCostVal = document.getElementById("dec-cost-val");
-const decEfficiencyVal = document.getElementById("dec-efficiency-val");
-const decSavedVal = document.getElementById("dec-saved-val");
-const decWorkloadGrid = document.getElementById("dec-workload-grid");
-const decTruckLarge = document.getElementById("dec-truck-large");
-const decTruckSmall = document.getElementById("dec-truck-small");
-const decCriticalTitle = document.getElementById("dec-critical-title");
-const decCriticalList = document.getElementById("dec-critical-list");
-
-// Weather Modal UI Elements
-const weatherModal = document.getElementById("weather-modal");
-const modalWeatherLoc = document.getElementById("modal-weather-loc");
-const modalSumTotal = document.getElementById("modal-sum-total");
-const modalSumAvg = document.getElementById("modal-sum-avg");
-const modalSumBadge = document.getElementById("modal-sum-badge");
-const weatherModalList = document.getElementById("weather-modal-list");
-
 // State
 let selectedLocation = "Menteng";
 let rainValue = 0; // 0 means Auto (Open-Meteo)
 let map;
 let mapMarkers = {};
 let routeLine = null;
-let lastPredictionData = null;
 
 // ==========================================
 // SPA MULTIPAGE ROUTING
@@ -173,11 +151,8 @@ function switchPage(pageId) {
         loadAlertsFeed();
     } else if (pageId === "page-autopilot") {
         loadAutopilotFeed();
-    } else if (pageId === "page-predictor") {
-        if (map) setTimeout(() => { map.invalidateSize(); }, 200);
-        if (lastPredictionData) {
-            updateDecisionDashboard(lastPredictionData, selectedLocation);
-        }
+    } else if (pageId === "page-predictor" && map) {
+        setTimeout(() => { map.invalidateSize(); }, 200);
     }
 }
 
@@ -414,41 +389,38 @@ async function fetchLiveWeather(loc) {
         const precipList = dailyData.precipitation_sum || [];
         const precipToday = precipList[2] || 0;
         
-        let cond = "Cerah Berawan";
-        if (code === 0 && precipToday < 0.5) cond = "Cerah";
-        else if (code <= 2 && precipToday < 0.5) cond = "Cerah Berawan";
-        else if (code <= 3 && precipToday < 0.5) cond = "Berawan";
-        else if (precipToday >= 20.0) cond = "Hujan Lebat";
-        else if (precipToday >= 5.0) cond = "Hujan Sedang";
-        else if (precipToday >= 0.5) cond = "Hujan Ringan";
-        else cond = "Berawan";
+        let cond = "Cloudy";
+        if (code === 0) cond = "Clear Sky";
+        else if (code > 0 && code < 4) cond = "Partly Cloudy";
+        else if (code >= 51 && code <= 67) cond = "Rainy";
+        else if (code >= 80 && code <= 82) cond = "Showers";
 
         if (weatherForecastText) weatherForecastText.textContent = `${temp}°C - ${cond}`;
         if (weatherLocationText) weatherLocationText.textContent = `${loc} (${coord.city})`;
         if (weatherPrecip) weatherPrecip.textContent = `${precipToday.toFixed(1)} mm`;
         
         if (weatherAlert) {
-            if (precipToday >= 50) {
-                weatherAlert.textContent = "FLOOD DANGER 🔴";
-                weatherAlert.className = "highlight text-red";
-            } else if (precipToday >= 20) {
+            if (precipToday > 30) {
                 weatherAlert.textContent = "HEAVY RAIN 🟡";
                 weatherAlert.className = "highlight text-warning";
+            } else if (precipToday > 50) {
+                weatherAlert.textContent = "FLOOD DANGER 🔴";
+                weatherAlert.className = "highlight text-red";
             } else {
-                weatherAlert.textContent = "Normal / Aman";
+                weatherAlert.textContent = "Normal conditions";
                 weatherAlert.className = "highlight";
             }
         }
     } catch (err) {
         console.warn("Weather fetch timed out/failed. Using fallback forecast.", err);
         // Instant Fallback Weather Data
-        const fallbackTemp = 32.5 + Math.random() * 2.0;
+        const fallbackTemp = 28.5 + Math.random() * 3.0;
         const fallbackPrecip = 0.0;
-        if (weatherForecastText) weatherForecastText.textContent = `${fallbackTemp.toFixed(1)}°C - Cerah Berawan`;
+        if (weatherForecastText) weatherForecastText.textContent = `${fallbackTemp.toFixed(1)}°C - Partly Cloudy`;
         if (weatherLocationText) weatherLocationText.textContent = `${loc} (${coord.city})`;
         if (weatherPrecip) weatherPrecip.textContent = `${fallbackPrecip.toFixed(1)} mm`;
         if (weatherAlert) {
-            weatherAlert.textContent = "Normal / Aman";
+            weatherAlert.textContent = "Normal conditions";
             weatherAlert.className = "highlight";
         }
     }
@@ -603,284 +575,7 @@ function updateDashboardData(data, confScore, message) {
     } else {
         if (hourlySection) hourlySection.style.display = "none";
     }
-
-    // Save and update Decision Dashboard
-    lastPredictionData = data;
-    updateDecisionDashboard(data, selectedLocation);
 }
-
-// ==========================================
-// DECISION DASHBOARD (EXECUTIVE LOGISTICS & COST OPTIMIZER)
-// ==========================================
-function updateDecisionDashboard(data, location) {
-    if (!data || !data.prediction_results || data.prediction_results.length === 0) return;
-
-    const results = data.prediction_results;
-    const weekResults = results.slice(0, 7);
-    const totalVolume = weekResults.reduce((acc, curr) => acc + curr.total_volume_ton, 0);
-    const totalTrucks = weekResults.reduce((acc, curr) => acc + curr.recommended_trucks, 0);
-    const config = KECAMATAN_DATABASE[location] || KECAMATAN_DATABASE["Menteng"];
-
-    // 1. Total Volume Prediksi
-    if (decTotalVol) decTotalVol.textContent = totalVolume.toFixed(1);
-    if (decVolStatus) decVolStatus.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00F0FF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Berhasil diprediksi (${weekResults.length} hari)`;
-
-    // 2. Estimasi Biaya Operasional (Pergub DKI & Standar DLH: Rp 95.000/ton + SDM Rp 504.000/truk/hari)
-    const costProactive = Math.round(((totalVolume * 95000) + (totalTrucks * 504000)) / 100000) * 100000;
-    const costReactive = Math.round((costProactive * 2.048) / 100000) * 100000;
-    const costSaved = costReactive - costProactive;
-    const efficiencyPct = ((costSaved / costReactive) * 100).toFixed(1);
-
-    if (decCostVal) decCostVal.textContent = `Rp ${costProactive.toLocaleString('id-ID')}`;
-    if (decEfficiencyVal) decEfficiencyVal.textContent = `${efficiencyPct}%`;
-    if (decSavedVal) decSavedVal.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg> Hemat Rp ${costSaved.toLocaleString('id-ID')} dibanding Reaktif`;
-
-    // 3. Alokasi Armada Spesifik (Dump Truck 60% vs Pick-up 40% pemukiman padat)
-    const dumpTruckUnits = Math.ceil(totalTrucks * 0.60);
-    const pickupUnits = Math.ceil(totalTrucks * 0.40 * 1.75);
-    if (decTruckLarge) decTruckLarge.textContent = dumpTruckUnits;
-    if (decTruckSmall) decTruckSmall.textContent = pickupUnits;
-
-    // 4. Peta Beban Kerja Harian (7 Hari Horizon)
-    if (decWorkloadGrid) {
-        decWorkloadGrid.innerHTML = "";
-        const dayAbbrsIndo = ["MIN", "SEN", "SEL", "RAB", "KAM", "JUM", "SAB"];
-
-        weekResults.forEach(day => {
-            const dateObj = new Date(day.date);
-            const dayAbbr = dayAbbrsIndo[dateObj.getDay()] || "HARI";
-            const isCritical = day.risk_status === "CRITICAL" || day.total_volume_ton > (config.normal_avg * 1.18);
-            const isWarning = day.risk_status === "WARNING";
-
-            let badgeClass = "normal";
-            if (isCritical) badgeClass = "peak-critical";
-            else if (isWarning || dateObj.getDay() === 0 || dateObj.getDay() === 5 || dateObj.getDay() === 6) badgeClass = "warning";
-
-            const card = document.createElement("div");
-            card.className = `workload-day-card ${isCritical ? "critical" : ""}`;
-            
-            // Shift schedule: S1 & S2 always active, S3 active on peak/critical days
-            const showShift3 = isCritical || day.total_volume_ton > (config.normal_avg * 1.10);
-            
-            card.innerHTML = `
-                <div class="workload-day-badge ${badgeClass}">${dayAbbr}</div>
-                <div class="workload-ton-val">${day.total_volume_ton.toFixed(1)}</div>
-                <div class="workload-ton-label">TON</div>
-                <div class="workload-trucks-count">
-                    <span>🚚</span> <span>${day.recommended_trucks}</span>
-                </div>
-                <div class="workload-shifts-list">
-                    <span class="workload-shift-pill s1">S1: 04:00-10:00</span>
-                    <span class="workload-shift-pill s2">S2: 10:00-16:00</span>
-                    ${showShift3 ? '<span class="workload-shift-pill s3">S3: 19:00-01:00</span>' : ''}
-                </div>
-            `;
-            decWorkloadGrid.appendChild(card);
-        });
-    }
-
-    // 5. Rencana Aksi Kritis
-    const peakDay = weekResults.reduce((max, d) => d.total_volume_ton > max.total_volume_ton ? d : max, weekResults[0]);
-    if (peakDay) {
-        const peakDateObj = new Date(peakDay.date);
-        const dayAbbrsIndo = ["MIN", "SEN", "SEL", "RAB", "KAM", "JUM", "SAB"];
-        const peakDayName = dayAbbrsIndo[peakDateObj.getDay()] || "HARI";
-        
-        let situationTag = "BEBAN PUNCAK & KEPADATAN RUTIN";
-        if (peakDay.event_info) {
-            situationTag = peakDay.event_info.toUpperCase();
-        } else if (peakDay.risk_status === "CRITICAL") {
-            situationTag = "HUJAN LEBAT & BEBAN PUNCAK";
-        }
-
-        if (decCriticalTitle) {
-            decCriticalTitle.textContent = `AKSI HARI ${peakDayName} (${situationTag})`;
-        }
-
-        if (decCriticalList) {
-            decCriticalList.innerHTML = `
-                <li>Aktifkan <strong>Shift 3 (19:00 - 01:00 WIB)</strong> untuk evakuasi cepat TPS permukiman ${location} guna mencegah penumpukan sampah malam.</li>
-                <li>Prioritaskan dispatch <strong>${Math.ceil(peakDay.recommended_trucks * 0.60)} unit Dump Truck 15T</strong> via jalur bebas hambatan untuk mitigasi antrean gerbang timbang TPST Bantargebang.</li>
-                <li>Siagakan <strong>pompa portabel penyedot lindi</strong> dan armada sapu bersih di titik TPS transfer point.</li>
-                <li>Kerahkan <strong>${Math.ceil(peakDay.recommended_trucks * 0.40 * 1.75)} armada Pick-up</strong> untuk penyisiran lorong pemukiman padat sebelum jam sibuk warga (pukul 06:00 WIB).</li>
-            `;
-        }
-    }
-}
-
-// ==========================================
-// 7-DAY WEATHER FORECAST MODAL CONTROLLER
-// ==========================================
-async function openWeatherModal(loc) {
-    const targetLoc = loc || selectedLocation;
-    const coord = KECAMATAN_DATABASE[targetLoc];
-    if (!coord) return;
-
-    if (modalWeatherLoc) modalWeatherLoc.textContent = targetLoc;
-    if (weatherModal) {
-        weatherModal.classList.add("open");
-    }
-
-    if (weatherModalList) {
-        weatherModalList.innerHTML = '<div class="weather-modal-loading">Mengambil data cuaca 7 hari dari Open-Meteo API...</div>';
-    }
-
-    try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${coord.coords[0]}&longitude=${coord.coords[1]}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_hours&timezone=Asia/Jakarta&forecast_days=7`;
-        
-        const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error("Timeout")), 2000)
-        );
-        const fetchPromise = fetch(url).then(res => {
-            if (!res.ok) throw new Error("HTTP Error");
-            return res.json();
-        });
-
-        const data = await Promise.race([fetchPromise, timeoutPromise]);
-        const daily = data.daily || {};
-        const dates = daily.time || [];
-        const codes = daily.weathercode || [];
-        const tempMax = daily.temperature_2m_max || [];
-        const tempMin = daily.temperature_2m_min || [];
-        const precipSum = daily.precipitation_sum || [];
-        const precipHours = daily.precipitation_hours || [];
-
-        let totalPrecip = 0;
-        let totalHours = 0;
-        precipSum.forEach(p => totalPrecip += (p || 0));
-        precipHours.forEach(h => totalHours += (h || 0));
-
-        const avgHr = totalHours > 0 ? (totalPrecip / totalHours) : (totalPrecip / 7);
-
-        if (modalSumTotal) modalSumTotal.textContent = `${totalPrecip.toFixed(1)}mm`;
-        if (modalSumAvg) modalSumAvg.textContent = `${avgHr.toFixed(1)}mm/hr`;
-
-        // BMKG Weather Category badge
-        if (modalSumBadge) {
-            if (totalPrecip < 20.0) {
-                modalSumBadge.textContent = "KERING";
-                modalSumBadge.className = "weather-dryness-badge dry";
-            } else if (totalPrecip < 50.0) {
-                modalSumBadge.textContent = "LEMBAP";
-                modalSumBadge.className = "weather-dryness-badge wet";
-            } else {
-                modalSumBadge.textContent = "HUJAN LEBAT";
-                modalSumBadge.className = "weather-dryness-badge heavy";
-            }
-        }
-
-        const dayNamesIndo = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
-        
-        if (weatherModalList) {
-            weatherModalList.innerHTML = "";
-            dates.forEach((dStr, idx) => {
-                const dateObj = new Date(dStr);
-                const dayName = dayNamesIndo[dateObj.getDay()] || "Hari";
-                const wCode = codes[idx] || 0;
-                const pVal = precipSum[idx] || 0.0;
-                const tMax = Math.round(tempMax[idx] || 33);
-                const tMin = Math.round(tempMin[idx] || 25);
-
-                let icon = "☀️";
-                let condition = "Cerah";
-
-                // BMKG Meteorological Standard Interpretation
-                if (wCode >= 95 || (wCode >= 80 && pVal >= 20.0)) {
-                    icon = "⛈️";
-                    condition = "Badai Petir";
-                } else if (pVal >= 20.0) {
-                    icon = "🌧️";
-                    condition = "Hujan Lebat";
-                } else if (pVal >= 5.0) {
-                    icon = "🌧️";
-                    condition = "Hujan Sedang";
-                } else if (pVal >= 1.5) {
-                    icon = "🌦️";
-                    condition = "Hujan Ringan";
-                } else if (pVal >= 0.5) {
-                    icon = "⛅";
-                    condition = "Berawan";
-                } else {
-                    // Under 0.5mm is non-rainy (Cerah / Cerah Berawan)
-                    if (wCode === 0) {
-                        icon = "☀️";
-                        condition = "Cerah";
-                    } else if (wCode <= 2) {
-                        icon = "🌤️";
-                        condition = "Cerah Berawan";
-                    } else {
-                        icon = "⛅";
-                        condition = "Berawan";
-                    }
-                }
-
-                const precipDisplay = pVal >= 0.5 ? `${pVal.toFixed(1)}mm` : '';
-
-                const row = document.createElement("div");
-                row.className = "weather-forecast-row";
-                row.innerHTML = `
-                    <span class="w-row-day">${dayName}</span>
-                    <span class="w-row-icon">${icon}</span>
-                    <span class="w-row-cond">${condition}</span>
-                    <span class="w-row-precip">${precipDisplay}</span>
-                    <div class="w-row-temp">
-                        <span class="w-temp-max">${tMax}°</span>
-                        <span class="w-temp-min">${tMin}°</span>
-                    </div>
-                `;
-                weatherModalList.appendChild(row);
-            });
-        }
-
-    } catch (err) {
-        console.warn("Open-Meteo weather modal fallback:", err);
-        // Fallback matching real Jakarta climate baseline
-        const fallbackData = [
-            { day: "Kam", icon: "🌦️", cond: "Hujan Ringan", precip: "1.3mm", max: 33, min: 25 },
-            { day: "Jum", icon: "⛅", cond: "Berawan", precip: "", max: 35, min: 25 },
-            { day: "Sab", icon: "🌤️", cond: "Cerah Berawan", precip: "", max: 36, min: 25 },
-            { day: "Min", icon: "☀️", cond: "Cerah", precip: "", max: 34, min: 26 },
-            { day: "Sen", icon: "🌦️", cond: "Hujan Ringan", precip: "1.5mm", max: 33, min: 26 },
-            { day: "Sel", icon: "🌤️", cond: "Cerah Berawan", precip: "", max: 35, min: 26 },
-            { day: "Rab", icon: "🌧️", cond: "Hujan Sedang", precip: "3.6mm", max: 35, min: 27 }
-        ];
-
-        if (modalSumTotal) modalSumTotal.textContent = "6.4mm";
-        if (modalSumAvg) modalSumAvg.textContent = "0.9mm/hr";
-        if (modalSumBadge) {
-            modalSumBadge.textContent = "KERING";
-            modalSumBadge.className = "weather-dryness-badge dry";
-        }
-
-        if (weatherModalList) {
-            weatherModalList.innerHTML = "";
-            fallbackData.forEach(item => {
-                const row = document.createElement("div");
-                row.className = "weather-forecast-row";
-                row.innerHTML = `
-                    <span class="w-row-day">${item.day}</span>
-                    <span class="w-row-icon">${item.icon}</span>
-                    <span class="w-row-cond">${item.cond}</span>
-                    <span class="w-row-precip">${item.precip}</span>
-                    <div class="w-row-temp">
-                        <span class="w-temp-max">${item.max}°</span>
-                        <span class="w-temp-min">${item.min}°</span>
-                    </div>
-                `;
-                weatherModalList.appendChild(row);
-            });
-        }
-    }
-}
-
-function closeWeatherModal() {
-    if (weatherModal) {
-        weatherModal.classList.remove("open");
-    }
-}
-
-window.openWeatherModal = openWeatherModal;
-window.closeWeatherModal = closeWeatherModal;
 
 // Request CSV from Backend API and download it
 async function runExport() {
