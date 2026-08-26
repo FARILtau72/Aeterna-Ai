@@ -61,7 +61,7 @@
     <!-- Three.js 3D Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/style.css?v=4.2.2">
 
     <!-- Schema.org Multi-Type JSON-LD Graph for Rapid Google & Bing Indexing -->
     <script type="application/ld+json">
@@ -496,7 +496,7 @@
                 <div class="panel logistics-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
                         <h2 class="panel-title" style="margin-bottom: 0;">OPERATIONAL LOGISTICS PLAN</h2>
-                        <button type="button" class="how-calculated-btn" onclick="toggleLogisticsExplainability()" id="btn-how-calculated">
+                        <button type="button" class="how-calculated-btn" onclick="toggleLogisticsExplainability()" id="btn-how-calculated" style="background: rgba(0, 240, 255, 0.06); border: 1px solid rgba(0, 240, 255, 0.35); color: #00f2fe; border-radius: 6px; padding: 5px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.76rem; font-weight: 500;">
                             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             <span>How is this calculated?</span>
                         </button>
@@ -506,28 +506,28 @@
                         <!-- 1. Recommended Fleet -->
                         <div class="log-item">
                             <span class="log-label">Recommended Fleet</span>
-                            <span id="log-fleet" class="log-value">0 Trucks</span>
+                            <span id="log-fleet" class="log-value">-- Trucks</span>
                             <span id="log-fleet-sub" class="log-meta">15 ton capacity / truck</span>
                         </div>
 
                         <!-- 2. Crew Requirement -->
                         <div class="log-item">
                             <span class="log-label">Crew Requirement</span>
-                            <span id="log-manpower" class="log-value">0 Personnel</span>
-                            <span id="log-manpower-sub" class="log-meta">0 drivers + 0 collectors</span>
+                            <span id="log-manpower" class="log-value">-- Personnel</span>
+                            <span id="log-manpower-sub" class="log-meta">-- drivers + -- collectors</span>
                         </div>
 
                         <!-- 3. Estimated Collection Duration -->
                         <div class="log-item">
                             <span class="log-label">Estimated Collection Duration</span>
-                            <span id="log-duration" class="log-value">0.0 Hours</span>
+                            <span id="log-duration" class="log-value">-- Hours</span>
                             <span id="log-duration-sub" class="log-meta">Adjusted for traffic, weather &amp; events</span>
                         </div>
 
                         <!-- 4. Required Truck Loads -->
                         <div class="log-item">
                             <span class="log-label">Required Truck Loads</span>
-                            <span id="log-truck-loads" class="log-value">~0 Loads</span>
+                            <span id="log-truck-loads" class="log-value">~-- Loads</span>
                             <span id="log-truck-loads-sub" class="log-meta">forecast volume ÷ 15T gross capacity</span>
                         </div>
 
@@ -763,6 +763,6 @@
     <div id="cursor-ring"></div>
 
     <!-- Scripts -->
-    <script src="/static/app.js"></script>
+    <script src="/static/app.js?v=4.2.2"></script>
 </body>
 </html>

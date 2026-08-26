@@ -541,30 +541,43 @@ function updateDashboardData(data, confScore, message) {
     if (barMetal) barMetal.style.width = `${getPct(totalMetal)}%`;
 
     // 2. Operational Logistics Plan 6 Cards
-    if (logFleet) logFleet.textContent = `${trucksCount} Trucks`;
-    if (logFleetSub) logFleetSub.textContent = uiPres.fleet_subtitle || "15 ton capacity / truck";
+    const elFleet = document.getElementById("log-fleet") || logFleet;
+    const elFleetSub = document.getElementById("log-fleet-sub") || logFleetSub;
+    const elManpower = document.getElementById("log-manpower") || logManpower;
+    const elManpowerSub = document.getElementById("log-manpower-sub") || logManpowerSub;
+    const elDuration = document.getElementById("log-duration") || logDuration;
+    const elDurationSub = document.getElementById("log-duration-sub") || logDurationSub;
+    const elTruckLoads = document.getElementById("log-truck-loads") || logTruckLoads;
+    const elTruckLoadsSub = document.getElementById("log-truck-loads-sub") || logTruckLoadsSub;
+    const elEfficiency = document.getElementById("log-efficiency") || logEfficiency;
+    const elEfficiencySub = document.getElementById("log-efficiency-sub") || logEfficiencySub;
+    const elConfidence = document.getElementById("log-confidence") || logConfidence;
+    const elConfidenceSub = document.getElementById("log-confidence-sub") || logConfidenceSub;
 
-    if (logManpower) logManpower.textContent = `${personnelCount} Personnel`;
-    if (logManpowerSub) {
+    if (elFleet) elFleet.textContent = `${trucksCount} Trucks`;
+    if (elFleetSub) elFleetSub.textContent = uiPres.fleet_subtitle || "15 ton capacity / truck";
+
+    if (elManpower) elManpower.textContent = `${personnelCount} Personnel`;
+    if (elManpowerSub) {
         const drivers = manpowerObj.drivers !== undefined ? manpowerObj.drivers : trucksCount;
         const collectors = manpowerObj.collectors !== undefined ? manpowerObj.collectors : (trucksCount * 2);
-        logManpowerSub.textContent = `${drivers} drivers + ${collectors} collectors`;
+        elManpowerSub.textContent = `${drivers} drivers + ${collectors} collectors`;
     }
 
-    if (logDuration) logDuration.textContent = `${durationHours} Hours`;
-    if (logDurationSub) logDurationSub.textContent = uiPres.collection_time_subtitle || "Adjusted for traffic, weather & events";
+    if (elDuration) elDuration.textContent = `${durationHours} Hours`;
+    if (elDurationSub) elDurationSub.textContent = uiPres.collection_time_subtitle || "Adjusted for traffic, weather & events";
 
-    if (logTruckLoads) logTruckLoads.textContent = `~${truckLoadsVal} Loads`;
-    if (logTruckLoadsSub) logTruckLoadsSub.textContent = "forecast volume ÷ 15T gross capacity";
+    if (elTruckLoads) elTruckLoads.textContent = `~${truckLoadsVal} Loads`;
+    if (elTruckLoadsSub) elTruckLoadsSub.textContent = "forecast volume ÷ 15T gross capacity";
 
-    if (logEfficiency) logEfficiency.textContent = logPlan.efficiency_rate || effObj.display || "85% — Optimal";
-    if (logEfficiencySub) logEfficiencySub.textContent = effObj.status ? `Status: ${effObj.status}` : "Multi-factor operational index";
+    if (elEfficiency) elEfficiency.textContent = logPlan.efficiency_rate || effObj.display || "85% — Optimal";
+    if (elEfficiencySub) elEfficiencySub.textContent = effObj.status ? `Status: ${effObj.status}` : "Multi-factor operational index";
 
-    if (logConfidence) {
+    if (elConfidence) {
         const relScore = relObj.score_percent !== undefined ? relObj.score_percent.toFixed(1) : (confScore * 100).toFixed(1);
-        logConfidence.textContent = `${relScore}%`;
+        elConfidence.textContent = `${relScore}%`;
     }
-    if (logConfidenceSub) logConfidenceSub.textContent = "Empirical model quality & data health";
+    if (elConfidenceSub) elConfidenceSub.textContent = "Empirical model quality & data health";
 
     const eventDay = results.find(r => r.event_info !== null);
     if (eventDay) {
