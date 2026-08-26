@@ -492,25 +492,100 @@
                     </div>
                 </div>
 
-                <!-- Logistics Plan -->
+                <!-- Operational Logistics Plan -->
                 <div class="panel logistics-panel">
-                    <h2 class="panel-title">OPERATIONAL LOGISTICS PLAN</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
+                        <h2 class="panel-title" style="margin-bottom: 0;">OPERATIONAL LOGISTICS PLAN</h2>
+                        <button type="button" class="how-calculated-btn" onclick="toggleLogisticsExplainability()" id="btn-how-calculated">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>How is this calculated?</span>
+                        </button>
+                    </div>
+
                     <div class="logistics-grid">
+                        <!-- 1. Recommended Fleet -->
                         <div class="log-item">
-                            <span class="log-label">Manpower Required</span>
-                            <span id="log-manpower" class="log-value">0 Crew</span>
+                            <span class="log-label">Recommended Fleet</span>
+                            <span id="log-fleet" class="log-value">0 Trucks</span>
+                            <span id="log-fleet-sub" class="log-meta">15 ton capacity / truck</span>
                         </div>
+
+                        <!-- 2. Crew Requirement -->
                         <div class="log-item">
-                            <span class="log-label">Estimated Collection Time</span>
+                            <span class="log-label">Crew Requirement</span>
+                            <span id="log-manpower" class="log-value">0 Personnel</span>
+                            <span id="log-manpower-sub" class="log-meta">0 drivers + 0 collectors</span>
+                        </div>
+
+                        <!-- 3. Estimated Collection Duration -->
+                        <div class="log-item">
+                            <span class="log-label">Estimated Collection Duration</span>
                             <span id="log-duration" class="log-value">0.0 Hours</span>
+                            <span id="log-duration-sub" class="log-meta">Adjusted for traffic, weather &amp; events</span>
                         </div>
+
+                        <!-- 4. Required Truck Loads -->
+                        <div class="log-item">
+                            <span class="log-label">Required Truck Loads</span>
+                            <span id="log-truck-loads" class="log-value">~0 Loads</span>
+                            <span id="log-truck-loads-sub" class="log-meta">forecast volume ÷ 15T gross capacity</span>
+                        </div>
+
+                        <!-- 5. Operational Efficiency -->
                         <div class="log-item">
                             <span class="log-label">Operational Efficiency</span>
-                            <span id="log-efficiency" class="log-value">85% (Optimal)</span>
+                            <span id="log-efficiency" class="log-value">--% — Optimal</span>
+                            <span id="log-efficiency-sub" class="log-meta">Multi-factor operational index</span>
                         </div>
+
+                        <!-- 6. Forecast Reliability Score -->
                         <div class="log-item">
-                            <span class="log-label">Confidence Score</span>
-                            <span id="log-confidence" class="log-value highlight">92.0%</span>
+                            <span class="log-label">Forecast Reliability</span>
+                            <span id="log-confidence" class="log-value highlight">--%</span>
+                            <span id="log-confidence-sub" class="log-meta">Empirical model quality &amp; data health</span>
+                        </div>
+                    </div>
+
+                    <!-- Expandable Calculation Breakdown Drawer -->
+                    <div id="logistics-explain-box" class="logistics-explain-box" style="display: none;">
+                        <div class="explain-header">
+                            <strong>📖 Operational Formula &amp; Scientific Methodology</strong>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Dinas Lingkungan Hidup DKI Jakarta Standards</span>
+                        </div>
+                        <div class="explain-grid">
+                            <div class="explain-card">
+                                <span class="explain-title">1. Recommended Fleet (Compactor 15T)</span>
+                                <p>
+                                    <code>Effective Capacity = 15.0T × 95% Load Factor = 14.25 Ton/trip</code><br>
+                                    <code>Base Trucks = ceil(Total Waste / 14.25 Ton)</code><br>
+                                    <code>Recommended Trucks = ceil(Base Trucks × 1.05 Buffer)</code><br>
+                                    <em>*Buffer 5% menampung lonjakan insidental &amp; rotasi armada.</em>
+                                </p>
+                            </div>
+                            <div class="explain-card">
+                                <span class="explain-title">2. Crew Sizing (Manpower)</span>
+                                <p>
+                                    <code>Standard Crew = 1 Certified Driver + 2 Sanitarian Collectors = 3 Personel/Truk</code><br>
+                                    <code>Total Personnel = Recommended Trucks × 3</code><br>
+                                    <em>*Dihitung langsung dari kebutuhan armada aktif (bukan angka acak).</em>
+                                </p>
+                            </div>
+                            <div class="explain-card">
+                                <span class="explain-title">3. Collection Duration (Fleet Throughput)</span>
+                                <p>
+                                    <code>Fleet Throughput = Active Trucks × 2.0 Ton/Jam</code><br>
+                                    <code>Raw Hours = Total Waste / Fleet Throughput</code><br>
+                                    <code>Adjusted Hours = (Raw Hours × Traffic × Weather × Event) / Efficiency</code><br>
+                                    <em>*Berbasis throughput armada; bukan sekadar volume ÷ 15T.</em>
+                                </p>
+                            </div>
+                            <div class="explain-card">
+                                <span class="explain-title">4. Efficiency &amp; Reliability Scores</span>
+                                <p>
+                                    <code>Efficiency = Fleet (35%) + Weather (20%) + Traffic (20%) + Event (15%) + Utilization (10%)</code><br>
+                                    <code>Reliability = Model Quality (50%) + Data Verification (30%) + Horizon (20%)</code>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

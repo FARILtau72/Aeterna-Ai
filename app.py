@@ -32,6 +32,16 @@ from chronos import ChronosPipeline
 from datetime import datetime, timedelta, timezone
 import os, logging, re
 
+from services.logistics_engine import (
+    LOGISTICS_CONFIG,
+    calculate_fleet_requirements,
+    calculate_manpower_requirements,
+    calculate_collection_time,
+    calculate_operational_efficiency_score,
+    calculate_forecast_reliability_score,
+    calculate_full_logistics_plan
+)
+
 def get_jakarta_now() -> datetime:
     return datetime.now(timezone(timedelta(hours=7)))
 
@@ -159,11 +169,67 @@ class PredictionResult(BaseModel):
     event_info: Optional[str] = None
     hourly_breakdown: Optional[List[Dict[str, Any]]] = None
 
+class FleetBreakdown(BaseModel):
+    truck_capacity_ton: float = 15.0
+    load_factor: float = 0.95
+    effective_capacity_ton: float = 14.25
+    base_trucks: int
+    operational_buffer_percent: float = 5.0
+    recommended_trucks: int
+    required_truck_loads: float
+
+class ManpowerBreakdown(BaseModel):
+    drivers: int
+    collectors: int
+    total_personnel: int
+    crew_per_truck: int = 3
+
+class CollectionTimeBreakdown(BaseModel):
+    raw_hours: float
+    adjusted_hours: float
+    collection_rate_ton_per_hour_per_truck: float = 2.0
+    average_trips_per_truck: float
+    factors: Dict[str, float]
+
+class OperationalEfficiencyBreakdown(BaseModel):
+    score_percent: float
+    status: str
+    display: str
+    breakdown: Dict[str, float]
+
+class ReliabilityBreakdown(BaseModel):
+    score_percent: float
+    display: str
+    label: str
+    breakdown: Dict[str, float]
+
+class UIPresentation(BaseModel):
+    recommended_fleet_display: str
+    fleet_subtitle: str
+    crew_display: str
+    crew_subtitle: str
+    collection_time_display: str
+    collection_time_subtitle: str
+    truck_loads_display: str
+    efficiency_display: str
+    reliability_display: str
+
 class LogisticsPlan(BaseModel):
+    forecast_volume_ton: Optional[float] = None
+    # Backward-compatible fields
     trucks_needed: int
     manpower: int
     estimated_duration_hours: float
     efficiency_rate: str
+    required_truck_loads: Optional[float] = None
+    # Rich explainable breakdowns
+    recommended_fleet: Optional[FleetBreakdown] = None
+    manpower_breakdown: Optional[ManpowerBreakdown] = None
+    collection_time: Optional[CollectionTimeBreakdown] = None
+    operational_factors: Optional[Dict[str, float]] = None
+    operational_efficiency: Optional[OperationalEfficiencyBreakdown] = None
+    reliability: Optional[ReliabilityBreakdown] = None
+    ui_presentation: Optional[UIPresentation] = None
 
 class PredictionData(BaseModel):
     prediction_results: List[PredictionResult]
@@ -784,7 +850,7 @@ async def predict_waste_volume(req: PredictionRequest):
                     paper_waste_ton=round(calibrated_volume*paper_r, 2), metal_waste_ton=round(calibrated_volume*metal_r, 2),
                     glass_waste_ton=round(calibrated_volume*glass_r, 2), textile_waste_ton=round(calibrated_volume*textile_r, 2),
                     other_waste_ton=round(calibrated_volume*other_r, 2),
-                    recommended_trucks=max(1, int(np.ceil(calibrated_volume/15))),
+                    recommended_trucks=calculate_fleet_requirements(calibrated_volume)["recommended_trucks"],
                     risk_status=risk, event_info=info, hourly_breakdown=hourly
                 ))
         
@@ -871,29 +937,47 @@ async def predict_waste_volume(req: PredictionRequest):
                     paper_waste_ton=round(calibrated_volume*paper_r, 2), metal_waste_ton=round(calibrated_volume*metal_r, 2),
                     glass_waste_ton=round(calibrated_volume*glass_r, 2), textile_waste_ton=round(calibrated_volume*textile_r, 2),
                     other_waste_ton=round(calibrated_volume*other_r, 2),
-                    recommended_trucks=max(1, int(np.ceil(calibrated_volume/15))),
+                    recommended_trucks=calculate_fleet_requirements(calibrated_volume)["recommended_trucks"],
                     risk_status=risk, event_info=info, hourly_breakdown=hourly
                 ))
         
-        trucks = sum([r.recommended_trucks for r in results])
+        # Calculate Unified Deterministic Operational Logistics Plan
+        avg_rainfall = float(np.mean(list(weather_forecast.values()))) if weather_forecast else float(req.rainfall_mm)
+        has_any_event = any(r.event_info is not None for r in results)
+        test_mape = float(model_meta.get("metrics", {}).get("mape", 6.12)) if model_meta else 6.12
+
+        logistics_dict = calculate_full_logistics_plan(
+            total_forecast_volume_ton=total_vol,
+            forecast_days=req.forecast_days,
+            rainfall_mm=avg_rainfall,
+            has_event=has_any_event,
+            is_rush_hour=False,
+            test_mape=test_mape,
+            has_live_weather=(len(weather_forecast) > 0),
+            has_verified_bps=True
+        )
+
+        conf = round(logistics_dict["reliability"]["score_percent"] / 100.0, 2)
         msg = f"CRITICAL at {req.location}!" if max_risk == "CRITICAL" else f"WARNING at {req.location}." if max_risk == "WARNING" else "Normal conditions."
-        
-        # Calculate dynamic model confidence score based on test set MAPE & weather stability
-        test_mape = model_meta.get("metrics", {}).get("mape", 6.12)
-        base_conf = max(0.80, min(0.96, 1.0 - (test_mape / 100.0))) if req.model_type == "gradient_boosting" else 0.91
-        extreme_rain_days = sum(1 for r in weather_forecast.values() if r > 50.0)
-        conf = base_conf - (extreme_rain_days * 0.02)
-        conf = round(max(0.70, min(0.96, conf)), 2)
-        
+
         return APIResponse(
             status="success", message=msg, confidence_score=conf,
             data=PredictionData(
                 prediction_results=results,
                 logistics_plan=LogisticsPlan(
-                    trucks_needed=trucks,
-                    manpower=trucks*3,
-                    estimated_duration_hours=round(total_vol/15, 1),
-                    efficiency_rate="85% (Optimal)"
+                    forecast_volume_ton=logistics_dict["forecast_volume_ton"],
+                    trucks_needed=logistics_dict["trucks_needed"],
+                    manpower=logistics_dict["manpower"],
+                    estimated_duration_hours=logistics_dict["estimated_duration_hours"],
+                    efficiency_rate=logistics_dict["efficiency_rate"],
+                    required_truck_loads=logistics_dict["required_truck_loads"],
+                    recommended_fleet=FleetBreakdown(**logistics_dict["recommended_fleet"]),
+                    manpower_breakdown=ManpowerBreakdown(**logistics_dict["manpower_breakdown"]),
+                    collection_time=CollectionTimeBreakdown(**logistics_dict["collection_time"]),
+                    operational_factors=logistics_dict["operational_factors"],
+                    operational_efficiency=OperationalEfficiencyBreakdown(**logistics_dict["operational_efficiency"]),
+                    reliability=ReliabilityBreakdown(**logistics_dict["reliability"]),
+                    ui_presentation=UIPresentation(**logistics_dict["ui_presentation"])
                 )
             )
         )
@@ -1039,7 +1123,7 @@ async def get_autopilot_data():
         else:
             calibrated_volume = round(float(config["normal_avg"]), 2)
             
-        trucks = max(1, int(np.ceil(calibrated_volume / 15)))
+        trucks = calculate_fleet_requirements(calibrated_volume)["recommended_trucks"]
         
         norm = config["normal_avg"]
         status = "CRITICAL" if calibrated_volume > norm * 1.30 else "WARNING" if calibrated_volume > norm * 1.12 else "SAFE"

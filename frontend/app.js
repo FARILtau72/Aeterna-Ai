@@ -107,10 +107,18 @@ const barTextile = document.getElementById("bar-textile");
 const barMetal = document.getElementById("bar-metal");
 
 // Logistics elements
+const logFleet = document.getElementById("log-fleet");
+const logFleetSub = document.getElementById("log-fleet-sub");
 const logManpower = document.getElementById("log-manpower");
+const logManpowerSub = document.getElementById("log-manpower-sub");
 const logDuration = document.getElementById("log-duration");
+const logDurationSub = document.getElementById("log-duration-sub");
+const logTruckLoads = document.getElementById("log-truck-loads");
+const logTruckLoadsSub = document.getElementById("log-truck-loads-sub");
 const logEfficiency = document.getElementById("log-efficiency");
+const logEfficiencySub = document.getElementById("log-efficiency-sub");
 const logConfidence = document.getElementById("log-confidence");
+const logConfidenceSub = document.getElementById("log-confidence-sub");
 
 // Timeline & Hourly
 const timelineList = document.getElementById("timeline-list");
@@ -470,7 +478,7 @@ function updateDashboardData(data, confScore, message) {
     if (results.length === 0) return;
 
     const totalVolume = results.reduce((acc, curr) => acc + curr.total_volume_ton, 0);
-    if (statTotalVolume) statTotalVolume.innerHTML = `${totalVolume.toFixed(2)} <span class="unit">Tons</span>`;
+    if (statTotalVolume) statTotalVolume.innerHTML = `${totalVolume.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span class="unit">Tons</span>`;
     
     let maxRisk = "SAFE";
     results.forEach(r => {
@@ -486,7 +494,22 @@ function updateDashboardData(data, confScore, message) {
     updateMarkerRisk(selectedLocation, maxRisk);
     drawTransitRoute(selectedLocation);
 
-    if (statTrucks) statTrucks.innerHTML = `${data.logistics_plan.trucks_needed} <span class="unit">Trucks (15T)</span>`;
+    // Operational Logistics Plan parsing
+    const logPlan = data.logistics_plan || {};
+    const uiPres = logPlan.ui_presentation || {};
+    const recFleet = logPlan.recommended_fleet || {};
+    const manpowerObj = logPlan.manpower_breakdown || {};
+    const colTimeObj = logPlan.collection_time || {};
+    const effObj = logPlan.operational_efficiency || {};
+    const relObj = logPlan.reliability || {};
+
+    const trucksCount = logPlan.trucks_needed || recFleet.recommended_trucks || 0;
+    const personnelCount = logPlan.manpower || manpowerObj.total_personnel || (trucksCount * 3);
+    const durationHours = (logPlan.estimated_duration_hours !== undefined ? logPlan.estimated_duration_hours : (colTimeObj.adjusted_hours || 0.0)).toFixed(1);
+    const truckLoadsVal = logPlan.required_truck_loads !== undefined ? Math.ceil(logPlan.required_truck_loads) : Math.ceil(totalVolume / 15.0);
+
+    // 1. KPI Stat Recommended Fleet (15T)
+    if (statTrucks) statTrucks.innerHTML = `${trucksCount} <span class="unit">Trucks (15T)</span>`;
 
     const startDateStr = results[0].date;
     const endDateStr = results[results.length - 1].date;
@@ -517,10 +540,31 @@ function updateDashboardData(data, confScore, message) {
     if (barTextile) barTextile.style.width = `${getPct(totalTextile)}%`;
     if (barMetal) barMetal.style.width = `${getPct(totalMetal)}%`;
 
-    if (logManpower) logManpower.textContent = `${data.logistics_plan.manpower} Crew`;
-    if (logDuration) logDuration.textContent = `${data.logistics_plan.estimated_duration_hours.toFixed(1)} Hours`;
-    if (logEfficiency) logEfficiency.textContent = data.logistics_plan.efficiency_rate;
-    if (logConfidence) logConfidence.textContent = `${(confScore * 100).toFixed(1)}%`;
+    // 2. Operational Logistics Plan 6 Cards
+    if (logFleet) logFleet.textContent = `${trucksCount} Trucks`;
+    if (logFleetSub) logFleetSub.textContent = uiPres.fleet_subtitle || "15 ton capacity / truck";
+
+    if (logManpower) logManpower.textContent = `${personnelCount} Personnel`;
+    if (logManpowerSub) {
+        const drivers = manpowerObj.drivers !== undefined ? manpowerObj.drivers : trucksCount;
+        const collectors = manpowerObj.collectors !== undefined ? manpowerObj.collectors : (trucksCount * 2);
+        logManpowerSub.textContent = `${drivers} drivers + ${collectors} collectors`;
+    }
+
+    if (logDuration) logDuration.textContent = `${durationHours} Hours`;
+    if (logDurationSub) logDurationSub.textContent = uiPres.collection_time_subtitle || "Adjusted for traffic, weather & events";
+
+    if (logTruckLoads) logTruckLoads.textContent = `~${truckLoadsVal} Loads`;
+    if (logTruckLoadsSub) logTruckLoadsSub.textContent = "forecast volume ÷ 15T gross capacity";
+
+    if (logEfficiency) logEfficiency.textContent = logPlan.efficiency_rate || effObj.display || "85% — Optimal";
+    if (logEfficiencySub) logEfficiencySub.textContent = effObj.status ? `Status: ${effObj.status}` : "Multi-factor operational index";
+
+    if (logConfidence) {
+        const relScore = relObj.score_percent !== undefined ? relObj.score_percent.toFixed(1) : (confScore * 100).toFixed(1);
+        logConfidence.textContent = `${relScore}%`;
+    }
+    if (logConfidenceSub) logConfidenceSub.textContent = "Empirical model quality & data health";
 
     const eventDay = results.find(r => r.event_info !== null);
     if (eventDay) {
@@ -1298,3 +1342,17 @@ function animate3D() {
     
     renderer3D.render(scene3D, camera3D);
 }
+
+// Operational Logistics Plan Explainability Accordion
+window.toggleLogisticsExplainability = function() {
+    const box = document.getElementById("logistics-explain-box");
+    const btn = document.getElementById("btn-how-calculated");
+    if (!box) return;
+    if (box.style.display === "none" || box.style.display === "") {
+        box.style.display = "block";
+        if (btn) btn.classList.add("active");
+    } else {
+        box.style.display = "none";
+        if (btn) btn.classList.remove("active");
+    }
+};
