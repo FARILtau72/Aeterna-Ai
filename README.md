@@ -1,5 +1,5 @@
 ---
-title: Predictive Waste Analytics
+title: AETERNA AI — Waste Forecasting & Decision Intelligence
 emoji: 🚛
 colorFrom: green
 colorTo: blue
@@ -8,159 +8,227 @@ app_file: app.py
 pinned: false
 ---
 
-# 🚛 Aeterna AI: Next-Gen Waste Intelligence Platform DKI Jakarta
+# 🚛 AETERNA AI — Waste Forecasting & Decision Intelligence
+### Platform Riset Prediksi Timbulan Sampah & Simulasi Logistik Operasional 44 Kecamatan DKI Jakarta
 
 <p align="center">
-  <a href="https://www.aeternaai.biz.id/"><img src="https://img.shields.io/badge/Official%20Portal-aeternaai.biz.id-00f2fe?style=for-the-badge&logo=googlechrome" alt="Official Website" /></a>
+  <a href="https://www.aeternaai.biz.id/"><img src="https://img.shields.io/badge/Web%20Portal-aeternaai.biz.id-00f2fe?style=for-the-badge&logo=googlechrome" alt="Web Portal" /></a>
   <a href="https://www.linkedin.com/in/faril-putra-pratama-81561a280/"><img src="https://img.shields.io/badge/LinkedIn-Faril%20Putra%20Pratama-0a66c2?style=for-the-badge&logo=linkedin" alt="LinkedIn Profile" /></a>
-  <a href="https://github.com/FARILtau72/Aeterna-Ai"><img src="https://img.shields.io/badge/GitHub-FARILtau72-181717?style=for-the-badge&logo=github" alt="GitHub Badge" /></a>
+  <a href="https://github.com/FARILtau72/Aeterna-Ai"><img src="https://img.shields.io/badge/GitHub-FARILtau72-181717?style=for-the-badge&logo=github" alt="GitHub Repo" /></a>
   <a href="https://github.com/FARILtau72/Aeterna-Ai/stargazers"><img src="https://img.shields.io/github/stars/FARILtau72/Aeterna-Ai?style=for-the-badge&color=gold" alt="GitHub Stars" /></a>
 </p>
 
-> ⭐ **If you find Aeterna AI useful, please give this repository a Star on GitHub! Your support helps boost open-source smart city innovation!**
+> [!IMPORTANT]
+> **RESEARCH PROTOTYPE & DECISION SUPPORT NOTICE**  
+> **AETERNA AI** adalah prototipe riset independen (*Student-led R&D project*) yang mengeksplorasi pemanfaatan Machine Learning spasial-temporal, data cuaca live, dan simulasi logistik deterministik untuk perencanaan pengelolaan sampah di DKI Jakarta.  
+> Seluruh hasil prediksi dan simulasi alokasi armada merupakan estimasi pendukung keputusan (*decision support estimates*), bukan instruksi operasional resmi dari Dinas Lingkungan Hidup (DLH) DKI Jakarta atau Jakarta Smart City.
 
 ---
 
-### 👨‍💻 Lead Developer: Faril Putra Pratama
-* **Official Website Portal**: [https://www.aeternaai.biz.id/](https://www.aeternaai.biz.id/)
-* **LinkedIn Profile**: [https://www.linkedin.com/in/faril-putra-pratama-81561a280/](https://www.linkedin.com/in/faril-putra-pratama-81561a280/)
-* **GitHub Repository**: [https://github.com/FARILtau72/Aeterna-Ai](https://github.com/FARILtau72/Aeterna-Ai)
-* **Live HF Deployment**: [https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api](https://huggingface.co/spaces/ALAMDIENG/waste-prediction-api)
+## 1. Project Overview & Positioning
 
-**Platform Sistem Peringatan Dini & Peramalan Sampah Real-Time 44 Kecamatan DKI Jakarta berbasis BPS Jumlah Jiwa, Open-Meteo, & AI Chronos T5.**
+AETERNA AI dirancang untuk mengeksplorasi transisi pengelolaan sampah perkotaan dari **pendekatan reaktif** (merespons setelah TPS mengalami kelebihan muatan) menuju **pendekatan proaktif** (mengantisipasi lonjakan timbulan sampah berbasis prakiraan cuaca, kepadatan penduduk, dan kalender kegiatan masyarakat).
 
----
-
-## 📖 Overview
-
-**Aeterna AI** adalah platform analitik kecerdasan buatan (*Waste Intelligence System*) yang dirancang dan dikembangkan oleh **Faril Putra Pratama (@FARILtau72)**. Platform ini dirancang untuk memantau, memprediksi, dan mengoptimalkan manajemen logistik armada truk sampah DKI Jakarta secara spasial-temporal harian untuk seluruh **44 Kecamatan**.
-
-Platform ini mengubah paradigma pengelolaan sampah dari **reaktif** (menangani setelah terjadi penumpukan) menjadi **prediktif** (memprediksi surge sebelum terjadi) guna mengoptimalkan penyebaran armada truk pengangkut ke 44 kecamatan DKI Jakarta.
-
-> [!NOTE]
-> **📖 DOKUMENTASI SISTEM BACKEND MENDALAM**:  
-> Untuk rincian mendalam mengenai arsitektur backend, model machine learning (GBR R²=98.28% & Chronos T5), metrik akurasi, formula rekayasa fitur cuaca/event, dan deployment Docker, silakan merujuk ke **[BACKEND_DOC.md](BACKEND_DOC.md)**.
+Platform ini mengintegrasikan:
+- **Spatial Machine Learning**: Memproyeksikan volume timbulan sampah (Ton) untuk 44 kecamatan di DKI Jakarta.
+- **Live Environmental Intelligence**: Mengintegrasikan data curah hujan live dari Open-Meteo API.
+- **Deterministic Operations Simulation**: Menghitung estimasi kebutuhan armada truk 15T compactor dan alokasi personel secara transparan.
+- **5-Tier Data Provenance System**: Membedakan secara eksplisit data observasi, turunan, estimasi, prediksi AI, dan output simulasi.
 
 ---
 
-## 🌟 Fitur Unggulan (Key Features)
+## 2. Problem Statement
 
-1. **BPS Jumlah Jiwa Headcount Scaling Engine**: Mengintegrasikan data populasi BPS DKI Jakarta 2023/2024 untuk seluruh 44 Kecamatan (Cengkareng 592rb, Cakung 559rb, Menteng 88rb, dll.) untuk mengukur lonjakan tonase sampah secara fisik.
-2. **AI Autopilot Forecaster**: Sistem otonom yang mengevaluasi seluruh **44 Kecamatan DKI Jakarta** secara paralel berdasarkan curah hujan koordinat presisi (Open-Meteo) dan kalender event aktif 2026.
-3. **6-Kategori Komposisi Sampah**: Memprediksi rincian tonase sampah secara proporsional sesuai statistik riil DLH DKI Jakarta: *Sisa Makanan (~50.2%), Plastik (~22.8%), Kertas (~11.5%), Tekstil (~4.2%), Kaca (~3.2%), dan Logam/Lainnya (~8.1%)*.
-4. **Armada Truk Compactor (15-Ton Divisor)**: Menghitung alokasi armada truk sampah secara presisi berdasarkan asumsi prototipe operasional 15-Ton.
-5. **Interactive Cyber HUD UI**: Antarmuka bertema *Dark Glassmorphism* dengan kursor delay kustom, visualisasi progress bar kategori neon glow, rincian logistik armada truk, dan rute logistik ke TPST Bantargebang.
+DKI Jakarta menghasilkan sekitar **7.500 – 9.000+ Ton sampah setiap hari** yang diangkut menuju TPST Bantargebang. Pengelolaan logistik persampahan menghadapi tantangan dinamis:
+1. **Fluktuasi Cuaca**: Hujan deras meningkatkan bobot sampah basah dan memperlambat laju pengangkutan di jalan raya.
+2. **Disparitas Spasial**: Tingkat timbulan sampah sangat bervariasi antara zona permukiman padat (misal: Cengkareng, Cakung) dan pusat komersial (misal: Tanah Abang, Menteng).
+3. **Keterbatasan Fasilitas TPA**: TPST Bantargebang memerlukan perencanaan distribusi armada yang terukur untuk meminimalkan antrean truk dan kemacetan jalur transit.
 
 ---
 
-## 🏗️ Arsitektur Sistem (Single-Container Full-Stack Architecture)
+## 3. Solution Architecture (Decoupled Engine)
 
-Sistem ini didesain menggunakan arsitektur full-stack terpadu berbasis **Python FastAPI & Vanilla JavaScript** yang ringan, cepat, dan hemat memori:
+AETERNA AI memisahkan secara tegas antara **Komponen Prediksi (Machine Learning)** dan **Komponen Simulasi Operasional (Deterministic Rules Engine)**:
 
 ```
 +---------------------------------------------------------------------------------------------------+
-|                                 AETERNA AI PLATFORM CONTAINER                                     |
-|                             (Hosted on Hugging Face Spaces & Docker)                              |
-|                                                                                                   |
-|   +---------------------------------------+     +---------------------------------------------+   |
-|   |         CYBER HUD DASHBOARD UI        |     |             FASTAPI BACKEND ENGINE          |   |
-|   | (HTML5, Vanilla CSS3, Leaflet.js Map) | <-> |    (Async REST Endpoints & Web Controller)   |   |
-|   +---------------------------------------+     +---------------------------------------------+   |
-|                                                                |                                  |
-|                                         +----------------------+----------------------+           |
-|                                         |                                             |           |
-|                                         v                                             v           |
-|                         +-------------------------------+             +-------------------------------+
-|                         |    AMAZON CHRONOS-T5 (TINY)   |             |   STACKING REGRESSOR          |
-|                         | (Time-Series Neural Network)  |             |  (Synthetic Benchmark ML Engine) |
-|                         +-------------------------------+             +-------------------------------+
-|                                         |                                             |           |
-|                                         +----------------------+----------------------+           |
-|                                                                |                                  |
-|                                                                v                                  |
-|                                             +-------------------------------------+               |
-|                                             |         EXTERNAL DATA SYNC          |               |
-|                                             |  - BPS Jakarta 2024 (Jumlah Jiwa)   |               |
-|                                             |  - Open-Meteo Realtime Rainfall API |               |
-|                                             +-------------------------------------+               |
+|                                  AETERNA AI SYSTEM ARCHITECTURE                                   |
 +---------------------------------------------------------------------------------------------------+
+                                                  |
+                                                  v
+                   +-------------------------------------------------------------+
+                   |                 EXTERNAL & REFERENCE DATA                   |
+                   |  - Open-Meteo API (Live Rainfall mm)          [OBSERVED]    |
+                   |  - BPS DKI Jakarta (Resident Headcount)       [REFERENCE]   |
+                   |  - Event & Transit Calendar                   [DERIVED]     |
+                   +-------------------------------------------------------------+
+                                                  |
+                                                  v
+                   +-------------------------------------------------------------+
+                   |               PROVENANCE & FEATURE PIPELINE                 |
+                   |  - Temporal Encoding (Day-of-week, Month, Weekend)          |
+                   |  - Precipitation Lag & Mudik Window Indicators              |
+                   |  - Spatial Normal Baseline Calibration                      |
+                   +-------------------------------------------------------------+
+                                                  |
+                                                  v
+                   +-------------------------------------------------------------+
+                   |                 AI FORECAST ENGINE (LAYER 1)                |
+                   |  - Stacking Regressor (DT + RF + GBR -> Ridge Meta-Learner) |
+                   |  - Amazon Chronos-T5 (Tiny) Time-Series Neural Model        |
+                   |                                                             |
+                   |  OUTPUT: Forecast Volume (Tons) & 6-Material Composition    |
+                   +-------------------------------------------------------------+
+                                                  |
+                                                  v
+                   +-------------------------------------------------------------+
+                   |            OPERATIONAL SIMULATION ENGINE (LAYER 2)          |
+                   |             (Deterministic Mathematics / Non-AI)            |
+                   |                                                             |
+                   |  - Suggested Fleet = ceil(Volume / 14.25T) * 1.05 Buffer    |
+                   |  - Crew Sizing = Active Trucks * 3 Personnel                |
+                   |  - Collection Time = Volume / (Active Trucks * 2.0 Ton/Hr)  |
+                   +-------------------------------------------------------------+
+                                                  |
+                                                  v
+                   +-------------------------------------------------------------+
+                   |             DECISION SUPPORT DASHBOARD (HUD UI)             |
+                   |  (Leaflet Spatial Map, Provenance Badges, Analytics Panel)  |
+                   +-------------------------------------------------------------+
 ```
 
-### Component Stack:
-* **Frontend Layer**: HTML5, Vanilla CSS3 (*Dark Glassmorphism Theme*), Vanilla JavaScript ES6+, dan **Leaflet.js** untuk visualisasi peta spasial 44 Kecamatan DKI Jakarta.
-* **Backend Layer**: **Python 3.9+** & **FastAPI** dengan Uvicorn ASGI Server untuk eksekusi peramalan REST API berkecepatan tinggi.
-* **AI & Machine Learning Engine**: **Amazon Chronos-T5 (Tiny)** (PyTorch) & **AETERNA Stacking Regressor** (DT + RF + GBR → Ridge).
-* **Data Providers**: Data Populasi **BPS DKI Jakarta 2023/2024** (Jumlah Jiwa), **Open-Meteo Weather API** (Curah Hujan Real-Time), dan **Dinas Lingkungan Hidup DKI Jakarta**.
+---
+
+## 4. Data Sources & 5-Tier Data Provenance System
+
+Untuk menjaga integritas ilmiah dan akuntabilitas publik, setiap variabel data dalam AETERNA AI diklasifikasikan ke dalam 5 kategori formal:
+
+| Kategori | Definisi | Contoh dalam Sistem |
+| :--- | :--- | :--- |
+| **`OBSERVED`** | Data yang diperoleh langsung dari pengukuran sensor atau API eksternal resmi | Curah Hujan Harian (Open-Meteo API) |
+| **`DERIVED`** | Data yang dihitung secara matematis dari dataset terverifikasi | Fitur Lag Cuaca, Indikator Hari Kerja/Libur |
+| **`ESTIMATED`** | Nilai baseline yang diestimasi karena sensor lapangan langsung belum tersedia | Baseline Timbulan Normal per Kecamatan |
+| **`FORECAST`** | Nilai masa depan yang diproyeksikan oleh model Machine Learning | Estimasi Tonase Sampah Harian per Kecamatan |
+| **`SIMULATION`** | Output skenario berbasis formula deterministik dan asumsi parameter | Kebutuhan Armada Truk 15T & Jumlah Kru |
+
+### Katalog Sumber Data:
+* **Open-Meteo API**: Live API curah hujan harian presisi koordinat latitude/longitude masing-masing kecamatan. (*Status: Active Live*).
+* **BPS DKI Jakarta**: Data populasi jumlah jiwa per kecamatan. (*Status: Reference Data / Adapter Ready*).
+* **SIPSN KLHK & DLH DKI Jakarta**: Data acuan tonase kota agregat. (*Status: Mode B Adapter Ready*).
 
 ---
 
-## 📊 Hasil Evaluasi & Akurasi Model Stacking Regressor (Synthetic Benchmark)
+## 5. Forecasting Machine Learning Engine
 
-Model AETERNA Stacking Regressor dilatih menggunakan **GridSearchCV** di atas dataset Simulasi Sintetis Spasial 44 Kecamatan DKI Jakarta (2024–2025). Pengujian dilakukan secara kronologis pada *unseen out-of-sample test set* (Juli – Desember 2025). **Perhatian: Seluruh metrik akurasi berikut mewakili performa pemodelan pada data simulasi sintetis, BUKAN validasi dunia nyata berdasarkan observasi lapangan aktual.**
-
-| Metrik Evaluasi | AETERNA Stacking Regressor | Keterangan & Interpretasi |
-| :--- | :---: | :--- |
-| **Mean Absolute Error (MAE)** | **`11.85 Ton`** | Rata-rata selisih prediksi vs data simulasi sintetis |
-| **Root Mean Squared Error (RMSE)** | **`15.42 Ton`** | Penalti deviasi ekstrem pada lonjakan event/cuaca |
-| **R-Squared ($R^2$ Score)** | **`88.45%`** | Varian riil timbulan sampah yang berhasil diprediksi ML |
-| **Mean Absolute Percentage Error (MAPE)** | **`6.12%`** | **Tingkat Galat Relatif pada Benchmark Sintetis** |
-
----
-
-## 📡 Referensi Endpoint API Utama
-
-Semua endpoint didukung dengan dokumentasi interaktif Swagger UI di `/docs`.
-
-### 1. Predict Waste Volume (Forecasting)
-* **Method**: `POST`
-* **Endpoint**: `/api/v1/predict`
-* **Request Payload**:
-    ```json
-    {
-      "forecast_days": 7,
-      "rainfall_mm": 0.0,
-      "jumlah_jiwa": 120000,
-      "location": "Menteng",
-      "model_type": "gradient_boosting",
-      "granularity": "daily"
-    }
-    ```
-
-### 2. Autopilot Live DKI (Today)
-* **Method**: `GET`
-* **Endpoint**: `/api/v1/autopilot`
-* **Description**: Mengembalikan kalkulasi prediksi otonom hari ini untuk seluruh 44 kecamatan DKI Jakarta secara paralel lengkap dengan data koordinat lokasi.
-
-### 3. SEO & GEO Endpoints
-* `GET /robots.txt`: Izin crawler AI (GPTBot, ClaudeBot, PerplexityBot).
-* `GET /sitemap.xml`: XML Sitemap untuk indeks Googlebot.
-* `GET /llms.txt` & `/llms-full.txt`: Spesifikasi RAG citation untuk AI LLM.
+Model utama peramalan adalah **Stacking Regressor Ensemble**:
+* **Base Estimators**:
+  1. `DecisionTreeRegressor(max_depth=6)`
+  2. `RandomForestRegressor(n_estimators=150, max_depth=6)`
+  3. `GradientBoostingRegressor(n_estimators=150, max_depth=5, learning_rate=0.05)`
+* **Meta-Learner**: `Ridge(alpha=1.0)`
+* **Cross-Validation**: 3-fold temporal stacking cross-validation.
+* **Fitur Input (11 Fitur)**: `Population_Jiwa`, `Normal_Avg_Ton`, `Zone_Type_Code`, `Rainfall_mm`, `Rain_Lag_1`, `Is_Weekend`, `Hari_Dalam_Minggu`, `Bulan`, `Is_Mudik`, `Ada_Event`, `Event_Crowd_Headcount`.
 
 ---
 
-## 🛠️ Panduan Instalasi & Pengembangan Lokal
+## 6. Deterministic Operational Simulation
+
+Rekomendasi armada dan operasional dihitung secara deterministik (**bukan black-box AI**):
+1. **Suggested Fleet**: Dihitung dari kapasitas muat efektif truk compactor 15 Ton dengan load factor 95% ($14.25	ext{ Ton/trip}$) ditambah buffer operasional 5%.
+2. **Kebutuhan Personel**: Rasio standar 1 pengemudi + 2 petugas kebersihan per unit truk ($3	ext{ kru/truk}$).
+3. **Estimasi Waktu Pengangkutan**: Berbasis throughput angkut ($2.0	ext{ Ton/jam/truk}$) yang disesuaikan dengan faktor koreksi cuaca dan kemacetan lalu lintas.
+
+---
+
+## 7. Model Evaluation (Development Benchmark)
+
+> ⚠️ **Catatan Evaluasi**: Evaluasi berikut dilakukan di atas dataset simulasi pengembangan (*Mode A: Synthetic Development Dataset*) untuk pengujian fungsionalitas pipeline. Hasil ini **bukan** bukti akurasi operasional lapangan dunia nyata.
+
+| Metrik Evaluasi | AETERNA Stacking Regressor | Baseline (Historical Mean) | Baseline (Rolling Mean 7D) |
+| :--- | :---: | :---: | :---: |
+| **MAE** | **`11.85 Ton`** | 48.20 Ton | 22.40 Ton |
+| **RMSE** | **`15.42 Ton`** | 62.15 Ton | 29.80 Ton |
+| **R² Score** | **`88.45%`** | 0.00% | 56.30% |
+| **MAPE** | **`6.12%`** | 24.80% | 11.20% |
+
+---
+
+## 8. Status Validasi Ilmiah
+
+* **Mode A — Development Benchmark**: **TERSEDIA & AKTIF** (Pengujian pipeline end-to-end pada dataset simulasi).
+* **Mode B — Real-World Field Validation**: **BELUM TERSEDIA** (Memerlukan data pencatatan timbulan sampah harian aktual tingkat 44 kecamatan dari DLH DKI Jakarta).
+
+---
+
+## 9. Referensi REST API
+
+Dokumentasi OpenAPI interaktif tersedia di `/docs`.
+
+### 1. Endpoint Prediksi & Simulasi
+* **POST** `/api/v1/predict`
+  ```json
+  {
+    "location": "Menteng",
+    "forecast_days": 7,
+    "rainfall_mm": 0.0,
+    "jumlah_jiwa": 88000,
+    "model_type": "gradient_boosting",
+    "granularity": "daily"
+  }
+  ```
+* **Response**: Mengembalikan objek `prediction_results` (Forecast) dan `logistics_plan` (Simulation) lengkap dengan metadata data provenance.
+
+### 2. Endpoint Autopilot & Monitoring
+* **GET** `/api/v1/autopilot`: Ringkasan prakiraan 44 kecamatan hari ini.
+* **GET** `/api/v1/alerts`: Wilayah dengan estimasi mendekati ambang batas kapasitas.
+* **GET** `/api/v1/news`: Artikel referensi terkurasi seputar kebijakan persampahan Jakarta.
+* **GET** `/status`: Status kesehatan servis dan arsitektur model aktif.
+
+---
+
+## 10. Panduan Instalasi & Menjalankan Lokal
 
 ```bash
-# Clone repository
+# 1. Clone repository
 git clone https://github.com/FARILtau72/Aeterna-Ai.git
 cd Aeterna-Ai
 
-# Install dependencies
+# 2. Buat virtual environment & install dependensi
+python -m venv venv
+# Windows:
+venv\Scripts\activate
+# Linux/macOS:
+source venv/bin/activate
+
 pip install -r requirements.txt
 
-# Jalankan server FastAPI lokal
+# 3. Jalankan unit test
+python -m pytest tests/ -v
+
+# 4. Jalankan aplikasi FastAPI
 python -m uvicorn app:app --port 8001 --host 127.0.0.1
 ```
-* Akses UI di: `http://localhost:8001`
-* Akses Swagger UI di: `http://localhost:8001/docs`
+Buka browser pada `http://localhost:8001`.
 
 ---
 
-## 👤 Developer & Legal License
+## 11. Limitasi Sistem
 
-Developed & Engineered with ⚡ by **[Faril Putra Pratama (@FARILtau72)](https://github.com/FARILtau72)**.  
-Distributed under the **MIT License**.
+1. **Ketiadaan Data Lapangan Harian Kecamatan**: DLH DKI Jakarta saat ini belum menyediakan data observasi timbulan sampah harian tingkat kecamatan melalui API publik.
+2. **Asumsi Armada Bersifat Prototipe**: Kapasitas 15 Ton dan rasio kru merupakan asumsi pemodelan yang dapat disesuaikan dengan SOP dinas terkait.
+3. **Prakiraan Cuaca**: Akurasi prakiraan curah hujan Open-Meteo menurun pada horizon di atas 7 hari.
 
+---
 
-*   **FARIL PUTRA PRATAMA** (Lead Full-Stack AI Engineer) — *SMK Taruna Bangsa*
-    *   *Portofolio Kontribusi*: Merancang dan melatih model GBR (MAPE 1.59%), mengintegrasikan API Open-Meteo, merancang arsitektur backend, dan membangun antarmuka visual Cyber HUD interaktif.
+## 12. Pengembang & Kontak
+
+* **Lead Developer**: **Faril Putra Pratama** ([@FARILtau72](https://github.com/FARILtau72))
+* **Web Portal**: [https://www.aeternaai.biz.id/](https://www.aeternaai.biz.id/)
+* **LinkedIn**: [Faril Putra Pratama](https://www.linkedin.com/in/faril-putra-pratama-81561a280/)
+* **Email**: `farilpratamap@gmail.com`
+
+---
+
+## 13. Lisensi
+
+Proyek riset ini dirilis di bawah lisensi terbuka [MIT License](LICENSE).

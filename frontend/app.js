@@ -1378,3 +1378,21 @@ window.toggleLogisticsExplainability = function() {
         if (btn) btn.classList.remove("active");
     }
 };
+
+// Model Information Modal handlers
+window.openModelInfoModal = function() {
+    const modal = document.getElementById("model-info-modal");
+    if (modal) modal.style.display = "flex";
+};
+
+window.closeModelInfoModal = function() {
+    const modal = document.getElementById("model-info-modal");
+    if (modal) modal.style.display = "none";
+};
+
+window.addEventListener("click", function(e) {
+    const modal = document.getElementById("model-info-modal");
+    if (modal && e.target === modal) {
+        modal.style.display = "none";
+    }
+});
