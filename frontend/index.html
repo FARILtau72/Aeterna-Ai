@@ -145,7 +145,7 @@
         <section class="hero-section">
             <div class="hero-content">
                 <h1 class="hero-title">NEXT-GEN WASTE FORECASTING</h1>
-                <p class="hero-subtitle">Meningkatkan efisiensi tata kelola sampah DKI Jakarta hingga 98.28% dengan pemodelan spasial temporal real-time.</p>
+                <p class="hero-subtitle">Platform riset prediksi timbulan sampah berbasis AI dan simulasi logistik operasional untuk mendukung pengambilan keputusan tata kelola sampah DKI Jakarta.</p>
                 <div class="hero-actions">
                     <button class="action-btn" onclick="switchPage('page-autopilot')">
                         <span class="btn-text">OPEN AUTOPILOT</span>
@@ -178,8 +178,8 @@
             <div class="features-grid">
                 <div class="panel feature-card">
                     <div class="feature-icon font-display">01</div>
-                    <h3 class="feature-name">Akurasi Validitas Tinggi (98.28%)</h3>
-                    <p class="feature-desc">Menggunakan arsitektur model Gradient Boosting Regressor (GBR) yang dioptimasi via GridSearchCV dengan metrik komparasi MAE, RMSE, dan MAPE secara berdampingan.</p>
+                    <h3 class="feature-name">Model Prediksi Berbasis AI</h3>
+                    <p class="feature-desc">Menggunakan arsitektur model Stacking Regressor mutakhir yang mensintesis beberapa algoritma prediksi spasial-temporal untuk riset operasional.</p>
                 </div>
                 <div class="panel feature-card">
                     <div class="feature-icon font-display">02</div>
@@ -410,6 +410,13 @@
                     </div>
                 </div>
             </section>
+
+            <!-- DATA STATUS BADGE -->
+            <div id="data-status-badge" style="display:none; background: rgba(255,200,0,0.08); border: 1px solid rgba(255,200,0,0.4); border-radius:8px; padding:10px 16px; margin-bottom:1rem; font-size:0.8rem; font-family:var(--font-mono); color:#ffe066;">
+              <span style="font-weight:700; letter-spacing:0.08em;">📊 DATA STATUS</span>
+              <span id="data-status-text" style="margin-left:8px;">FORECAST · Model: AETERNA Stacking v1.0 · Data: Synthetic Training</span>
+              <span style="display:block; margin-top:4px; color:rgba(255,220,0,0.7); font-size:0.72rem;">⚠️ Research prototype. Forecasts require validation against authoritative DLH/SIPSN data before operational use.</span>
+            </div>
 
             <!-- Rincian Logistik & Analisis -->
             <section class="analysis-panel">

@@ -462,6 +462,15 @@ async function runPrediction() {
         if (response.ok) {
             const resData = await response.json();
             updateDashboardData(resData.data, resData.confidence_score, resData.message);
+            // Show data status badge
+            const badge = document.getElementById('data-status-badge');
+            if (badge) {
+                badge.style.display = 'block';
+                const statusText = document.getElementById('data-status-text');
+                if (statusText && resData.model_version) {
+                    statusText.textContent = `FORECAST · Model: ${resData.model_version} · Training: ${resData.training_data_type || 'SYNTHETIC'}`;
+                }
+            }
         } else {
             console.error("API Error");
         }

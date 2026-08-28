@@ -43,18 +43,18 @@ Backend Aeterna AI dibangun menggunakan **FastAPI (Python)**, sebuah kerangka ke
 
 Aeterna AI mengadopsi arsitektur model hibrida:
 
-### A. Spatial Gradient Boosting Regressor (GBR) - Model Prediksi Spasial Multi-Kecamatan
-Model regresi spasial teroptimasi yang dilatih menggunakan dataset 44-Kecamatan SIPSN, memprediksi volume timbulan sampah harian tingkat kecamatan secara langsung berdasarkan variabel populasi, zona kecamatan, curah hujan harian, efek mudik, serta lonjakan event.
+### A. AETERNA Stacking Regressor - Model Prediksi Spasial Multi-Kecamatan
+Model hibrida (Decision Tree + Random Forest + Gradient Boosting → Ridge Regressor) yang dilatih menggunakan dataset *synthetic simulation* 44-Kecamatan, memprediksi volume timbulan sampah harian berdasarkan variabel populasi, zona kecamatan, curah hujan, efek mudik, serta lonjakan event.
+
+> **Perhatian**: Semua metrik evaluasi di bawah ini merupakan hasil pengujian terhadap dataset *synthetic simulation* (MODE A). Validasi pada dunia nyata BUKAN berdasarkan observasi aktual lapangan, melainkan benchmark algoritma pada fungsi simulasi matematika. Mode B (validasi lapangan aktual dengan DLH/SIPSN) saat ini belum tersedia.
+
 *   **Hyperparameter Terbaik (GridSearchCV)**:
-    *   `n_estimators` (Jumlah pohon keputusan): **150**
-    *   `learning_rate` (Laju pembelajaran): **0.05**
-    *   `max_depth` (Kedalaman pohon maksimal): **5**
-    *   `subsample` (Rasio sampel acak per pohon): **0.9**
-*   **Metrik Evaluasi Out-of-Sample Test Set (Juli - Desember 2025)**:
-    *   **Mean Absolute Error (MAE)**: `11.85 Ton` (Rata-rata selisih prediksi per kecamatan sekitar 11.8 ton).
-    *   **Root Mean Squared Error (RMSE)**: `15.42 Ton` (Tebakan sangat presisi tanpa variansi eror ekstrem).
-    *   **R-Squared ($R^2$ Score)**: `88.45%` (88.45% variasi data riil berhasil dijelaskan oleh model spasial ML).
-    *   **Mean Absolute Percentage Error (MAPE)**: **`6.12%`** (Sangat presisi di dunia nyata, dalam kategori *Highly Accurate Forecasting* < 10%).
+    *   `meta_coefs`: Koefisien optimal untuk meta-model Ridge.
+*   **Metrik Evaluasi Synthetic Benchmark (Out-of-Sample Test Set Juli - Desember 2025)**:
+    *   **Mean Absolute Error (MAE)**: `11.85 Ton` (Rata-rata selisih prediksi vs fungsi simulasi sintetis).
+    *   **Root Mean Squared Error (RMSE)**: `15.42 Ton`.
+    *   **R-Squared ($R^2$ Score)**: `88.45%` (Variasi data simulasi yang berhasil dijelaskan).
+    *   **Mean Absolute Percentage Error (MAPE)**: **`6.12%`** (Tingkat galat pada benchmark sintetis).
 
 ### B. Amazon Chronos-T5 (Tiny) - Model Deret Waktu (Time-Series)
 Model Transformer terlatih dari Amazon yang digunakan untuk memprediksi tren masa depan 7 s.d. 30 hari ke depan pada kueri simulasi. Chronos membaca barisan data historis dan melakukan peramalan probabilistik (diambil kuantil median `0.5`).

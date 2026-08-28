@@ -94,7 +94,7 @@ EVENTS_CALENDAR = {
 }
 
 def generate_dataset():
-    print("[Dataset] Generating Real 44-Kecamatan SIPSN/DLH DKI Jakarta Dataset (2024 - 2025)...")
+    print("[Dataset] Generating SYNTHETIC SIMULATION Dataset — 44 Kecamatan (2024-2025). NOT real DLH/SIPSN observed data.")
     np.random.seed(42)
 
     date_range = pd.date_range(start="2024-01-01", end="2025-12-31", freq="D")
@@ -163,7 +163,7 @@ def generate_dataset():
                     ada_event = 1
                     event_crowd = evt_info["crowd"] * 0.25
 
-            # Dynamic Ground-Truth Volume Generation with realistic real-world physics
+            # SYNTHETIC simulation of waste volume using parameterized multipliers and Gaussian noise
             vol = base_vol
 
             # 1. Day of week effect based on zone
@@ -228,9 +228,12 @@ def generate_dataset():
             })
 
     df = pd.DataFrame(records)
-    out_path = "data/dataset_real_kecamatan_2024_2025.csv"
+    # Changed to synthetic filename (old name kept for backward compatibility if needed)
+    out_path = "data/synthetic_spatial_training_data_2024_2025.csv"
     df.to_csv(out_path, index=False)
-    print(f"[Dataset] Real 44-Kecamatan dataset successfully generated: {len(df)} records saved to '{out_path}'!")
+    # Also save with the old misleading name to ensure old scripts don't immediately break before full migration
+    df.to_csv("data/dataset_real_kecamatan_2024_2025.csv", index=False)
+    print(f"[Dataset] SYNTHETIC simulation dataset successfully generated: {len(df)} records saved to '{out_path}'!")
     return df
 
 if __name__ == "__main__":

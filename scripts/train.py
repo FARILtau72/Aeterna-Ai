@@ -27,9 +27,12 @@ print("STARTING SPATIAL ENSEMBLE STACKING REGRESSOR TRAINING (AETERNA AI 44 KECA
 
 # ==========================================
 # 1. DATA INGESTION (44 KECAMATAN SPATIAL DATASET)
-# ==========================================
-csv_file = "data/dataset_real_kecamatan_2024_2025.csv"
-if not os.path.exists(csv_file) and os.path.exists("waste-prediction-api/data/dataset_real_kecamatan_2024_2025.csv"):
+csv_file = "data/synthetic_spatial_training_data_2024_2025.csv"
+if not os.path.exists(csv_file):
+    csv_file = "data/dataset_real_kecamatan_2024_2025.csv"
+if not os.path.exists(csv_file) and os.path.exists("waste-prediction-api/data/synthetic_spatial_training_data_2024_2025.csv"):
+    csv_file = "waste-prediction-api/data/synthetic_spatial_training_data_2024_2025.csv"
+elif not os.path.exists(csv_file) and os.path.exists("waste-prediction-api/data/dataset_real_kecamatan_2024_2025.csv"):
     csv_file = "waste-prediction-api/data/dataset_real_kecamatan_2024_2025.csv"
 
 if not os.path.exists(csv_file):
@@ -180,20 +183,84 @@ if HAS_MATPLOTLIB:
 else:
     print("\n[Plot] Skipping visualization plot generation because matplotlib is not installed.")
 
+import subprocess
+import datetime
+from sklearn.metrics import mean_absolute_error as mae_fn, r2_score as r2_fn, mean_absolute_percentage_error as mape_fn
+
+# Get git commit hash if available
+try:
+    git_commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], 
+                                          stderr=subprocess.DEVNULL).decode().strip()
+except Exception:
+    git_commit = "unknown"
+
+# Baseline model comparison
+y_mean = float(y_train.mean())
+pred_baseline_mean = np.full(len(y_test), y_mean)
+pred_baseline_lastval = np.array([float(y_train.iloc[-1])] * len(y_test))
+pred_baseline_rolling = np.full(len(y_test), float(y_train.tail(7).mean()))
+
+baseline_metrics = {
+    "historical_mean": {
+        "mae": float(mae_fn(y_test, pred_baseline_mean)),
+        "r2": float(r2_fn(y_test, pred_baseline_mean)),
+        "mape": float(mape_fn(y_test, pred_baseline_mean) * 100)
+    },
+    "rolling_mean_7d": {
+        "mae": float(mae_fn(y_test, pred_baseline_rolling)),
+        "r2": float(r2_fn(y_test, pred_baseline_rolling)),
+        "mape": float(mape_fn(y_test, pred_baseline_rolling) * 100)
+    },
+    "last_value": {
+        "mae": float(mae_fn(y_test, pred_baseline_lastval)),
+        "r2": float(r2_fn(y_test, pred_baseline_lastval)),
+        "mape": float(mape_fn(y_test, pred_baseline_lastval) * 100)
+    }
+}
+
+print("\n[Baseline] PERBANDINGAN MODEL vs BASELINE SEDERHANA (Synthetic Benchmark):")
+print(f"{'Model':<30} {'MAE':>10} {'R²':>10} {'MAPE':>10}")
+print("-" * 62)
+print(f"{'AETERNA Stacking Regressor':<30} {mae:>10.2f} {r2*100:>9.2f}% {mape:>9.2f}%")
+for bname, bmet in baseline_metrics.items():
+    print(f"{bname:<30} {bmet['mae']:>10.2f} {bmet['r2']*100:>9.2f}% {bmet['mape']:>9.2f}%")
+print("\n⚠️  NOTE: All metrics above are SYNTHETIC BENCHMARKS — not real-world validation.")
+
 # Save model artifacts
 os.makedirs("models", exist_ok=True)
 model_file_path = "models/model_sampah_advanced.pkl"
 meta_file_path = "models/model_metadata.pkl"
 
 metadata = {
-    "feature_cols": feature_cols,
-    "zone_map": zone_map,
+    # Model identity
+    "model_name": "AETERNA Stacking Regressor",
+    "model_version": "1.0.0",
+    "model_architecture": "StackingRegressor(DT + RF + GBR → Ridge)",
+    "trained_at": datetime.datetime.utcnow().isoformat() + "Z",
+    "git_commit": git_commit,
+    # Dataset provenance
+    "training_dataset": "synthetic_spatial_training_data_2024_2025.csv",
+    "dataset_type": "SYNTHETIC",
+    "dataset_generator": "scripts/generate_real_kecamatan_dataset.py",
+    "dataset_note": "Synthetic simulation data — NOT real DLH/SIPSN observations",
+    # Evaluation
+    "evaluation_type": "MODE_A_SYNTHETIC_BENCHMARK",
+    "evaluation_note": "SYNTHETIC BENCHMARK ONLY — not evidence of real-world forecasting accuracy. Trained and evaluated on synthetic simulation data.",
+    "train_cutoff": "2025-07-01",
+    "test_period": "2025-07-01 to 2025-12-31",
+    "split_method": "chronological",
+    # ML metrics (synthetic benchmark)
     "metrics": {
         "mae": float(mae),
         "rmse": float(rmse),
         "r2": float(r2),
         "mape": float(mape)
     },
+    # Baseline comparison
+    "baseline_comparison": baseline_metrics,
+    # Features
+    "feature_cols": feature_cols,
+    "zone_map": zone_map,
     "best_params": {
         "meta_coefs": meta_coefs.tolist()
     }

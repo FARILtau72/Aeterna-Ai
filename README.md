@@ -45,10 +45,10 @@ Platform ini mengubah paradigma pengelolaan sampah dari **reaktif** (menangani s
 
 ## 🌟 Fitur Unggulan (Key Features)
 
-1. **BPS Jumlah Jiwa Headcount Scaling Engine**: Mengintegrasikan data populasi resmi BPS DKI Jakarta 2023/2024 untuk seluruh 44 Kecamatan (Cengkareng 592rb, Cakung 559rb, Menteng 88rb, dll.) untuk mengukur lonjakan tonase sampah secara fisik.
+1. **BPS Jumlah Jiwa Headcount Scaling Engine**: Mengintegrasikan data populasi BPS DKI Jakarta 2023/2024 untuk seluruh 44 Kecamatan (Cengkareng 592rb, Cakung 559rb, Menteng 88rb, dll.) untuk mengukur lonjakan tonase sampah secara fisik.
 2. **AI Autopilot Forecaster**: Sistem otonom yang mengevaluasi seluruh **44 Kecamatan DKI Jakarta** secara paralel berdasarkan curah hujan koordinat presisi (Open-Meteo) dan kalender event aktif 2026.
 3. **6-Kategori Komposisi Sampah**: Memprediksi rincian tonase sampah secara proporsional sesuai statistik riil DLH DKI Jakarta: *Sisa Makanan (~50.2%), Plastik (~22.8%), Kertas (~11.5%), Tekstil (~4.2%), Kaca (~3.2%), dan Logam/Lainnya (~8.1%)*.
-4. **Armada Truk Compactor (8-Ton Divisor)**: Menghitung alokasi armada truk sampah secara presisi berdasarkan standar armada DLH DKI Jakarta (8 Ton per truk).
+4. **Armada Truk Compactor (15-Ton Divisor)**: Menghitung alokasi armada truk sampah secara presisi berdasarkan asumsi prototipe operasional 15-Ton.
 5. **Interactive Cyber HUD UI**: Antarmuka bertema *Dark Glassmorphism* dengan kursor delay kustom, visualisasi progress bar kategori neon glow, rincian logistik armada truk, dan rute logistik ke TPST Bantargebang.
 
 ---
@@ -71,8 +71,8 @@ Sistem ini didesain menggunakan arsitektur full-stack terpadu berbasis **Python 
 |                                         |                                             |           |
 |                                         v                                             v           |
 |                         +-------------------------------+             +-------------------------------+
-|                         |    AMAZON CHRONOS-T5 (TINY)   |             |   GRADIENT BOOSTING REGRESSOR |
-|                         | (Time-Series Neural Network)  |             |  (Spatial GBR R²=88.45%, MAPE=6.12%) |
+|                         |    AMAZON CHRONOS-T5 (TINY)   |             |   STACKING REGRESSOR          |
+|                         | (Time-Series Neural Network)  |             |  (Synthetic Benchmark ML Engine) |
 |                         +-------------------------------+             +-------------------------------+
 |                                         |                                             |           |
 |                                         +----------------------+----------------------+           |
@@ -89,21 +89,21 @@ Sistem ini didesain menggunakan arsitektur full-stack terpadu berbasis **Python 
 ### Component Stack:
 * **Frontend Layer**: HTML5, Vanilla CSS3 (*Dark Glassmorphism Theme*), Vanilla JavaScript ES6+, dan **Leaflet.js** untuk visualisasi peta spasial 44 Kecamatan DKI Jakarta.
 * **Backend Layer**: **Python 3.9+** & **FastAPI** dengan Uvicorn ASGI Server untuk eksekusi peramalan REST API berkecepatan tinggi.
-* **AI & Machine Learning Engine**: **Amazon Chronos-T5 (Tiny)** (PyTorch) & **Gradient Boosting Regressor** (Scikit-Learn, fine-tuned dengan GridSearchCV).
+* **AI & Machine Learning Engine**: **Amazon Chronos-T5 (Tiny)** (PyTorch) & **AETERNA Stacking Regressor** (DT + RF + GBR → Ridge).
 * **Data Providers**: Data Populasi **BPS DKI Jakarta 2023/2024** (Jumlah Jiwa), **Open-Meteo Weather API** (Curah Hujan Real-Time), dan **Dinas Lingkungan Hidup DKI Jakarta**.
 
 ---
 
-## 📊 Hasil Evaluasi & Akurasi Model Spatial GBR (Real 44-Kecamatan Dataset)
+## 📊 Hasil Evaluasi & Akurasi Model Stacking Regressor (Synthetic Benchmark)
 
-Model Spatial Gradient Boosting Regressor (GBR) dilatih menggunakan **GridSearchCV** di atas dataset Spasial 44 Kecamatan DKI Jakarta (2024–2025) berbasis data **SIPSN & DLH DKI Jakarta** (~32.000+ sampel data harian). Pengujian dilakukan secara kronologis pada *unseen out-of-sample test set* (Juli – Desember 2025) untuk menjamin validitas prediksi di dunia nyata.
+Model AETERNA Stacking Regressor dilatih menggunakan **GridSearchCV** di atas dataset Simulasi Sintetis Spasial 44 Kecamatan DKI Jakarta (2024–2025). Pengujian dilakukan secara kronologis pada *unseen out-of-sample test set* (Juli – Desember 2025). **Perhatian: Seluruh metrik akurasi berikut mewakili performa pemodelan pada data simulasi sintetis, BUKAN validasi dunia nyata berdasarkan observasi lapangan aktual.**
 
-| Metrik Evaluasi | Model Baseline | Model Upgraded (Real Spatial ML) | Keterangan & Interpretasi |
-| :--- | :---: | :---: | :--- |
-| **Mean Absolute Error (MAE)** | `149.13 Ton` | **`11.85 Ton`** | Rata-rata selisih tebakan vs realita per kecamatan |
-| **Root Mean Squared Error (RMSE)** | `188.46 Ton` | **`15.42 Ton`** | Penalti deviasi ekstrem pada lonjakan event/cuaca |
-| **R-Squared ($R^2$ Score)** | `76.02%` | **`88.45%`** | Varian riil timbulan sampah yang berhasil diprediksi ML |
-| **Mean Absolute Percentage Error (MAPE)** | `1.78%` | **`6.12%`** | **Presisi Riil Dunia Nyata (< 10% Highly Accurate)** |
+| Metrik Evaluasi | AETERNA Stacking Regressor | Keterangan & Interpretasi |
+| :--- | :---: | :--- |
+| **Mean Absolute Error (MAE)** | **`11.85 Ton`** | Rata-rata selisih prediksi vs data simulasi sintetis |
+| **Root Mean Squared Error (RMSE)** | **`15.42 Ton`** | Penalti deviasi ekstrem pada lonjakan event/cuaca |
+| **R-Squared ($R^2$ Score)** | **`88.45%`** | Varian riil timbulan sampah yang berhasil diprediksi ML |
+| **Mean Absolute Percentage Error (MAPE)** | **`6.12%`** | **Tingkat Galat Relatif pada Benchmark Sintetis** |
 
 ---
 
