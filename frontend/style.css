@@ -53,76 +53,264 @@ body {
     opacity: 0.12;
 }
 
-/* Header */
+/* ==========================================
+   HEADER & RESPONSIVE NAVBAR
+   ========================================== */
 header {
     width: 100%;
-    padding: 1.2rem 2.5rem;
-    background: rgba(7, 12, 8, 0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    padding: 0.85rem 2rem;
+    background: rgba(7, 12, 8, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border-color);
-    z-index: 10;
-    position: relative;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    position: sticky;
+    top: 0;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    gap: 1rem;
 }
 
 .logo-container {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 10px;
+    flex-shrink: 0;
 }
 
 .logo-text {
     font-family: var(--font-display);
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: 800;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     background: linear-gradient(135deg, #FFFFFF 40%, var(--cyan) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    cursor: pointer;
+    line-height: 1;
 }
 
 .logo-text .highlight {
     font-weight: 300;
     letter-spacing: 0px;
     color: var(--cyan);
-    margin-left: 4px;
+    margin-left: 2px;
 }
 
 .version-tag {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.05);
-    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 3px 8px;
     border-radius: 4px;
     border: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
+}
+
+/* Nav Links - Desktop Pill Container */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 4px 6px;
+    border-radius: 30px;
+    flex-wrap: nowrap;
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    outline: none;
+}
+
+.nav-btn:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.nav-btn.active {
+    color: #070C08;
+    background: var(--cyan);
+    box-shadow: 0 0 12px rgba(112, 173, 71, 0.45);
+    font-weight: 700;
+}
+
+/* Header Right */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
 }
 
 .system-status {
     display: flex;
     align-items: center;
     gap: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 4px 10px;
+    border-radius: 20px;
 }
 
 .status-indicator {
     width: 8px;
     height: 8px;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
-.status-indicator.online {
-    background-color: var(--cyan);
-    box-shadow: 0 0 8px var(--cyan-glow);
+.status-indicator.prototype {
+    background-color: #f59e0b;
+    box-shadow: 0 0 8px #f59e0b;
 }
 
 .status-label {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--text-muted);
+    font-size: 0.72rem;
+    color: #f59e0b;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Hamburger Button (Hidden by default on Desktop) */
+.hamburger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 38px;
+    height: 38px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.25s ease;
+    outline: none;
+}
+
+.hamburger-btn span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--text-main);
+    border-radius: 2px;
+    transition: all 0.25s ease;
+}
+
+.hamburger-btn:hover {
+    background: rgba(112, 173, 71, 0.15);
+    border-color: var(--cyan);
+}
+
+.hamburger-btn.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+    background: var(--cyan);
+}
+
+.hamburger-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-btn.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+    background: var(--cyan);
+}
+
+/* Responsive Breakpoints for Navbar */
+@media (max-width: 1280px) {
+    .nav-btn {
+        padding: 5px 9px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 1080px) {
+    .version-tag {
+        display: none;
+    }
+    .hamburger-btn {
+        display: flex;
+    }
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(7, 12, 8, 0.97);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.2rem 1.5rem;
+        flex-direction: column;
+        gap: 6px;
+        border-radius: 0;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+        z-index: 999;
+    }
+    .nav-links.mobile-open {
+        display: flex;
+        animation: mobileNavSlideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .nav-btn {
+        width: 100%;
+        text-align: left;
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        border-radius: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .nav-btn.active {
+        background: rgba(112, 173, 71, 0.2);
+        color: var(--cyan);
+        border: 1px solid var(--cyan);
+        box-shadow: none;
+    }
+}
+
+@keyframes mobileNavSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 540px) {
+    header {
+        padding: 0.75rem 1.2rem;
+    }
+    .logo-text {
+        font-size: 1.35rem;
+    }
+    .status-label {
+        display: none;
+    }
+    .system-status {
+        padding: 4px 6px;
+    }
 }
 
 /* Grid Layout */
