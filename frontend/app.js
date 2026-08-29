@@ -153,6 +153,14 @@ function switchPage(pageId) {
         targetBtn.classList.add("active");
     }
 
+    // Auto-close mobile navigation drawer on navigation
+    const navLinksEl = document.getElementById("nav-links");
+    const hamburgerBtn = document.getElementById("hamburger-toggle");
+    if (navLinksEl && navLinksEl.classList.contains("mobile-open")) {
+        navLinksEl.classList.remove("mobile-open");
+        if (hamburgerBtn) hamburgerBtn.classList.remove("active");
+    }
+
     if (pageId === "page-news") {
         loadNewsFeed();
     } else if (pageId === "page-alerts") {
@@ -164,7 +172,32 @@ function switchPage(pageId) {
     }
 }
 
+function toggleMobileNav() {
+    const navLinksEl = document.getElementById("nav-links");
+    const hamburgerBtn = document.getElementById("hamburger-toggle");
+    if (navLinksEl) {
+        navLinksEl.classList.toggle("mobile-open");
+        if (hamburgerBtn) {
+            hamburgerBtn.classList.toggle("active");
+        }
+    }
+}
+
 window.switchPage = switchPage;
+window.toggleMobileNav = toggleMobileNav;
+
+// Close mobile navigation drawer when clicking outside header
+document.addEventListener("click", (e) => {
+    const headerEl = document.querySelector("header");
+    const navLinksEl = document.getElementById("nav-links");
+    const hamburgerBtn = document.getElementById("hamburger-toggle");
+    if (navLinksEl && navLinksEl.classList.contains("mobile-open")) {
+        if (headerEl && !headerEl.contains(e.target)) {
+            navLinksEl.classList.remove("mobile-open");
+            if (hamburgerBtn) hamburgerBtn.classList.remove("active");
+        }
+    }
+});
 
 // Dynamically Populate Dropdown on Startup
 function populateLocationDropdown() {
