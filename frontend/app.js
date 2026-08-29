@@ -133,7 +133,7 @@ let mapMarkers = {};
 let routeLine = null;
 
 // ==========================================
-// SPA MULTIPAGE ROUTING
+// SPA MULTIPAGE ROUTING & SIDEBAR CONTROLS
 // ==========================================
 function switchPage(pageId) {
     document.querySelectorAll(".page-container").forEach(el => {
@@ -148,17 +148,19 @@ function switchPage(pageId) {
         targetPage.classList.add("active");
     }
 
-    const targetBtn = document.querySelector(`.nav-btn[data-target="${pageId}"]`);
-    if (targetBtn) {
-        targetBtn.classList.add("active");
-    }
+    const targetBtns = document.querySelectorAll(`.nav-btn[data-target="${pageId}"]`);
+    targetBtns.forEach(btn => {
+        btn.classList.add("active");
+    });
 
-    // Auto-close mobile navigation drawer on navigation
-    const navLinksEl = document.getElementById("nav-links");
-    const hamburgerBtn = document.getElementById("hamburger-toggle");
-    if (navLinksEl && navLinksEl.classList.contains("mobile-open")) {
-        navLinksEl.classList.remove("mobile-open");
-        if (hamburgerBtn) hamburgerBtn.classList.remove("active");
+    // Auto-close mobile sidebar drawer on navigation
+    const sidebar = document.getElementById("app-sidebar");
+    const backdrop = document.getElementById("sidebar-backdrop");
+    const toggleBtn = document.getElementById("mobile-toggle-btn");
+    if (sidebar && sidebar.classList.contains("open")) {
+        sidebar.classList.remove("open");
+        if (backdrop) backdrop.classList.remove("active");
+        if (toggleBtn) toggleBtn.classList.remove("active");
     }
 
     if (pageId === "page-news") {
@@ -168,36 +170,25 @@ function switchPage(pageId) {
     } else if (pageId === "page-autopilot") {
         loadAutopilotFeed();
     } else if (pageId === "page-predictor" && map) {
-        setTimeout(() => { map.invalidateSize(); }, 200);
+        setTimeout(() => { map.invalidateSize(); }, 250);
     }
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function toggleMobileNav() {
-    const navLinksEl = document.getElementById("nav-links");
-    const hamburgerBtn = document.getElementById("hamburger-toggle");
-    if (navLinksEl) {
-        navLinksEl.classList.toggle("mobile-open");
-        if (hamburgerBtn) {
-            hamburgerBtn.classList.toggle("active");
-        }
+function toggleSidebar() {
+    const sidebar = document.getElementById("app-sidebar");
+    const backdrop = document.getElementById("sidebar-backdrop");
+    const toggleBtn = document.getElementById("mobile-toggle-btn");
+    if (sidebar) {
+        sidebar.classList.toggle("open");
+        if (backdrop) backdrop.classList.toggle("active");
+        if (toggleBtn) toggleBtn.classList.toggle("active");
     }
 }
 
 window.switchPage = switchPage;
-window.toggleMobileNav = toggleMobileNav;
-
-// Close mobile navigation drawer when clicking outside header
-document.addEventListener("click", (e) => {
-    const headerEl = document.querySelector("header");
-    const navLinksEl = document.getElementById("nav-links");
-    const hamburgerBtn = document.getElementById("hamburger-toggle");
-    if (navLinksEl && navLinksEl.classList.contains("mobile-open")) {
-        if (headerEl && !headerEl.contains(e.target)) {
-            navLinksEl.classList.remove("mobile-open");
-            if (hamburgerBtn) hamburgerBtn.classList.remove("active");
-        }
-    }
-});
+window.toggleSidebar = toggleSidebar;
 
 // Dynamically Populate Dropdown on Startup
 function populateLocationDropdown() {
