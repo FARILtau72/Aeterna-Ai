@@ -18,8 +18,7 @@ from typing import Dict, Any, Optional
 # ==========================================
 # 1. CENTRALIZED LOGISTICS CONFIGURATION
 # ==========================================
-# Standards derived from Dinas Lingkungan Hidup (DLH) DKI Jakarta compactor truck fleet
-# and municipal solid waste collection guidelines.
+# Prototype Operational Assumptions. These values have not been validated against official DLH DKI Jakarta fleet specifications. Use for R&D and decision-support demonstration only.
 LOGISTICS_CONFIG: Dict[str, Any] = {
     # Vehicle specifications
     "truck_capacity_ton": 15.0,        # Standard heavy compactor truck gross payload capacity
@@ -358,7 +357,8 @@ def calculate_forecast_reliability_score(
     weights = LOGISTICS_CONFIG["weights_reliability"]
 
     # 1. Model Quality Score based on out-of-sample MAPE
-    # A MAPE of 6.12% represents ~93.88% accuracy precision
+    # Model quality score based on out-of-sample MAPE from synthetic benchmark evaluation.
+    # Note: test_mape=6.12 is a hardcoded fallback from a previous evaluation.
     model_quality = max(0.60, min(0.98, 1.0 - (test_mape / 100.0)))
 
     # 2. Data Completeness & Verification Score
@@ -478,5 +478,14 @@ def calculate_full_logistics_plan(
             "truck_loads_display": f"~{loads_int} Loads",
             "efficiency_display": efficiency["display"],
             "reliability_display": reliability["display"]
+        },
+        "calculation_method": "DETERMINISTIC_SIMULATION",
+        "operational_assumptions": {
+            "note": "Prototype Operational Assumptions — not validated against DLH specifications",
+            "truck_capacity_ton": LOGISTICS_CONFIG["truck_capacity_ton"],
+            "load_factor": LOGISTICS_CONFIG["load_factor"],
+            "operational_buffer": LOGISTICS_CONFIG["operational_buffer"],
+            "crew_per_truck": LOGISTICS_CONFIG["crew"]["crew_per_truck"],
+            "collection_rate_ton_per_hour": LOGISTICS_CONFIG["collection_rate_ton_per_hour"]
         }
     }
