@@ -56,12 +56,13 @@
     
     <!-- Leaflet.js Map Library -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <!-- Three.js 3D Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <link rel="stylesheet" href="/static/style.css?v=4.5.0">
+    <link rel="stylesheet" href="/static/style.css?v=5.0.0">
 
     <!-- Schema.org Multi-Type JSON-LD Graph for Rapid Search Indexing -->
     <script type="application/ld+json">
@@ -398,367 +399,547 @@
 
     <!-- 3. PREDICTOR & SIMULATION PAGE -->
     <!-- 3. PREDICTOR & SIMULATION PAGE -->
+    <!-- 3. PREDICTOR & SIMULATION PAGE -->
     <div id="page-predictor" class="page-container">
-        <!-- Main Dual-Column Simulation Workspace -->
-        <div class="predictor-workspace">
-            <!-- Left Column: Controls & Context -->
-            <div class="predictor-sidebar-col">
-                <!-- Forecast Configuration Panel -->
-                <section class="panel control-panel">
-                    <div class="panel-header-compact">
-                        <h2 class="panel-title">FORECAST CONFIG</h2>
-                        <button type="button" class="info-pill-btn" onclick="openModelInfoModal()" title="View Model Architecture & Provenance">
-                            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            Model Info
-                        </button>
-                    </div>
+        <!-- Compact Page Header -->
+        <header class="page-header-hud">
+            <div class="header-text-group">
+                <h1 class="page-title-hud">Waste Forecast Intelligence</h1>
+                <p class="page-subtitle-hud">Forecast waste generation and explore operational scenarios across Jakarta.</p>
+            </div>
+            <div class="header-context-badge" id="context-summary-pill">
+                <span class="context-dot"></span>
+                <span id="context-location-text">Menteng · Jakarta Pusat</span>
+                <span class="context-divider">|</span>
+                <span id="context-horizon-text">7-Day Horizon</span>
+                <span class="context-divider">|</span>
+                <span id="context-model-text">Stacking Regressor</span>
+            </div>
+        </header>
 
-                    <div class="control-group">
-                        <label for="location-select">Target Kecamatan</label>
-                        <select id="location-select" class="form-control">
-                            <!-- Populated dynamically -->
-                        </select>
-                    </div>
+        <!-- 1. Forecast Control Panel (Compact 12-col Grid) -->
+        <section class="panel control-panel-hud">
+            <div class="control-grid-top">
+                <!-- Location Selector -->
+                <div class="control-item">
+                    <label for="location-select" class="hud-label">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        Target Kecamatan
+                    </label>
+                    <select id="location-select" class="form-control-hud">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
 
-                    <div class="control-group">
-                        <label for="model-select">Forecasting Engine</label>
-                        <select id="model-select" class="form-control">
-                            <option value="gradient_boosting" selected>Stacking Regressor Ensemble</option>
-                            <option value="chronos">Amazon Chronos-T5 Tiny</option>
-                        </select>
-                    </div>
+                <!-- Model Engine Selector -->
+                <div class="control-item">
+                    <label for="model-select" class="hud-label">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        Forecasting Engine
+                    </label>
+                    <select id="model-select" class="form-control-hud">
+                        <option value="gradient_boosting" selected>Stacking Regressor Ensemble (Research Prototype)</option>
+                        <option value="chronos">Amazon Chronos-T5 Tiny (Neural Time-Series)</option>
+                    </select>
+                </div>
 
-                    <div class="control-group">
-                        <div class="control-label-row">
-                            <label for="forecast-slider">Forecast Horizon</label>
-                            <span class="control-val-badge"><span id="forecast-val">7</span> Days</span>
-                        </div>
-                        <input type="range" id="forecast-slider" min="1" max="30" value="7" class="slider">
+                <!-- Forecast Horizon Quick Pills -->
+                <div class="control-item">
+                    <div class="control-label-row">
+                        <label for="forecast-slider" class="hud-label">
+                            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            Forecast Horizon
+                        </label>
+                        <span class="control-val-badge"><span id="forecast-val">7</span> Days</span>
                     </div>
-
-                    <div class="divider-compact"></div>
-                    <div class="section-micro-label">SCENARIO OVERRIDES</div>
-
-                    <div class="control-group">
-                        <div class="control-label-row">
-                            <label for="rain-override">Rainfall Override</label>
-                            <span id="rain-override-val" class="control-val-badge">Auto (Open-Meteo)</span>
-                        </div>
-                        <input type="range" id="rain-override" min="0" max="100" value="0" class="slider">
+                    <div class="horizon-pill-group" id="horizon-pills">
+                        <button type="button" class="horizon-pill" data-days="1">1D</button>
+                        <button type="button" class="horizon-pill" data-days="3">3D</button>
+                        <button type="button" class="horizon-pill active" data-days="7">7D</button>
+                        <button type="button" class="horizon-pill" data-days="14">14D</button>
+                        <button type="button" class="horizon-pill" data-days="30">30D</button>
                     </div>
-
-                    <div class="control-group">
-                        <div class="control-label-row">
-                            <label for="event-override">Population Headcount</label>
-                            <span id="event-override-val" class="control-val-badge">Auto (BPS Reference)</span>
-                        </div>
-                        <input type="range" id="event-override" min="10000" max="700000" step="5000" value="88000" class="slider">
-                    </div>
-
-                    <div class="button-row">
-                        <button id="predict-btn" class="action-btn">
-                            <span class="btn-text">RUN FORECAST</span>
-                            <span class="btn-glow"></span>
-                        </button>
-                        <button id="export-btn" class="action-btn secondary-btn">
-                            <span class="btn-text">EXPORT CSV</span>
-                            <span class="btn-glow"></span>
-                        </button>
-                    </div>
-
-                    <!-- Active Data Sources Ingestion Tags -->
-                    <div class="sources-embedded-strip">
-                        <span class="sources-strip-title">Data Ingestion Provenance</span>
-                        <div class="sources-tag-list">
-                            <span class="source-tag active" id="src-weather"><span class="dot"></span> Open-Meteo <span class="badge badge-observed">LIVE</span></span>
-                            <span class="source-tag" id="src-bps"><span class="dot"></span> BPS DKI <span class="badge badge-unverified">REF</span></span>
-                            <span class="source-tag" id="src-baseline"><span class="dot"></span> Baselines <span class="badge badge-estimated">ESTIMATED</span></span>
-                            <span class="source-tag" id="src-dlh"><span class="dot"></span> DLH Real <span class="badge badge-pending">PENDING</span></span>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Weather & Event Context Widget -->
-                <section class="panel weather-event-panel">
-                    <div class="panel-header-compact">
-                        <h3 class="panel-title">WEATHER &amp; EVENTS</h3>
-                        <span class="badge badge-observed">LIVE API</span>
-                    </div>
-                    <div class="weather-grid">
-                        <div class="weather-info">
-                            <span class="weather-temp" id="weather-forecast-text">Fetching Live...</span>
-                            <span class="weather-label" id="weather-location-text">Jakarta, Indonesia</span>
-                        </div>
-                        <div class="weather-details">
-                            <div>Precipitation: <span id="weather-precip" class="highlight">0.0 mm</span></div>
-                            <div>Impact: <span id="weather-alert" class="highlight">Normal</span></div>
-                        </div>
-                    </div>
-                    <div class="event-box" id="event-box">
-                        <span class="event-title">Event &amp; Crowd Activity</span>
-                        <p class="event-desc" id="event-desc-text">No major events registered for today.</p>
-                    </div>
-                </section>
+                    <input type="range" id="forecast-slider" min="1" max="30" value="7" class="slider-hud visually-hidden">
+                </div>
             </div>
 
-            <!-- Right Column: Map, Live Stats, Composition & Logistics -->
-            <div class="predictor-main-col">
-                <!-- Data Provenance Status Banner -->
-                <div id="data-status-badge" class="data-status-banner" style="display:none;">
-                    <div class="status-banner-content">
-                        <div class="status-banner-icon">📊</div>
-                        <div class="status-banner-text">
-                            <div class="status-banner-title">
-                                <span style="font-weight: 700;">PROVENANCE STATUS:</span>
-                                <span id="data-status-text" class="status-highlight">FORECAST · Stacking v1.0 · Synthetic Baseline</span>
+            <!-- Collapsible Advanced Scenario Settings -->
+            <div class="advanced-scenario-wrapper">
+                <button type="button" class="advanced-toggle-btn" id="advanced-scenario-toggle" onclick="toggleAdvancedScenario()" aria-expanded="false">
+                    <span class="toggle-icon">▸</span>
+                    <span>Advanced Scenario Settings</span>
+                    <span class="toggle-hint">(Rainfall &amp; Headcount Overrides)</span>
+                </button>
+
+                <div class="advanced-scenario-drawer" id="advanced-scenario-box" style="display: none;">
+                    <div class="scenario-grid-hud">
+                        <!-- Rainfall Override -->
+                        <div class="scenario-card">
+                            <div class="scenario-card-header">
+                                <span class="scenario-label">Rainfall Override (mm)</span>
+                                <div class="toggle-pill-wrap">
+                                    <button type="button" class="mode-toggle-btn active" id="rain-mode-auto" onclick="setRainfallMode('auto')">AUTO (Open-Meteo)</button>
+                                    <button type="button" class="mode-toggle-btn" id="rain-mode-manual" onclick="setRainfallMode('manual')">MANUAL</button>
+                                </div>
                             </div>
-                            <p class="status-banner-disclaimer">
-                                ⚠️ <strong>Research Prototype Notice:</strong> Hasil prediksi dan simulasi di bawah ini merupakan estimasi riset. Validasi operasional penuh memerlukan data observasi DLH DKI Jakarta.
-                            </p>
+                            <div class="slider-with-val">
+                                <input type="range" id="rain-override" min="0" max="100" value="0" class="slider-hud" disabled>
+                                <span id="rain-override-val" class="scenario-val-display">Auto (0.0 mm)</span>
+                            </div>
+                        </div>
+
+                        <!-- Population Headcount Override -->
+                        <div class="scenario-card">
+                            <div class="scenario-card-header">
+                                <span class="scenario-label">Population Headcount (Jiwa)</span>
+                                <div class="toggle-pill-wrap">
+                                    <button type="button" class="mode-toggle-btn active" id="event-mode-auto" onclick="setPopulationMode('auto')">AUTO (BPS)</button>
+                                    <button type="button" class="mode-toggle-btn" id="event-mode-manual" onclick="setPopulationMode('manual')">MANUAL</button>
+                                </div>
+                            </div>
+                            <div class="slider-with-val">
+                                <input type="range" id="event-override" min="10000" max="700000" step="5000" value="88000" class="slider-hud" disabled>
+                                <span id="event-override-val" class="scenario-val-display">Auto (88,000 Jiwa)</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Interactive Spatial Map Panel -->
-                <section class="panel map-panel">
-                    <div class="panel-header-compact">
-                        <h2 class="panel-title">JAKARTA SPATIAL MAP</h2>
+            <!-- Action Bar -->
+            <div class="control-actions-bar">
+                <div class="left-actions">
+                    <button type="button" class="model-info-link" onclick="openModelInfoModal()">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Model Architecture &amp; Provenance</span>
+                    </button>
+                </div>
+                <div class="right-actions">
+                    <button id="export-btn" class="btn-hud-secondary" onclick="runExport()" title="Export Forecast Dataset as CSV">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        <span>Export CSV</span>
+                    </button>
+                    <button id="predict-btn" class="btn-hud-primary" onclick="runPrediction()">
+                        <svg class="btn-icon-play" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span class="btn-text">RUN FORECAST</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Decision Summary (4 Compact KPI Cards) -->
+        <section class="decision-kpi-grid">
+            <!-- KPI 1: Forecast Volume -->
+            <div class="panel kpi-card-hud">
+                <div class="kpi-header">
+                    <span class="kpi-label">Forecast Volume</span>
+                    <span class="badge badge-forecast">FORECAST</span>
+                </div>
+                <div class="kpi-body">
+                    <span id="stat-total-volume" class="kpi-value">0.00 <span class="unit">Tons</span></span>
+                    <span class="kpi-subtext" id="stat-period-meta">Next 7 days</span>
+                </div>
+            </div>
+
+            <!-- KPI 2: Risk Level -->
+            <div class="panel kpi-card-hud">
+                <div class="kpi-header">
+                    <span class="kpi-label">Risk Level</span>
+                    <span class="badge badge-derived">DERIVED</span>
+                </div>
+                <div class="kpi-body">
+                    <span id="stat-risk-status" class="kpi-status-badge safe">SAFE</span>
+                    <span class="kpi-subtext" id="stat-location-meta">Menteng · Baseline: 135.5 T/D</span>
+                </div>
+            </div>
+
+            <!-- KPI 3: Suggested Fleet -->
+            <div class="panel kpi-card-hud">
+                <div class="kpi-header">
+                    <span class="kpi-label">Suggested Fleet</span>
+                    <span class="badge badge-simulation">SIMULATION</span>
+                </div>
+                <div class="kpi-body">
+                    <span id="stat-trucks" class="kpi-value">0 <span class="unit">Trucks</span></span>
+                    <span class="kpi-subtext">15T compactor basis</span>
+                </div>
+            </div>
+
+            <!-- KPI 4: Forecast Readiness -->
+            <div class="panel kpi-card-hud">
+                <div class="kpi-header">
+                    <span class="kpi-label">Forecast Readiness</span>
+                    <span class="badge badge-derived">MODEL INDICATOR</span>
+                </div>
+                <div class="kpi-body">
+                    <span id="stat-readiness" class="kpi-value highlight-cyan">--%</span>
+                    <span class="kpi-subtext">Model &amp; data health score</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Spatial & Context Intelligence (8 cols + 4 cols) -->
+        <div class="dashboard-grid-12">
+            <!-- Left (8 cols): Large Interactive Spatial Map -->
+            <section class="col-8 panel map-panel-hud">
+                <div class="panel-header-hud">
+                    <div class="header-title-group">
+                        <h2 class="panel-heading">JAKARTA SPATIAL INTELLIGENCE</h2>
+                        <span class="panel-caption">Geospatial waste routing &amp; dispatch radius across 44 sub-districts</span>
+                    </div>
+                    <div class="header-badges">
                         <span class="badge badge-derived">44 KECAMATAN ZONES</span>
+                        <span class="badge badge-live">LIVE ROUTING</span>
                     </div>
-                    <div class="map-container">
-                        <div id="map"></div>
-                    </div>
-                </section>
-
-                <!-- High-Impact Live Stats Row -->
-                <section class="stats-row">
-                    <div class="panel stat-card text-glow">
-                        <div class="stat-card-header">
-                            <span class="card-label">ESTIMATED VOLUME</span>
-                            <span class="badge badge-forecast">FORECAST</span>
-                        </div>
-                        <span id="stat-total-volume" class="card-value">0.00 <span class="unit">Tons</span></span>
-                        <span class="card-meta" id="stat-period-meta">Period: N/A</span>
-                    </div>
-                    <div class="panel stat-card">
-                        <div class="stat-card-header">
-                            <span class="card-label">RISK STATUS</span>
-                            <span class="badge badge-derived">DERIVED</span>
-                        </div>
-                        <span id="stat-risk-status" class="card-value status-badge safe">SAFE</span>
-                        <span class="card-meta" id="stat-location-meta">Menteng</span>
-                    </div>
-                    <div class="panel stat-card">
-                        <div class="stat-card-header">
-                            <span class="card-label">SUGGESTED FLEET</span>
-                            <span class="badge badge-simulation">SIMULATION</span>
-                        </div>
-                        <span id="stat-trucks" class="card-value">0 <span class="unit">Trucks (15T)</span></span>
-                        <span class="card-meta">15T compactor basis</span>
-                    </div>
-                </section>
-
-                <!-- Waste Composition Breakdown -->
-                <section class="panel category-panel">
-                    <div class="panel-header-compact">
-                        <h3 class="panel-title">ESTIMATED WASTE COMPOSITION</h3>
-                        <span class="badge badge-derived">PROPORTIONS</span>
-                    </div>
-                    <div class="progress-container-grid">
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span>Organic / Sisa Makanan (~50.2%)</span>
-                                <span id="val-organic">0.00 Ton</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div id="bar-organic" class="progress-bar-fill organic" style="width: 0%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span>Plastic / Plastik (~22.8%)</span>
-                                <span id="val-plastic">0.00 Ton</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div id="bar-plastic" class="progress-bar-fill plastic" style="width: 0%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span>Paper &amp; Cardboard (~11.5%)</span>
-                                <span id="val-paper">0.00 Ton</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div id="bar-paper" class="progress-bar-fill paper" style="width: 0%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span>Glass &amp; Ceramics (~3.2%)</span>
-                                <span id="val-glass">0.00 Ton</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div id="bar-glass" class="progress-bar-fill glass" style="width: 0%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span>Textile &amp; Leather (~4.2%)</span>
-                                <span id="val-textile">0.00 Ton</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div id="bar-textile" class="progress-bar-fill textile" style="width: 0%;"></div>
-                            </div>
-                        </div>
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span>Metals &amp; Others (~8.1%)</span>
-                                <span id="val-metal">0.00 Ton</span>
-                            </div>
-                            <div class="progress-bar-bg">
-                                <div id="bar-metal" class="progress-bar-fill metal" style="width: 0%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Operational Logistics Simulation Panel -->
-                <section class="panel logistics-panel">
-                    <div class="panel-header-compact">
-                        <div>
-                            <h3 class="panel-title">OPERATIONAL LOGISTICS SIMULATION</h3>
-                            <p class="panel-desc">Simulasi alokasi armada berdasarkan kapasitas 15T compactor dan throughput operasional.</p>
-                        </div>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <span class="badge badge-simulation">SIMULATION</span>
-                            <button type="button" class="how-calculated-btn" onclick="toggleLogisticsExplainability()" id="btn-how-calculated">
-                                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                <span>Formula</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="logistics-grid-compact">
-                        <div class="log-item">
-                            <div class="log-header-row">
-                                <span class="log-label">Suggested Fleet</span>
-                                <span class="badge badge-simulation">SIMULATION</span>
-                            </div>
-                            <span id="log-fleet" class="log-value">-- Trucks</span>
-                            <span id="log-fleet-sub" class="log-meta">15 ton capacity / truck</span>
-                        </div>
-
-                        <div class="log-item">
-                            <div class="log-header-row">
-                                <span class="log-label">Crew Requirement</span>
-                                <span class="badge badge-simulation">CREW</span>
-                            </div>
-                            <span id="log-manpower" class="log-value">-- Personnel</span>
-                            <span id="log-manpower-sub" class="log-meta">3 crew per truck</span>
-                        </div>
-
-                        <div class="log-item">
-                            <div class="log-header-row">
-                                <span class="log-label">Collection Duration</span>
-                                <span class="badge badge-simulation">TIME</span>
-                            </div>
-                            <span id="log-duration" class="log-value">-- Hours</span>
-                            <span id="log-duration-sub" class="log-meta">Throughput adjusted</span>
-                        </div>
-
-                        <div class="log-item">
-                            <div class="log-header-row">
-                                <span class="log-label">Required Truck Loads</span>
-                                <span class="badge badge-derived">TRIPS</span>
-                            </div>
-                            <span id="log-truck-loads" class="log-value">~-- Loads</span>
-                            <span id="log-truck-loads-sub" class="log-meta">Volume &divide; 15T</span>
-                        </div>
-
-                        <div class="log-item">
-                            <div class="log-header-row">
-                                <span class="log-label">Efficiency Index</span>
-                                <span class="badge badge-simulation">INDEX</span>
-                            </div>
-                            <span id="log-efficiency" class="log-value">--%</span>
-                            <span id="log-efficiency-sub" class="log-meta">Scenario score</span>
-                        </div>
-
-                        <div class="log-item">
-                            <div class="log-header-row">
-                                <span class="log-label">Reliability Index</span>
-                                <span class="badge badge-derived">CONFIDENCE</span>
-                            </div>
-                            <span id="log-confidence" class="log-value highlight">--%</span>
-                            <span id="log-confidence-sub" class="log-meta">Data confidence</span>
-                        </div>
-                    </div>
-
-                    <!-- Expandable Calculation Breakdown Drawer -->
-                    <div id="logistics-explain-box" class="logistics-explain-box" style="display: none;">
-                        <div class="explain-header">
-                            <strong>📖 Deterministic Logistics Formulas (15-Ton Standard)</strong>
-                        </div>
-                        <div class="explain-grid">
-                            <div class="explain-card">
-                                <span class="explain-title">1. Suggested Fleet (15T Baseline)</span>
-                                <p>
-                                    <code>Effective = 15.0T &times; 95% = 14.25 Ton/trip</code><br>
-                                    <code>Suggested Trucks = ceil(ceil(Waste / 14.25) &times; 1.05 Buffer)</code>
-                                </p>
-                            </div>
-                            <div class="explain-card">
-                                <span class="explain-title">2. Crew Sizing</span>
-                                <p>
-                                    <code>1 Driver + 2 Sanitarian Collectors = 3 Personel/Truk</code><br>
-                                    <code>Total Personnel = Suggested Trucks &times; 3</code>
-                                </p>
-                            </div>
-                            <div class="explain-card">
-                                <span class="explain-title">3. Collection Time (Throughput)</span>
-                                <p>
-                                    <code>Throughput = Trucks &times; 2.0 Ton/Jam</code><br>
-                                    <code>Hours = (Forecast / Throughput &times; Factors) / Efficiency</code>
-                                </p>
-                            </div>
-                            <div class="explain-card">
-                                <span class="explain-title">4. Efficiency &amp; Reliability</span>
-                                <p>
-                                    <code>Efficiency = Fleet (35%) + Weather (20%) + Traffic (20%) + Event (15%) + Utilization (10%)</code><br>
-                                    <code>Reliability = Model Quality (50%) + Data Verification (30%) + Horizon (20%)</code>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </div>
-
-        <!-- Full-Width Bottom Panels: Timeline & Hourly Breakdown -->
-        <div class="predictor-bottom-workspace">
-            <!-- Timeline Harian -->
-            <section class="panel timeline-panel">
-                <div class="panel-header-compact">
-                    <h3 class="panel-title">DAILY FORECAST TIMELINE</h3>
-                    <span class="badge badge-forecast">MULTI-DAY HORIZON</span>
                 </div>
-                <div class="timeline-scroll-container">
-                    <div id="timeline-list" class="timeline-cards-row">
-                        <div class="empty-timeline">Pilih kecamatan dan jalankan prediksi untuk melihat rincian timeline harian.</div>
+
+                <div class="map-container-hud">
+                    <div id="map"></div>
+                    <div class="map-overlay-status" id="map-route-badge">
+                        <div class="overlay-item">
+                            <span class="overlay-label">TRANSIT ROUTE</span>
+                            <span class="overlay-val" id="route-target-name">Menteng → TPST Bantargebang</span>
+                        </div>
+                        <div class="overlay-divider"></div>
+                        <div class="overlay-item">
+                            <span class="overlay-label">EST. DISTANCE</span>
+                            <span class="overlay-val highlight" id="route-distance-val">33.3 km</span>
+                        </div>
+                        <div class="overlay-divider"></div>
+                        <div class="overlay-item">
+                            <span class="overlay-label">EST. TRANSIT</span>
+                            <span class="overlay-val highlight" id="route-time-val">1.2 Hours</span>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Estimasi Risiko Per Jam -->
-            <section id="hourly-section" class="panel hourly-panel" style="display: none;">
-                <div class="panel-header-compact">
-                    <h3 class="panel-title">HOURLY DISPATCH RISK ESTIMATION</h3>
+            <!-- Right (4 cols): Context Intelligence (Weather & Events) -->
+            <section class="col-4 panel context-panel-hud">
+                <div class="panel-header-hud">
+                    <div class="header-title-group">
+                        <h2 class="panel-heading">CONTEXT INTELLIGENCE</h2>
+                        <span class="panel-caption">Live meteorological &amp; local crowd activity</span>
+                    </div>
+                </div>
+
+                <!-- Weather Card -->
+                <div class="context-card-hud weather-card-hud">
+                    <div class="context-card-header">
+                        <span class="context-card-title">METEOROLOGICAL CONDITIONS</span>
+                        <span class="badge badge-live">LIVE OBSERVED</span>
+                    </div>
+                    <div class="weather-display-row">
+                        <div class="weather-main">
+                            <span class="weather-temp-hud" id="weather-forecast-text">Fetching Live...</span>
+                            <span class="weather-sub-hud" id="weather-location-text">Jakarta, Indonesia</span>
+                        </div>
+                        <div class="weather-metrics">
+                            <div class="metric-row">
+                                <span class="metric-name">Precipitation:</span>
+                                <span class="metric-val" id="weather-precip">0.0 mm</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-name">Weather Impact:</span>
+                                <span class="metric-val" id="weather-alert">Normal</span>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="context-source-tag">Source: Open-Meteo Forecast API (Realtime)</span>
+                </div>
+
+                <!-- Event Card -->
+                <div class="context-card-hud event-card-hud" id="event-box">
+                    <div class="context-card-header">
+                        <span class="context-card-title">EVENT &amp; CROWD SCHEDULE</span>
+                        <span class="badge badge-derived">LOCAL SCHEDULE</span>
+                    </div>
+                    <p class="event-desc-hud" id="event-desc-text">No major public events scheduled for this location in the forecast window.</p>
+                    <span class="context-source-tag">Source: Manually Curated Event Schedule (2026)</span>
+                </div>
+            </section>
+        </div>
+
+        <!-- 4. Forecast Timeline & Trend Intelligence (12 cols) -->
+        <section class="panel timeline-chart-panel-hud">
+            <div class="panel-header-hud">
+                <div class="header-title-group">
+                    <h2 class="panel-heading">7-DAY WASTE FORECAST TIMELINE</h2>
+                    <span class="panel-caption">Daily projected tonnage trend with model confidence intervals</span>
+                </div>
+                <span class="badge badge-forecast">MULTI-DAY HORIZON</span>
+            </div>
+
+            <!-- Chart Container -->
+            <div class="chart-wrapper-hud">
+                <canvas id="forecast-chart" height="200"></canvas>
+            </div>
+
+            <!-- Chart Summary Bar -->
+            <div class="chart-summary-bar">
+                <div class="chart-summary-item">
+                    <span class="summary-label">Total Forecast</span>
+                    <span class="summary-val" id="chart-total-vol">0.00 Tons</span>
+                </div>
+                <div class="chart-summary-item">
+                    <span class="summary-label">Daily Average</span>
+                    <span class="summary-val" id="chart-avg-vol">0.00 Tons/Day</span>
+                </div>
+                <div class="chart-summary-item">
+                    <span class="summary-label">Peak Forecast Day</span>
+                    <span class="summary-val highlight-amber" id="chart-peak-day">--</span>
+                </div>
+                <div class="chart-summary-item">
+                    <span class="summary-label">Minimum Day</span>
+                    <span class="summary-val highlight-green" id="chart-min-day">--</span>
+                </div>
+            </div>
+
+            <!-- Daily Cards Fallback Grid -->
+            <div id="timeline-list" class="timeline-cards-row visually-hidden">
+                <!-- Populated dynamically -->
+            </div>
+        </section>
+
+        <!-- 5. Operational Scenario & Waste Composition (6 cols + 6 cols) -->
+        <div class="dashboard-grid-12">
+            <!-- Left (6 cols): Operational Scenario Simulation -->
+            <section class="col-6 panel operational-panel-hud">
+                <div class="panel-header-hud">
+                    <div class="header-title-group">
+                        <h2 class="panel-heading">OPERATIONAL SCENARIO</h2>
+                        <span class="panel-caption">Prototype logistics simulation based on configurable operational assumptions.</span>
+                    </div>
+                    <div class="header-badges">
+                        <span class="badge badge-simulation">SIMULATION</span>
+                        <button type="button" class="btn-formula-toggle" onclick="toggleLogisticsExplainability()" id="btn-how-calculated">
+                            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Formula</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="operational-grid-hud">
+                    <div class="op-card">
+                        <span class="op-label">Suggested Fleet</span>
+                        <span class="op-val" id="log-fleet">-- Trucks</span>
+                        <span class="op-sub" id="log-fleet-sub">15 ton capacity / truck</span>
+                    </div>
+                    <div class="op-card">
+                        <span class="op-label">Vehicle Capacity</span>
+                        <span class="op-val" id="log-capacity">15.0 Tons</span>
+                        <span class="op-sub">Gross standard compactor</span>
+                    </div>
+                    <div class="op-card">
+                        <span class="op-label">Crew Requirement</span>
+                        <span class="op-val" id="log-manpower">-- Personnel</span>
+                        <span class="op-sub" id="log-manpower-sub">3 crew per truck</span>
+                    </div>
+                    <div class="op-card">
+                        <span class="op-label">Estimated Collection Time</span>
+                        <span class="op-val" id="log-duration">-- Hours</span>
+                        <span class="op-sub" id="log-duration-sub">Throughput adjusted</span>
+                    </div>
+                    <div class="op-card">
+                        <span class="op-label">Required Loads</span>
+                        <span class="op-val" id="log-truck-loads">~-- Loads</span>
+                        <span class="op-sub" id="log-truck-loads-sub">Volume ÷ 15T gross</span>
+                    </div>
+                    <div class="op-card">
+                        <span class="op-label">Scenario Score</span>
+                        <span class="op-val highlight" id="log-efficiency">--%</span>
+                        <span class="op-sub" id="log-efficiency-sub">Multi-factor operational index</span>
+                    </div>
+                </div>
+
+                <div class="operational-assumptions-strip">
+                    <span class="assumptions-tag">Assumptions: 15T Compactor Capacity · Traffic Factor · Weather Adjustment · Event Buffer</span>
+                    <span class="disclaimer-micro">⚠️ SIMULATION — NOT OFFICIAL DLH OPERATIONAL INSTRUCTION</span>
+                </div>
+
+                <!-- Expandable Formula Breakdown Drawer -->
+                <div id="logistics-explain-box" class="logistics-explain-box" style="display: none;">
+                    <div class="explain-header">
+                        <strong>📖 Deterministic Logistics Formulas (15-Ton Standard)</strong>
+                    </div>
+                    <div class="explain-grid">
+                        <div class="explain-card">
+                            <span class="explain-title">1. Suggested Fleet (15T Baseline)</span>
+                            <p>
+                                <code>Effective = 15.0T &times; 95% = 14.25 Ton/trip</code><br>
+                                <code>Suggested Trucks = ceil(ceil(Waste / 14.25) &times; 1.05 Buffer)</code>
+                            </p>
+                        </div>
+                        <div class="explain-card">
+                            <span class="explain-title">2. Crew Sizing</span>
+                            <p>
+                                <code>1 Driver + 2 Sanitarian Collectors = 3 Personel/Truk</code><br>
+                                <code>Total Personnel = Suggested Trucks &times; 3</code>
+                            </p>
+                        </div>
+                        <div class="explain-card">
+                            <span class="explain-title">3. Collection Time (Throughput)</span>
+                            <p>
+                                <code>Throughput = Trucks &times; 2.0 Ton/Jam</code><br>
+                                <code>Hours = (Forecast / Throughput &times; Factors) / Efficiency</code>
+                            </p>
+                        </div>
+                        <div class="explain-card">
+                            <span class="explain-title">4. Efficiency &amp; Reliability</span>
+                            <p>
+                                <code>Efficiency = Fleet (35%) + Weather (20%) + Traffic (20%) + Event (15%) + Utilization (10%)</code><br>
+                                <code>Reliability = Model Quality (50%) + Data Verification (30%) + Horizon (20%)</code>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right (6 cols): Waste Composition -->
+            <section class="col-6 panel composition-panel-hud">
+                <div class="panel-header-hud">
+                    <div class="header-title-group">
+                        <h2 class="panel-heading">ESTIMATED WASTE COMPOSITION</h2>
+                        <span class="panel-caption">Municipal solid waste characterization proportions</span>
+                    </div>
+                    <span class="badge badge-derived">DERIVED PROPORTIONS</span>
+                </div>
+
+                <!-- Segmented Stacked Multi-Bar Visual -->
+                <div class="composition-stacked-bar">
+                    <div class="segment organic" id="seg-organic" style="width: 50.2%;" title="Organic: 50.2%"></div>
+                    <div class="segment plastic" id="seg-plastic" style="width: 22.8%;" title="Plastic: 22.8%"></div>
+                    <div class="segment paper" id="seg-paper" style="width: 11.5%;" title="Paper: 11.5%"></div>
+                    <div class="segment glass" id="seg-glass" style="width: 3.2%;" title="Glass: 3.2%"></div>
+                    <div class="segment textile" id="seg-textile" style="width: 4.2%;" title="Textile: 4.2%"></div>
+                    <div class="segment metal" id="seg-metal" style="width: 8.1%;" title="Metals & Others: 8.1%"></div>
+                </div>
+
+                <!-- Detailed Rows Grid -->
+                <div class="composition-rows-grid">
+                    <div class="comp-row">
+                        <div class="comp-header">
+                            <span class="comp-name"><span class="dot dot-organic"></span> Organic / Sisa Makanan (~50.2%)</span>
+                            <span class="comp-ton" id="val-organic">0.00 Ton</span>
+                        </div>
+                        <div class="comp-bar-bg"><div id="bar-organic" class="comp-bar-fill organic" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="comp-row">
+                        <div class="comp-header">
+                            <span class="comp-name"><span class="dot dot-plastic"></span> Plastic / Plastik (~22.8%)</span>
+                            <span class="comp-ton" id="val-plastic">0.00 Ton</span>
+                        </div>
+                        <div class="comp-bar-bg"><div id="bar-plastic" class="comp-bar-fill plastic" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="comp-row">
+                        <div class="comp-header">
+                            <span class="comp-name"><span class="dot dot-paper"></span> Paper &amp; Cardboard (~11.5%)</span>
+                            <span class="comp-ton" id="val-paper">0.00 Ton</span>
+                        </div>
+                        <div class="comp-bar-bg"><div id="bar-paper" class="comp-bar-fill paper" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="comp-row">
+                        <div class="comp-header">
+                            <span class="comp-name"><span class="dot dot-glass"></span> Glass &amp; Ceramics (~3.2%)</span>
+                            <span class="comp-ton" id="val-glass">0.00 Ton</span>
+                        </div>
+                        <div class="comp-bar-bg"><div id="bar-glass" class="comp-bar-fill glass" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="comp-row">
+                        <div class="comp-header">
+                            <span class="comp-name"><span class="dot dot-textile"></span> Textile &amp; Leather (~4.2%)</span>
+                            <span class="comp-ton" id="val-textile">0.00 Ton</span>
+                        </div>
+                        <div class="comp-bar-bg"><div id="bar-textile" class="comp-bar-fill textile" style="width: 0%;"></div></div>
+                    </div>
+
+                    <div class="comp-row">
+                        <div class="comp-header">
+                            <span class="comp-name"><span class="dot dot-metal"></span> Metals &amp; Others (~8.1%)</span>
+                            <span class="comp-ton" id="val-metal">0.00 Ton</span>
+                        </div>
+                        <div class="comp-bar-bg"><div id="bar-metal" class="comp-bar-fill metal" style="width: 0%;"></div></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 6. Hourly Dispatch Risk & Data Provenance (7 cols + 5 cols) -->
+        <div class="dashboard-grid-12">
+            <!-- Left (7 cols): Hourly Dispatch Risk Estimation -->
+            <section class="col-7 panel hourly-panel-hud" id="hourly-section">
+                <div class="panel-header-hud">
+                    <div class="header-title-group">
+                        <h2 class="panel-heading">HOURLY DISPATCH RISK PROFILE</h2>
+                        <span class="panel-caption">24-hour diurnal operational pressure &amp; congestion index</span>
+                    </div>
                     <span class="badge badge-derived">24-HR DIURNAL PROFILE</span>
                 </div>
+
+                <!-- 24-hr Grid Container -->
                 <div class="hourly-bar-container">
                     <div id="hourly-grid" class="hourly-cells-grid">
-                        <!-- Dynamic 24-hr cells -->
+                        <!-- Populated dynamically -->
                     </div>
+                </div>
+
+                <!-- Legend & Factors -->
+                <div class="hourly-footer-hud">
+                    <div class="hourly-legend">
+                        <span class="legend-item"><span class="legend-swatch low"></span> Low</span>
+                        <span class="legend-item"><span class="legend-swatch medium"></span> Moderate</span>
+                        <span class="legend-item"><span class="legend-swatch high"></span> High Risk</span>
+                    </div>
+                    <span class="hourly-factors-note">Factors: Diurnal Activity (60%) + Traffic Delay (25%) + Weather Factor (15%)</span>
+                </div>
+            </section>
+
+            <!-- Right (5 cols): Data Provenance & Scientific Integrity -->
+            <section class="col-5 panel provenance-panel-hud">
+                <div class="panel-header-hud">
+                    <div class="header-title-group">
+                        <h2 class="panel-heading">DATA PROVENANCE &amp; METHODOLOGY</h2>
+                        <span class="panel-caption">Transparent source classification &amp; scientific audit</span>
+                    </div>
+                    <button type="button" class="btn-methodology-link" onclick="switchPage('page-methodology')">
+                        <span>View Docs →</span>
+                    </button>
+                </div>
+
+                <!-- Provenance Status Rows -->
+                <div class="provenance-status-table">
+                    <div class="prov-row">
+                        <span class="prov-source"><span class="dot dot-live"></span> Open-Meteo Weather API</span>
+                        <span class="badge badge-live">LIVE OBSERVED</span>
+                    </div>
+                    <div class="prov-row">
+                        <span class="prov-source"><span class="dot dot-ref"></span> BPS DKI Demographic Reference</span>
+                        <span class="badge badge-unverified">REFERENCE</span>
+                    </div>
+                    <div class="prov-row">
+                        <span class="prov-source"><span class="dot dot-est"></span> Spatial Baseline Waste Statistics</span>
+                        <span class="badge badge-estimated">ESTIMATED</span>
+                    </div>
+                    <div class="prov-row">
+                        <span class="prov-source"><span class="dot dot-model"></span> AETERNA Stacking ML Model</span>
+                        <span class="badge badge-forecast">FORECAST</span>
+                    </div>
+                    <div class="prov-row">
+                        <span class="prov-source"><span class="dot dot-pending"></span> DLH DKI Ground Truth Data</span>
+                        <span class="badge badge-pending">MODE B PENDING</span>
+                    </div>
+                </div>
+
+                <!-- Research Prototype Disclaimer Box -->
+                <div class="research-disclaimer-box">
+                    <div class="disclaimer-icon">ℹ️</div>
+                    <p class="disclaimer-text">
+                        <strong>Research Prototype Notice:</strong> Forecasts and operational outputs are decision-support estimates. Real-world validation requires authoritative observed data from DLH DKI Jakarta.
+                    </p>
                 </div>
             </section>
         </div>
@@ -1177,6 +1358,6 @@
     <div id="cursor-ring"></div>
 
     <!-- Scripts -->
-    <script src="/static/app.js?v=4.3.2"></script>
+    <script src="/static/app.js?v=5.0.0"></script>
 </body>
 </html>
