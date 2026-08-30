@@ -1655,3 +1655,71 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+
+// ==========================================
+// ACCUMULATION TOWER VISUALIZER (PAGE-HOME)
+// ==========================================
+function initAccumulationVisualizer() {
+    const container = document.getElementById('threejs-waste-container');
+    const valDisplay = document.getElementById('simulated-tons-val');
+    if (!container) return;
+
+    container.innerHTML = `
+        <svg viewBox="0 0 200 240" style="width:100%; height:100%; overflow:visible;">
+            <defs>
+                <linearGradient id="wasteGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                    <stop offset="0%" stop-color="#22C55E" stop-opacity="0.85" />
+                    <stop offset="55%" stop-color="#F59E0B" stop-opacity="0.9" />
+                    <stop offset="100%" stop-color="#EF4444" stop-opacity="0.95" />
+                </linearGradient>
+                <linearGradient id="cylinderBg" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="rgba(255,255,255,0.03)" />
+                    <stop offset="50%" stop-color="rgba(255,255,255,0.08)" />
+                    <stop offset="100%" stop-color="rgba(255,255,255,0.02)" />
+                </linearGradient>
+            </defs>
+            <ellipse cx="100" cy="30" rx="65" ry="18" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-dasharray="3,3" />
+            <path d="M35,30 L35,200 A65,18 0 0,0 165,200 L165,30" fill="url(#cylinderBg)" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+            <ellipse cx="100" cy="200" rx="65" ry="18" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+            
+            <ellipse cx="100" cy="65" rx="65" ry="18" fill="none" stroke="rgba(239,68,68,0.3)" stroke-width="1" stroke-dasharray="2,2" />
+            <ellipse cx="100" cy="115" rx="65" ry="18" fill="none" stroke="rgba(245,158,11,0.3)" stroke-width="1" stroke-dasharray="2,2" />
+            <ellipse cx="100" cy="165" rx="65" ry="18" fill="none" stroke="rgba(34,197,94,0.3)" stroke-width="1" stroke-dasharray="2,2" />
+
+            <path id="waste-fluid-body" d="M35,200 L35,200 A65,18 0 0,0 165,200 L165,200 Z" fill="url(#wasteGrad)" opacity="0.8" style="transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);" />
+            <ellipse id="waste-fluid-top" cx="100" cy="200" rx="65" ry="18" fill="#EF4444" opacity="0.9" style="transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);" />
+        </svg>
+    `;
+
+    window.setTowerAccumulation = function(tons) {
+        const maxTons = 9059;
+        const pct = Math.min(1, Math.max(0.08, tons / maxTons));
+        const fillHeight = 170 * pct;
+        const topY = 200 - fillHeight;
+
+        const body = document.getElementById('waste-fluid-body');
+        const topEl = document.getElementById('waste-fluid-top');
+        if (body && topEl) {
+            body.setAttribute('d', `M35,${topY} L35,200 A65,18 0 0,0 165,200 L165,${topY} A65,18 0 0,1 35,${topY} Z`);
+            topEl.setAttribute('cy', topY);
+            if (pct > 0.8) topEl.setAttribute('fill', '#EF4444');
+            else if (pct > 0.4) topEl.setAttribute('fill', '#F59E0B');
+            else topEl.setAttribute('fill', '#22C55E');
+        }
+        if (valDisplay) {
+            valDisplay.textContent = `${tons.toLocaleString('en-US')} Tons`;
+        }
+    };
+
+    window.setTowerAccumulation(9059);
+
+    document.querySelectorAll('.story-card-hud').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            const tons = parseInt(card.getAttribute('data-tons')) || 9059;
+            window.setTowerAccumulation(tons);
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => { initAccumulationVisualizer(); });
