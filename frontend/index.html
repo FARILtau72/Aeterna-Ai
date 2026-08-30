@@ -62,7 +62,7 @@
     <!-- Three.js 3D Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <link rel="stylesheet" href="/static/style.css?v=5.0.0">
+    <link rel="stylesheet" href="/static/style.css?v=5.1.0">
 
     <!-- Schema.org Multi-Type JSON-LD Graph for Rapid Search Indexing -->
     <script type="application/ld+json">
@@ -213,136 +213,167 @@
 
     <!-- 1. HOME / OVERVIEW PAGE -->
     <div id="page-home" class="page-container active">
-        <section class="hero-section">
-            <div class="hero-content">
+        <!-- Hero Section -->
+        <section class="hero-section-hud">
+            <div class="hero-content-hud">
                 <div class="hero-badge-container">
                     <span class="badge badge-prototype">RESEARCH PROTOTYPE</span>
-                    <span class="badge badge-observed">OPEN-METEO LIVE</span>
+                    <span class="badge badge-live">OPEN-METEO LIVE</span>
                     <span class="badge badge-derived">44 KECAMATAN</span>
                 </div>
-                <h1 class="hero-title">AI WASTE FORECASTING &amp; DECISION INTELLIGENCE</h1>
-                <p class="hero-subtitle">Menggabungkan data publik, kondisi cuaca, pemodelan prediktif, dan simulasi operasional untuk membantu mengeksplorasi perencanaan pengelolaan sampah yang lebih proaktif.</p>
-                <div class="hero-actions">
-                    <button class="action-btn" onclick="switchPage('page-predictor')">
-                        <span class="btn-text">EXPLORE FORECAST</span>
-                        <span class="btn-glow"></span>
+                <h1 class="hero-title-hud">AI Waste Forecasting &amp; Decision Intelligence</h1>
+                <p class="hero-subtitle-hud">Menggabungkan data publik, kondisi cuaca, pemodelan prediktif, dan simulasi logistik operasional untuk membantu perencanaan pengelolaan persampahan DKI Jakarta yang proaktif dan akuntabel.</p>
+                <div class="hero-actions-hud">
+                    <button class="btn-hud-primary" onclick="switchPage('page-predictor')">
+                        <span>EXPLORE FORECAST</span>
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                     </button>
-                    <button class="action-btn secondary-btn" onclick="switchPage('page-methodology')">
-                        <span class="btn-text">VIEW METHODOLOGY</span>
-                        <span class="btn-glow"></span>
+                    <button class="btn-hud-secondary" onclick="switchPage('page-methodology')">
+                        <span>VIEW METHODOLOGY</span>
                     </button>
                 </div>
             </div>
-            <div class="hero-stats-panel panel">
-                <h3 class="panel-subtitle">Jakarta Waste Context</h3>
-                <div class="hero-stat-grid">
-                    <div class="hero-stat-card">
-                        <span class="h-stat-label">Daily Waste Baseline</span>
-                        <span class="h-stat-value text-glow">9,059 <span class="unit">Tons/Day</span></span>
+
+            <div class="hero-context-panel panel">
+                <div class="panel-header-hud">
+                    <h3 class="panel-heading">JAKARTA WASTE CONTEXT</h3>
+                    <span class="badge badge-derived">MACRO STATS</span>
+                </div>
+                <div class="hero-stat-grid-hud">
+                    <div class="hero-stat-card-hud">
+                        <span class="h-stat-label">DAILY WASTE BASELINE</span>
+                        <span class="h-stat-value">9,059 <span class="unit">Tons/Day</span></span>
                         <span class="h-stat-meta"><span class="badge badge-estimated">ESTIMATED BASELINE</span></span>
                     </div>
-                    <div class="hero-stat-card">
-                        <span class="h-stat-label">Spatial Coverage</span>
+                    <div class="hero-stat-card-hud">
+                        <span class="h-stat-label">SPATIAL COVERAGE</span>
                         <span class="h-stat-value">44 <span class="unit">Kecamatan</span></span>
-                        <span class="h-stat-meta"><span class="badge badge-observed">BPS BOUNDARIES</span></span>
+                        <span class="h-stat-meta"><span class="badge badge-live">BPS BOUNDARIES</span></span>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Keunggulan & Pilar Solusi -->
-        <section class="container features-section">
-            <h2 class="section-title">PILAR SISTEM AETERNA AI</h2>
-            <div class="features-grid">
-                <div class="panel feature-card">
-                    <div class="feature-icon font-display">01</div>
-                    <h3 class="feature-name">Pemodelan Prediktif Spasial</h3>
-                    <p class="feature-desc">Arsitektur Stacking Regressor (DecisionTree + RandomForest + GBR &rarr; Ridge) yang mengevaluasi tren temporal, kepadatan zona, dan kalender aktivitas publik.</p>
-                    <div class="feature-badge"><span class="badge badge-forecast">FORECAST ENGINE</span></div>
-                </div>
-                <div class="panel feature-card">
-                    <div class="feature-icon font-display">02</div>
-                    <h3 class="feature-name">Integrasi Cuaca Real-Time</h3>
-                    <p class="feature-desc">Penarikan data curah hujan live tingkat kecamatan dari Open-Meteo API untuk memperhitungkan dampak penyerapan air hujan terhadap bobot sampah basah.</p>
-                    <div class="feature-badge"><span class="badge badge-observed">EXTERNAL REALTIME</span></div>
-                </div>
-                <div class="panel feature-card">
-                    <div class="feature-icon font-display">03</div>
-                    <h3 class="feature-name">Simulasi Logistik Terpadu</h3>
-                    <p class="feature-desc">Simulasi deterministik berbasis kapasitas armada 15T compactor, throughput pengangkutan, dan rasio personel untuk membantu perencanaan alokasi sumber daya.</p>
-                    <div class="feature-badge"><span class="badge badge-simulation">OPERATIONAL SIMULATION</span></div>
-                </div>
-                <div class="panel feature-card">
-                    <div class="feature-icon font-display">04</div>
-                    <h3 class="feature-name">Transparansi Data &amp; Provenance</h3>
-                    <p class="feature-desc">Pemisahan eksplisit antara data observasi langsung, data estimasi, prediksi AI, dan simulasi skenario guna memastikan akuntabilitas ilmiah penuh.</p>
-                    <div class="feature-badge"><span class="badge badge-derived">DATA PROVENANCE</span></div>
+                <div class="hero-context-footer">
+                    <span class="ctx-tag">⚡ 15T Heavy Compactor Fleet Model</span>
+                    <span class="ctx-tag">📍 Destination: TPST Bantargebang (Bekasi)</span>
                 </div>
             </div>
         </section>
 
-        <!-- Cinematic Waste Crisis Scroll Section -->
-        <section class="container crisis-story-section" style="margin-top: 4rem; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 3rem; position: relative;">
-            <!-- Sticky Left Panel (Waste Tower Visualizer) -->
-            <div class="sticky-visualizer-panel" style="position: sticky; top: 120px; height: 450px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 2rem; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);">
-                <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: var(--text-main); margin-bottom: 1.5rem; letter-spacing: 1px; text-transform: uppercase;">JAKARTA DAILY ACCUMULATION TOWER</h3>
+        <!-- 4 Pillars Section -->
+        <section class="features-section-hud">
+            <div class="section-header-hud">
+                <h2 class="section-title-hud">PILAR SISTEM AETERNA AI</h2>
+                <p class="section-subtitle-hud">4 Fondasi Arsitektur Prediksi Cerdas, Simulasi Fisika, dan Akuntabilitas Ilmiah</p>
+            </div>
+            <div class="features-grid-hud">
+                <div class="panel feature-card-hud">
+                    <div class="feature-header-hud">
+                        <span class="feature-num-hud">01</span>
+                        <span class="badge badge-forecast">FORECAST ENGINE</span>
+                    </div>
+                    <h3 class="feature-name-hud">Pemodelan Prediktif Spasial</h3>
+                    <p class="feature-desc-hud">Arsitektur Stacking Regressor (DecisionTree + RandomForest + GBR &rarr; Ridge) yang mengevaluasi tren temporal, kepadatan zona, dan kalender aktivitas publik.</p>
+                </div>
+
+                <div class="panel feature-card-hud">
+                    <div class="feature-header-hud">
+                        <span class="feature-num-hud">02</span>
+                        <span class="badge badge-live">LIVE OBSERVED</span>
+                    </div>
+                    <h3 class="feature-name-hud">Integrasi Cuaca Real-Time</h3>
+                    <p class="feature-desc-hud">Penarikan data curah hujan live tingkat kecamatan dari Open-Meteo API untuk memperhitungkan dampak penyerapan air hujan terhadap bobot sampah basah.</p>
+                </div>
+
+                <div class="panel feature-card-hud">
+                    <div class="feature-header-hud">
+                        <span class="feature-num-hud">03</span>
+                        <span class="badge badge-simulation">SIMULATION</span>
+                    </div>
+                    <h3 class="feature-name-hud">Simulasi Logistik Terpadu</h3>
+                    <p class="feature-desc-hud">Simulasi deterministik berbasis kapasitas armada 15T compactor, throughput pengangkutan, dan rasio personel untuk membantu perencanaan alokasi sumber daya.</p>
+                </div>
+
+                <div class="panel feature-card-hud">
+                    <div class="feature-header-hud">
+                        <span class="feature-num-hud">04</span>
+                        <span class="badge badge-derived">DATA PROVENANCE</span>
+                    </div>
+                    <h3 class="feature-name-hud">Transparansi Data &amp; Provenance</h3>
+                    <p class="feature-desc-hud">Pemisahan eksplisit antara data observasi langsung, data estimasi, prediksi AI, dan simulasi skenario guna memastikan akuntabilitas ilmiah penuh.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Accumulation Tower & Diurnal Stages Section -->
+        <section class="crisis-story-section-hud">
+            <!-- Left Panel (3D Waste Tower Visualizer) -->
+            <div class="sticky-visualizer-panel-hud panel">
+                <div class="panel-header-hud">
+                    <h3 class="panel-heading">DAILY ACCUMULATION TOWER</h3>
+                    <span class="badge badge-simulation">3D PHYSICS HUD</span>
+                </div>
                 
-                <!-- The 3D Three.js Container -->
-                <div id="threejs-waste-container" style="width: 220px; height: 280px; position: relative; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.01); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden;">
-                    <div style="position: absolute; right: 12px; top: 12px; font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); opacity: 0.6; z-index: 2; pointer-events: none;">CRITICAL</div>
-                    <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); opacity: 0.6; z-index: 2; pointer-events: none;">WARNING</div>
-                    <div style="position: absolute; right: 12px; bottom: 12px; font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); opacity: 0.6; z-index: 2; pointer-events: none;">NORMAL</div>
+                <!-- 3D Three.js Container -->
+                <div id="threejs-waste-container" class="threejs-container-hud">
+                    <div class="tower-label critical">CRITICAL (9,000T+)</div>
+                    <div class="tower-label warning">WARNING (5,000T)</div>
+                    <div class="tower-label normal">NORMAL (2,000T)</div>
                 </div>
                 
                 <!-- Live Ticking Indicator -->
-                <div class="tower-status" style="margin-top: 1.5rem; text-align: center;">
-                    <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Simulated Daily Accumulation</div>
-                    <div style="font-family: var(--font-mono); font-size: 1.8rem; color: var(--yellow); font-weight: bold;" id="simulated-tons-val">0 Tons</div>
+                <div class="tower-status-hud">
+                    <span class="tower-status-label">Simulated Daily Accumulation</span>
+                    <span class="tower-status-val" id="simulated-tons-val">9,059 Tons</span>
                 </div>
             </div>
 
-            <!-- Scrolling Narrative Cards -->
-            <div class="story-scroll-cards" style="display: flex; flex-direction: column; gap: 6rem; padding-bottom: 8rem;">
-                <div class="story-card panel" data-height="25" data-tons="2264" style="padding: 2.2rem; min-height: 250px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; border:1px solid var(--border-color); border-radius:12px;">
-                    <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; display: block;">STAGE 01: MORNING GENERATION (09:00 WIB)</span>
-                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--text-main); margin-bottom: 0.8rem;">~2,264 TON SAMPAH TERKUMPUL</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">Memasuki jam operasional awal, sampah dari kawasan pasar dan pemukiman mulai mengalir ke Tempat Penampungan Sementara (TPS). Perencanaan armada yang tepat mencegah bottleneck sejak awal hari.</p>
+            <!-- Right Panel (Diurnal Narrative Stages) -->
+            <div class="story-scroll-cards-hud">
+                <div class="story-card-hud panel stage-morning" data-height="25" data-tons="2264">
+                    <div class="story-card-header">
+                        <span class="stage-tag morning">STAGE 01: 09:00 WIB</span>
+                        <span class="stage-volume">~2,264 TON SAMPAH</span>
+                    </div>
+                    <h3 class="story-title">Morning Generation &amp; TPS Dispatch</h3>
+                    <p class="story-desc">Memasuki jam operasional awal, sampah dari kawasan pasar dan pemukiman mulai mengalir ke Tempat Penampungan Sementara (TPS). Perencanaan armada yang tepat mencegah bottleneck sejak awal hari.</p>
                 </div>
 
-                <div class="story-card panel" data-height="55" data-tons="4982" style="padding: 2.2rem; min-height: 250px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; border:1px solid var(--border-color); border-radius:12px;">
-                    <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; display: block;">STAGE 02: MID-DAY TRANSIT (15:00 WIB)</span>
-                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--text-main); margin-bottom: 0.8rem;">~4,982 TON SAMPAH TERKUMPUL</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">Aktivitas pengangkutan lintas wilayah menuju TPST Bantargebang mencapai puncaknya. Kepadatan lalu lintas dan cuaca hujan menjadi variabel penting dalam menjaga ritme pengangkutan.</p>
+                <div class="story-card-hud panel stage-midday" data-height="55" data-tons="4982">
+                    <div class="story-card-header">
+                        <span class="stage-tag midday">STAGE 02: 15:00 WIB</span>
+                        <span class="stage-volume">~4,982 TON SAMPAH</span>
+                    </div>
+                    <h3 class="story-title">Mid-Day Transit &amp; Highway Haulage</h3>
+                    <p class="story-desc">Aktivitas pengangkutan lintas wilayah menuju TPST Bantargebang mencapai puncaknya. Kepadatan lalu lintas dan cuaca hujan menjadi variabel penting dalam menjaga ritme pengangkutan.</p>
                 </div>
 
-                <div class="story-card panel" data-height="95" data-tons="9059" style="padding: 2.2rem; min-height: 250px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s; border:1px solid var(--border-color); border-radius:12px;">
-                    <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--red); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; display: block;">STAGE 03: EOD TOTAL (23:59 WIB)</span>
-                    <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--text-main); margin-bottom: 0.8rem;">~9,059 TON TOTAL HARIAN</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">Volume timbulan harian ibukota mencapai titik akumulasi penuh. Melalui pendekatan prediktif, AETERNA AI membantu pemangku kepentingan mengantisipasi kebutuhan logistik sebelum penumpukan terjadi.</p>
+                <div class="story-card-hud panel stage-eod" data-height="95" data-tons="9059">
+                    <div class="story-card-header">
+                        <span class="stage-tag eod">STAGE 03: 23:59 WIB</span>
+                        <span class="stage-volume">~9,059 TON TOTAL</span>
+                    </div>
+                    <h3 class="story-title">EOD Total Capital Accumulation</h3>
+                    <p class="story-desc">Volume timbulan harian ibukota mencapai titik akumulasi penuh. Melalui pendekatan prediktif, AETERNA AI membantu pemangku kepentingan mengantisipasi kebutuhan logistik sebelum penumpukan terjadi.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Development Author Section -->
-        <section class="container developers-section" style="margin-bottom: 3rem;">
-            <h2 class="section-title">TENTANG PENGEMBANG</h2>
-            <div class="developers-grid" style="display: flex; justify-content: center;">
-                <div class="panel developer-card" style="max-width: 680px; width: 100%; text-align: center; padding: 2.5rem;">
-                    <div class="dev-role" style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--cyan); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.5rem;">Student R&amp;D Project</div>
-                    <h3 class="dev-name" style="font-family: var(--font-display); font-size: 1.4rem; color: var(--text-main); margin-bottom: 0.8rem;">FARIL PUTRA PRATAMA</h3>
-                    <p class="dev-desc" style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
-                        Pengembang independen yang merancang arsitektur AETERNA AI sebagai prototipe riset sistem pendukung keputusan persampahan berbasis AI dan pemodelan prediktif spasial untuk DKI Jakarta.
-                    </p>
-                    <div style="display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap;">
-                        <a href="https://github.com/FARILtau72/Aeterna-Ai" target="_blank" rel="noopener noreferrer" class="action-btn" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 9px 20px; font-size: 0.85rem;">
-                            <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                            GitHub Repository
-                        </a>
-                        <a href="https://www.linkedin.com/in/faril-putra-pratama-81561a280/" target="_blank" rel="noopener noreferrer" class="action-btn secondary-btn" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 9px 20px; font-size: 0.85rem;">
-                            <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.762-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                            LinkedIn Profile
-                        </a>
-                    </div>
+        <!-- Developer Profile Section -->
+        <section class="developers-section-hud">
+            <div class="panel developer-card-hud">
+                <span class="dev-role-hud">Student R&amp;D Project · DKI Jakarta Decision Intelligence</span>
+                <h3 class="dev-name-hud">FARIL PUTRA PRATAMA</h3>
+                <p class="dev-desc-hud">
+                    Pengembang independen yang merancang arsitektur AETERNA AI sebagai prototipe riset sistem pendukung keputusan persampahan berbasis AI dan pemodelan prediktif spasial-temporal untuk 44 kecamatan di DKI Jakarta.
+                </p>
+                <div class="dev-links-hud">
+                    <a href="https://github.com/FARILtau72/Aeterna-Ai" target="_blank" rel="noopener noreferrer" class="btn-hud-secondary">
+                        <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                        <span>GitHub Repository</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/faril-putra-pratama-81561a280/" target="_blank" rel="noopener noreferrer" class="btn-hud-secondary">
+                        <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.762-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        <span>LinkedIn Profile</span>
+                    </a>
                 </div>
             </div>
         </section>
@@ -1358,6 +1389,6 @@
     <div id="cursor-ring"></div>
 
     <!-- Scripts -->
-    <script src="/static/app.js?v=5.0.0"></script>
+    <script src="/static/app.js?v=5.1.0"></script>
 </body>
 </html>
