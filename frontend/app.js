@@ -303,9 +303,7 @@ function initMap() {
         minZoom: 9
     }).setView([-6.175, 106.825], 11.5);
 
-    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {
-        maxZoom: 20
-    }).addTo(map);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, attribution: 'Esri, HERE, Garmin, (c) OpenStreetMap contributors' }).addTo(map);
 
     // Add Bantargebang disposal site marker
     const bantarIcon = L.divIcon({
