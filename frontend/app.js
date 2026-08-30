@@ -193,6 +193,7 @@ window.toggleSidebar = toggleSidebar;
 // Dynamically Populate Dropdown on Startup
 function populateLocationDropdown() {
     if (!locationSelect) return;
+    const currentVal = locationSelect.value || selectedLocation;
     locationSelect.innerHTML = "";
     Object.keys(KECAMATAN_DATABASE).forEach(loc => {
         const opt = document.createElement("option");
@@ -200,8 +201,37 @@ function populateLocationDropdown() {
         opt.textContent = `${loc} (${KECAMATAN_DATABASE[loc].city})`;
         locationSelect.appendChild(opt);
     });
-    locationSelect.value = selectedLocation;
+    locationSelect.value = KECAMATAN_DATABASE[currentVal] ? currentVal : "Menteng";
 }
+
+async function fetchKecamatanMetadata() {
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/v1/kecamatan`);
+        if (res.ok) {
+            const jsonRes = await res.json();
+            if (jsonRes && jsonRes.data) {
+                Object.keys(jsonRes.data).forEach(loc => {
+                    const item = jsonRes.data[loc];
+                    KECAMATAN_DATABASE[loc] = {
+                        coords: [item.latitude, item.longitude],
+                        city: item.city,
+                        radius: item.radius || "2.0 km",
+                        population_jiwa: item.population_jiwa,
+                        normal_avg: item.normal_avg,
+                        warning_threshold: item.warning_threshold,
+                        critical_threshold: item.critical_threshold,
+                        zone: item.zone
+                    };
+                });
+                populateLocationDropdown();
+            }
+        }
+    } catch (e) {
+        console.warn("Using local kecamatan database fallback", e);
+    }
+}
+
+fetchKecamatanMetadata();
 
 // Calculate Haversine Distance between two coordinate arrays [lat, lon]
 function getHaversineDistance(coords1, coords2) {
