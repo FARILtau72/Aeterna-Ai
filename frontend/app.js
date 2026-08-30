@@ -179,7 +179,7 @@ function switchPage(pageId) {
 function toggleSidebar() {
     const sidebar = document.getElementById("app-sidebar");
     const backdrop = document.getElementById("sidebar-backdrop");
-    const toggleBtn = document.getElementById("mobile-toggle-btn");
+    const toggleBtn = document.getElementById("menu-toggle-btn") || document.getElementById("mobile-toggle-btn");
     if (sidebar) {
         sidebar.classList.toggle("open");
         if (backdrop) backdrop.classList.toggle("active");
@@ -303,7 +303,7 @@ function initMap() {
         minZoom: 9
     }).setView([-6.175, 106.825], 11.5);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {
         maxZoom: 20
     }).addTo(map);
 

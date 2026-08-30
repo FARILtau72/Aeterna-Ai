@@ -61,7 +61,7 @@
     <!-- Three.js 3D Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <link rel="stylesheet" href="/static/style.css?v=4.3.2">
+    <link rel="stylesheet" href="/static/style.css?v=4.4.0">
 
     <!-- Schema.org Multi-Type JSON-LD Graph for Rapid Search Indexing -->
     <script type="application/ld+json">
@@ -183,18 +183,30 @@
         <!-- Main Content Area -->
         <div class="app-main-content">
             <!-- Mobile Top Header Bar (Only shown on mobile/tablet screens) -->
-            <header class="mobile-top-bar">
-                <button class="mobile-toggle-btn" id="mobile-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <div class="mobile-logo">
-                    <span class="logo-text">AETERNA<span class="highlight">AI</span></span>
+            <header class="app-top-bar">
+                <div class="top-bar-left">
+                    <button class="menu-toggle-btn" id="menu-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle navigation menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <div class="top-bar-brand" onclick="switchPage('page-home')">
+                        <span class="logo-text">AETERNA<span class="highlight">AI</span></span>
+                        <span class="version-tag">v4.1.0</span>
+                    </div>
                 </div>
-                <div class="system-status">
-                    <span class="status-indicator prototype"></span>
-                    <span class="status-label">PROTOTYPE</span>
+                <div class="top-bar-center">
+                    <span class="active-page-pill" id="active-page-pill">OVERVIEW</span>
+                </div>
+                <div class="top-bar-right">
+                    <div class="system-status">
+                        <span class="status-indicator prototype"></span>
+                        <span class="status-label">PROTOTYPE</span>
+                    </div>
+                    <button class="top-nav-quick-btn" onclick="switchPage('page-predictor')">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <span>FORECAST</span>
+                    </button>
                 </div>
             </header>
 
@@ -413,7 +425,10 @@
                 </div>
 
                 <div class="control-group">
-                    <label for="forecast-slider">Forecast Horizon: <span id="forecast-val" class="value-display">7</span> Days</label>
+                    <div class="control-label-row">
+                        <label for="forecast-slider">Forecast Horizon</label>
+                        <span class="control-val-badge"><span id="forecast-val">7</span> Days</span>
+                    </div>
                     <input type="range" id="forecast-slider" min="1" max="30" value="7" class="slider">
                 </div>
 
@@ -421,15 +436,18 @@
                 <h3 class="panel-subtitle">Scenario Overrides</h3>
 
                 <div class="control-group">
-                    <label for="rain-override">Rainfall Override (mm)</label>
-                    <div class="range-override-container">
-                        <input type="range" id="rain-override" min="0" max="100" value="0" class="slider">
-                        <span id="rain-override-val" class="override-display">Auto (Open-Meteo)</span>
+                    <div class="control-label-row">
+                        <label for="rain-override">Rainfall Override (mm)</label>
+                        <span id="rain-override-val" class="control-val-badge">Auto (Open-Meteo)</span>
                     </div>
+                    <input type="range" id="rain-override" min="0" max="100" value="0" class="slider">
                 </div>
 
                 <div class="control-group">
-                    <label for="event-override">Population Headcount <span id="event-override-val" class="override-display">Auto (BPS Reference)</span></label>
+                    <div class="control-label-row">
+                        <label for="event-override">Population Headcount</label>
+                        <span id="event-override-val" class="control-val-badge">Auto (BPS Reference)</span>
+                    </div>
                     <input type="range" id="event-override" min="10000" max="700000" step="5000" value="88000" class="slider">
                 </div>
 
