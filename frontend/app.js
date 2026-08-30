@@ -1,3 +1,176 @@
+// Chart.js instance tracking
+let forecastChartInstance = null;
+let rainOverrideMode = 'auto'; // 'auto' | 'manual'
+let popOverrideMode = 'auto'; // 'auto' | 'manual'
+
+function setRainfallMode(mode) {
+    rainOverrideMode = mode;
+    const btnAuto = document.getElementById('rain-mode-auto');
+    const btnManual = document.getElementById('rain-mode-manual');
+    const slider = document.getElementById('rain-override');
+    const display = document.getElementById('rain-override-val');
+    if (mode === 'auto') {
+        if (btnAuto) btnAuto.classList.add('active');
+        if (btnManual) btnManual.classList.remove('active');
+        if (slider) { slider.disabled = true; slider.value = 0; }
+        rainValue = 0;
+        if (display) display.textContent = 'Auto (Open-Meteo)';
+    } else {
+        if (btnAuto) btnAuto.classList.remove('active');
+        if (btnManual) btnManual.classList.add('active');
+        if (slider) { slider.disabled = false; slider.value = slider.value > 0 ? slider.value : 15; }
+        rainValue = slider ? slider.value : 15;
+        if (display) display.textContent = `${rainValue} mm (Manual)`;
+    }
+    runPrediction();
+}
+
+function setPopulationMode(mode) {
+    popOverrideMode = mode;
+    const btnAuto = document.getElementById('event-mode-auto');
+    const btnManual = document.getElementById('event-mode-manual');
+    const slider = document.getElementById('event-override');
+    const display = document.getElementById('event-override-val');
+    const defaultPop = KECAMATAN_DATABASE[selectedLocation]?.population_jiwa || 100000;
+    if (mode === 'auto') {
+        if (btnAuto) btnAuto.classList.add('active');
+        if (btnManual) btnManual.classList.remove('active');
+        if (slider) { slider.disabled = true; slider.value = defaultPop; }
+        if (display) display.textContent = `Auto (${defaultPop.toLocaleString()} Jiwa)`;
+    } else {
+        if (btnAuto) btnAuto.classList.remove('active');
+        if (btnManual) btnManual.classList.add('active');
+        if (slider) { slider.disabled = false; }
+        const currentVal = slider ? parseInt(slider.value) : defaultPop;
+        if (display) display.textContent = `${currentVal.toLocaleString()} Jiwa (Manual)`;
+    }
+    runPrediction();
+}
+
+function toggleAdvancedScenario() {
+    const box = document.getElementById('advanced-scenario-box');
+    const btn = document.getElementById('advanced-scenario-toggle');
+    if (box && btn) {
+        const isClosed = box.style.display === 'none';
+        box.style.display = isClosed ? 'block' : 'none';
+        btn.classList.toggle('open', isClosed);
+        btn.setAttribute('aria-expanded', isClosed ? 'true' : 'false');
+    }
+}
+
+function updateContextBadge() {
+    const locText = document.getElementById('context-location-text');
+    const horizText = document.getElementById('context-horizon-text');
+    const modText = document.getElementById('context-model-text');
+    const city = KECAMATAN_DATABASE[selectedLocation]?.city || 'DKI Jakarta';
+    if (locText) locText.textContent = `${selectedLocation} · ${city}`;
+    if (horizText) {
+        const days = forecastSlider ? forecastSlider.value : 7;
+        horizText.textContent = `${days}-Day Horizon`;
+    }
+    if (modText) {
+        const m = modelSelect ? modelSelect.value : 'gradient_boosting';
+        modText.textContent = m === 'chronos' ? 'Chronos-T5 Neural' : 'Stacking Regressor';
+    }
+}
+
+// Render Interactive Forecast Curve using Chart.js
+function renderForecastChart(results) {
+    const canvas = document.getElementById('forecast-chart');
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    const labels = results.map(r => {
+        const d = new Date(r.date);
+        return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    });
+    const volumes = results.map(r => r.total_volume_ton);
+
+    // Summary Statistics Calculation
+    const total = volumes.reduce((a, b) => a + b, 0);
+    const avg = total / volumes.length;
+    let maxIdx = 0, minIdx = 0;
+    volumes.forEach((v, i) => {
+        if (v > volumes[maxIdx]) maxIdx = i;
+        if (v < volumes[minIdx]) minIdx = i;
+    });
+
+    const elTotal = document.getElementById('chart-total-vol');
+    const elAvg = document.getElementById('chart-avg-vol');
+    const elPeak = document.getElementById('chart-peak-day');
+    const elMin = document.getElementById('chart-min-day');
+
+    if (elTotal) elTotal.textContent = `${total.toFixed(2)} Tons`;
+    if (elAvg) elAvg.textContent = `${avg.toFixed(2)} Tons/Day`;
+    if (elPeak) elPeak.textContent = `${labels[maxIdx]} (${volumes[maxIdx].toFixed(1)} T)`;
+    if (elMin) elMin.textContent = `${labels[minIdx]} (${volumes[minIdx].toFixed(1)} T)`;
+
+    if (forecastChartInstance) {
+        forecastChartInstance.destroy();
+    }
+
+    const ctx = canvas.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+    gradient.addColorStop(0, 'rgba(112, 173, 71, 0.35)');
+    gradient.addColorStop(1, 'rgba(112, 173, 71, 0.0)');
+
+    forecastChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Projected Waste Generation (Tons)',
+                data: volumes,
+                borderColor: '#70AD47',
+                backgroundColor: gradient,
+                borderWidth: 2.5,
+                fill: true,
+                tension: 0.35,
+                pointBackgroundColor: volumes.map((v, i) => i === maxIdx ? '#F59E0B' : (i === minIdx ? '#22C55E' : '#70AD47')),
+                pointBorderColor: '#070C08',
+                pointBorderWidth: 2,
+                pointRadius: volumes.map((v, i) => (i === maxIdx || i === minIdx) ? 6 : 4),
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(13, 20, 15, 0.95)',
+                    titleColor: '#F8FAF9',
+                    bodyColor: '#00F0FF',
+                    borderColor: 'rgba(112, 173, 71, 0.4)',
+                    borderWidth: 1,
+                    padding: 10,
+                    callbacks: {
+                        label: function(ctx) {
+                            const val = ctx.parsed.y;
+                            const r = results[ctx.dataIndex];
+                            return [`Volume: ${val.toFixed(2)} Tons`, `Risk Level: ${r.risk_status}`, `Suggested Trucks: ${r.recommended_trucks}`];
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    ticks: { color: '#88A385', font: { family: "'JetBrains Mono', monospace", size: 11 } }
+                },
+                y: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    ticks: {
+                        color: '#88A385',
+                        font: { family: "'JetBrains Mono', monospace", size: 11 },
+                        callback: (v) => `${v} T`
+                    }
+                }
+            }
+        }
+    });
+}
+
 // Coordinates and Map Data for all 44 Kecamatan of DKI Jakarta
 const KECAMATAN_DATABASE = {
     // 1. JAKARTA PUSAT (8 Kecamatan)
@@ -393,8 +566,8 @@ function drawTransitRoute(locName) {
     routeLine = L.polyline([startCoords, BANTARGEBANG_COORDS], {
         color: '#00F0FF',
         weight: 3.5,
-        opacity: 0.75,
-        dashArray: '8, 8',
+        opacity: 0.8,
+        dashArray: '6, 8',
         className: 'glowing-route'
     }).addTo(map);
 
@@ -402,18 +575,26 @@ function drawTransitRoute(locName) {
     const roadDist = directDist * 1.35; 
     const travelTimeHours = roadDist / 28.0; 
 
+    // Update floating map overlay
+    const routeTarget = document.getElementById('route-target-name');
+    const routeDist = document.getElementById('route-distance-val');
+    const routeTime = document.getElementById('route-time-val');
+    if (routeTarget) routeTarget.textContent = `${locName} → TPST Bantargebang`;
+    if (routeDist) routeDist.textContent = `${roadDist.toFixed(1)} km`;
+    if (routeTime) routeTime.textContent = `${travelTimeHours.toFixed(1)} Hours`;
+
     routeLine.bindPopup(`
         <div class="route-popup">
             <h3>LOGISTICS DISPATCH ROUTE</h3>
-            <div>Kecamatan: <b>${locName}</b></div>
-            <div>Destination: <b>TPST Bantargebang</b></div>
+            <div>Origin: <b>${locName} (${KECAMATAN_DATABASE[locName]?.city || 'DKI Jakarta'})</b></div>
+            <div>Destination: <b>TPST Bantargebang (Bekasi)</b></div>
             <div>Transit Distance: <b class="highlight">${roadDist.toFixed(1)} km</b></div>
-            <div>Est. Travel Time: <b class="highlight">${travelTimeHours.toFixed(1)} Hours</b></div>
+            <div>Est. Transit Time: <b class="highlight">${travelTimeHours.toFixed(1)} Hours</b></div>
         </div>
-    `).openPopup();
+    `);
 
     map.fitBounds([startCoords, BANTARGEBANG_COORDS], {
-        padding: [60, 60]
+        padding: [40, 40]
     });
 }
 
@@ -536,11 +717,16 @@ async function runPrediction() {
 
 function updateDashboardData(data, confScore, message) {
     const results = data.prediction_results;
-    if (results.length === 0) return;
+    if (!results || results.length === 0) return;
 
     const totalVolume = results.reduce((acc, curr) => acc + curr.total_volume_ton, 0);
-    if (statTotalVolume) statTotalVolume.innerHTML = `${totalVolume.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span class="unit">Tons</span>`;
     
+    // 1. KPI Decision Summary: Forecast Volume
+    if (statTotalVolume) {
+        statTotalVolume.innerHTML = `${totalVolume.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span class="unit">Tons</span>`;
+    }
+    
+    // 2. KPI Decision Summary: Risk Level
     let maxRisk = "SAFE";
     results.forEach(r => {
         if (r.risk_status === "CRITICAL") maxRisk = "CRITICAL";
@@ -549,35 +735,41 @@ function updateDashboardData(data, confScore, message) {
     
     if (statRiskStatus) {
         statRiskStatus.textContent = maxRisk;
-        statRiskStatus.className = `card-value status-badge ${maxRisk.toLowerCase()}`;
+        statRiskStatus.className = `kpi-status-badge ${maxRisk.toLowerCase()}`;
     }
+
+    const baselineTon = KECAMATAN_DATABASE[selectedLocation]?.normal_avg || 100.0;
+    if (statPeriodMeta) statPeriodMeta.textContent = `Next ${results.length} days (${results[0].date} to ${results[results.length - 1].date})`;
+    if (statLocationMeta) statLocationMeta.textContent = `${selectedLocation} · Baseline: ${baselineTon.toFixed(1)} T/D`;
 
     updateMarkerRisk(selectedLocation, maxRisk);
     drawTransitRoute(selectedLocation);
 
-    // Operational Logistics Plan parsing
+    // Logistics breakdown
     const logPlan = data.logistics_plan || {};
-    const uiPres = logPlan.ui_presentation || {};
     const recFleet = logPlan.recommended_fleet || {};
     const manpowerObj = logPlan.manpower_breakdown || {};
     const colTimeObj = logPlan.collection_time || {};
     const effObj = logPlan.operational_efficiency || {};
     const relObj = logPlan.reliability || {};
 
-    const trucksCount = logPlan.trucks_needed || recFleet.recommended_trucks || 0;
+    const trucksCount = logPlan.trucks_needed || recFleet.recommended_trucks || Math.ceil(totalVolume / 14.25);
     const personnelCount = logPlan.manpower || manpowerObj.total_personnel || (trucksCount * 3);
     const durationHours = (logPlan.estimated_duration_hours !== undefined ? logPlan.estimated_duration_hours : (colTimeObj.adjusted_hours || 0.0)).toFixed(1);
     const truckLoadsVal = logPlan.required_truck_loads !== undefined ? Math.ceil(logPlan.required_truck_loads) : Math.ceil(totalVolume / 15.0);
 
-    // 1. KPI Stat Recommended Fleet (15T)
-    if (statTrucks) statTrucks.innerHTML = `${trucksCount} <span class="unit">Trucks (15T)</span>`;
+    // 3. KPI Decision Summary: Suggested Fleet
+    if (statTrucks) statTrucks.innerHTML = `${trucksCount} <span class="unit">Trucks</span>`;
 
-    const startDateStr = results[0].date;
-    const endDateStr = results[results.length - 1].date;
-    
-    if (statPeriodMeta) statPeriodMeta.textContent = `Period: ${startDateStr} to ${endDateStr}`;
-    if (statLocationMeta) statLocationMeta.textContent = `${selectedLocation} (Radius ${KECAMATAN_DATABASE[selectedLocation].radius})`;
+    // 4. KPI Decision Summary: Forecast Readiness
+    const readinessScore = relObj.score_percent !== undefined ? relObj.score_percent.toFixed(1) : (confScore * 100).toFixed(1);
+    const elReadiness = document.getElementById("stat-readiness") || logConfidence;
+    if (elReadiness) elReadiness.textContent = `${readinessScore}%`;
 
+    // 5. Chart.js Forecast Timeline Curve
+    renderForecastChart(results);
+
+    // 6. Waste Composition Breakdown
     const totalOrganic = results.reduce((acc, curr) => acc + curr.organic_waste_ton, 0);
     const totalPlastic = results.reduce((acc, curr) => acc + curr.plastic_waste_ton, 0);
     const totalPaper = results.reduce((acc, curr) => acc + curr.paper_waste_ton, 0);
@@ -593,30 +785,49 @@ function updateDashboardData(data, confScore, message) {
     if (valMetal) valMetal.textContent = `${totalMetal.toFixed(2)} Ton`;
 
     const getPct = (val) => totalVolume > 0 ? (val / totalVolume) * 100 : 0;
+    const pctOrganic = getPct(totalOrganic);
+    const pctPlastic = getPct(totalPlastic);
+    const pctPaper = getPct(totalPaper);
+    const pctGlass = getPct(totalGlass);
+    const pctTextile = getPct(totalTextile);
+    const pctMetal = getPct(totalMetal);
 
-    if (barOrganic) barOrganic.style.width = `${getPct(totalOrganic)}%`;
-    if (barPlastic) barPlastic.style.width = `${getPct(totalPlastic)}%`;
-    if (barPaper) barPaper.style.width = `${getPct(totalPaper)}%`;
-    if (barGlass) barGlass.style.width = `${getPct(totalGlass)}%`;
-    if (barTextile) barTextile.style.width = `${getPct(totalTextile)}%`;
-    if (barMetal) barMetal.style.width = `${getPct(totalMetal)}%`;
+    if (barOrganic) barOrganic.style.width = `${pctOrganic}%`;
+    if (barPlastic) barPlastic.style.width = `${pctPlastic}%`;
+    if (barPaper) barPaper.style.width = `${pctPaper}%`;
+    if (barGlass) barGlass.style.width = `${pctGlass}%`;
+    if (barTextile) barTextile.style.width = `${pctTextile}%`;
+    if (barMetal) barMetal.style.width = `${pctMetal}%`;
 
-    // 2. Operational Logistics Plan 6 Cards
-    const elFleet = document.getElementById("log-fleet") || logFleet;
-    const elFleetSub = document.getElementById("log-fleet-sub") || logFleetSub;
-    const elManpower = document.getElementById("log-manpower") || logManpower;
-    const elManpowerSub = document.getElementById("log-manpower-sub") || logManpowerSub;
-    const elDuration = document.getElementById("log-duration") || logDuration;
-    const elDurationSub = document.getElementById("log-duration-sub") || logDurationSub;
-    const elTruckLoads = document.getElementById("log-truck-loads") || logTruckLoads;
-    const elTruckLoadsSub = document.getElementById("log-truck-loads-sub") || logTruckLoadsSub;
-    const elEfficiency = document.getElementById("log-efficiency") || logEfficiency;
-    const elEfficiencySub = document.getElementById("log-efficiency-sub") || logEfficiencySub;
-    const elConfidence = document.getElementById("log-confidence") || logConfidence;
-    const elConfidenceSub = document.getElementById("log-confidence-sub") || logConfidenceSub;
+    // Stacked Segmented Bar
+    const segOrg = document.getElementById("seg-organic");
+    const segPla = document.getElementById("seg-plastic");
+    const segPap = document.getElementById("seg-paper");
+    const segGla = document.getElementById("seg-glass");
+    const segTex = document.getElementById("seg-textile");
+    const segMet = document.getElementById("seg-metal");
+
+    if (segOrg) segOrg.style.width = `${pctOrganic}%`;
+    if (segPla) segPla.style.width = `${pctPlastic}%`;
+    if (segPap) segPap.style.width = `${pctPaper}%`;
+    if (segGla) segGla.style.width = `${pctGlass}%`;
+    if (segTex) segTex.style.width = `${pctTextile}%`;
+    if (segMet) segMet.style.width = `${pctMetal}%`;
+
+    // 7. Operational Scenario Grid
+    const elFleet = document.getElementById("log-fleet");
+    const elFleetSub = document.getElementById("log-fleet-sub");
+    const elManpower = document.getElementById("log-manpower");
+    const elManpowerSub = document.getElementById("log-manpower-sub");
+    const elDuration = document.getElementById("log-duration");
+    const elDurationSub = document.getElementById("log-duration-sub");
+    const elTruckLoads = document.getElementById("log-truck-loads");
+    const elTruckLoadsSub = document.getElementById("log-truck-loads-sub");
+    const elEfficiency = document.getElementById("log-efficiency");
+    const elEfficiencySub = document.getElementById("log-efficiency-sub");
 
     if (elFleet) elFleet.textContent = `${trucksCount} Trucks`;
-    if (elFleetSub) elFleetSub.textContent = uiPres.fleet_subtitle || "15 ton capacity / truck";
+    if (elFleetSub) elFleetSub.textContent = "15 ton capacity / truck";
 
     if (elManpower) elManpower.textContent = `${personnelCount} Personnel`;
     if (elManpowerSub) {
@@ -626,73 +837,47 @@ function updateDashboardData(data, confScore, message) {
     }
 
     if (elDuration) elDuration.textContent = `${durationHours} Hours`;
-    if (elDurationSub) elDurationSub.textContent = uiPres.collection_time_subtitle || "Adjusted for traffic, weather & events";
+    if (elDurationSub) elDurationSub.textContent = "Throughput adjusted";
 
     if (elTruckLoads) elTruckLoads.textContent = `~${truckLoadsVal} Loads`;
-    if (elTruckLoadsSub) elTruckLoadsSub.textContent = "forecast volume ÷ 15T gross capacity";
+    if (elTruckLoadsSub) elTruckLoadsSub.textContent = "Volume ÷ 15T gross";
 
     if (elEfficiency) elEfficiency.textContent = logPlan.efficiency_rate || effObj.display || "85% — Optimal";
     if (elEfficiencySub) elEfficiencySub.textContent = effObj.status ? `Status: ${effObj.status}` : "Multi-factor operational index";
 
-    if (elConfidence) {
-        const relScore = relObj.score_percent !== undefined ? relObj.score_percent.toFixed(1) : (confScore * 100).toFixed(1);
-        elConfidence.textContent = `${relScore}%`;
-    }
-    if (elConfidenceSub) elConfidenceSub.textContent = "Empirical model quality & data health";
-
+    // 8. Event Schedule Update
     const eventDay = results.find(r => r.event_info !== null);
     if (eventDay) {
         if (eventDescText) eventDescText.innerHTML = `⚠️ <strong>${eventDay.event_info}</strong> on ${eventDay.date}. Heavy crowd expected near site.`;
         const eBox = document.getElementById("event-box");
-        if (eBox) eBox.style.borderColor = "var(--red)";
+        if (eBox) eBox.style.borderColor = "var(--status-warning)";
     } else {
         if (eventDescText) eventDescText.textContent = "No major public events scheduled for this location in the forecast window.";
         const eBox = document.getElementById("event-box");
-        if (eBox) eBox.style.borderColor = "var(--yellow)";
+        if (eBox) eBox.style.borderColor = "var(--border-subtle)";
     }
 
-    if (timelineList) {
-        timelineList.innerHTML = "";
-        results.forEach(day => {
-            const card = document.createElement("div");
-            card.className = "timeline-card";
+    // 9. Hourly 24-hr Diurnal Risk Grid
+    const hourlyDay = results[0];
+    if (hourlyDay && hourlyDay.hourly_breakdown && hourlyGrid) {
+        hourlyGrid.innerHTML = "";
+        hourlyDay.hourly_breakdown.forEach(hour => {
+            const cell = document.createElement("div");
+            cell.className = "hourly-cell";
             
-            const dateObj = new Date(day.date);
-            const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
-            const displayDate = `${dayName}, ${dateObj.getDate()} ${dateObj.toLocaleString('en-US', { month: 'short' })}`;
+            let intensityClass = "low";
+            if (hour.risk_indicator === "MEDIUM") intensityClass = "medium";
+            else if (hour.risk_indicator === "HIGH") intensityClass = "high";
 
-            card.innerHTML = `
-                <span class="timeline-date">${displayDate}</span>
-                <span class="timeline-vol">${day.total_volume_ton.toFixed(1)} T</span>
-                <span class="timeline-status ${day.risk_status.toLowerCase()}">${day.risk_status}</span>
+            cell.innerHTML = `
+                <div class="cell-block ${intensityClass}" title="${hour.hour} — Vol: ${hour.estimated_volume_ton} Ton (${hour.risk_indicator} Risk)"></div>
+                <span class="cell-time">${hour.hour}</span>
             `;
-            timelineList.appendChild(card);
+            hourlyGrid.appendChild(cell);
         });
     }
 
-    const hourlyDay = results[0];
-    if (hourlyDay && hourlyDay.hourly_breakdown) {
-        if (hourlySection) hourlySection.style.display = "block";
-        if (hourlyGrid) {
-            hourlyGrid.innerHTML = "";
-            hourlyDay.hourly_breakdown.forEach(hour => {
-                const cell = document.createElement("div");
-                cell.className = "hourly-cell";
-                
-                let intensityClass = "low";
-                if (hour.risk_indicator === "MEDIUM") intensityClass = "medium";
-                else if (hour.risk_indicator === "HIGH") intensityClass = "high";
-
-                cell.innerHTML = `
-                    <div class="cell-block ${intensityClass}" title="Vol: ${hour.estimated_volume_ton} Ton - Risk: ${hour.risk_indicator}"></div>
-                    <span class="cell-time">${hour.hour}</span>
-                `;
-                hourlyGrid.appendChild(cell);
-            });
-        }
-    } else {
-        if (hourlySection) hourlySection.style.display = "none";
-    }
+    updateContextBadge();
 }
 
 // Request CSV from Backend API and download it
@@ -1446,5 +1631,27 @@ window.addEventListener("click", function(e) {
     const modal = document.getElementById("model-info-modal");
     if (modal && e.target === modal) {
         modal.style.display = "none";
+    }
+});
+
+// Horizon pill buttons setup
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".horizon-pill").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            document.querySelectorAll(".horizon-pill").forEach(p => p.classList.remove("active"));
+            btn.classList.add("active");
+            const days = parseInt(btn.getAttribute("data-days"));
+            if (forecastSlider) forecastSlider.value = days;
+            if (forecastVal) forecastVal.textContent = days;
+            updateContextBadge();
+            runPrediction();
+        });
+    });
+    
+    if (modelSelect) {
+        modelSelect.addEventListener("change", () => {
+            updateContextBadge();
+            runPrediction();
+        });
     }
 });
