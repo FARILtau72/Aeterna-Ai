@@ -69,22 +69,27 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 64px;
-    padding: 0 1.8rem;
-    background: rgba(7, 12, 8, 0.95);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border-bottom: 1px solid var(--border-color);
+    height: 58px;
+    min-height: 58px;
+    padding: 0 1.4rem;
+    background: rgba(6, 10, 7, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-subtle);
     position: sticky;
     top: 0;
-    z-index: 999;
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    flex-wrap: nowrap;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .top-bar-left {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 12px;
+    flex-shrink: 0;
 }
 
 .top-bar-brand {
@@ -92,11 +97,13 @@ body {
     align-items: center;
     gap: 8px;
     cursor: pointer;
+    user-select: none;
 }
 
 .top-bar-brand .logo-text {
-    font-size: 1.45rem;
+    font-size: 1.3rem;
     line-height: 1;
+    font-weight: 800;
 }
 
 .top-bar-brand .version-tag {
@@ -108,80 +115,126 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 5px;
-    width: 40px;
-    height: 40px;
+    gap: 4px;
+    width: 36px;
+    height: 36px;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
     cursor: pointer;
     padding: 0;
-    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
 .menu-toggle-btn span {
     display: block;
-    width: 20px;
+    width: 18px;
     height: 2px;
-    background: var(--text-main);
+    background: var(--text-primary);
     border-radius: 2px;
-    transition: all 0.22s ease;
+    transition: all 0.2s ease;
 }
 
 .menu-toggle-btn:hover {
-    background: rgba(0, 242, 254, 0.12);
-    border-color: var(--cyan);
-    transform: scale(1.04);
+    background: rgba(112, 173, 71, 0.15);
+    border-color: var(--accent-primary);
 }
 
 .menu-toggle-btn:hover span {
-    background: var(--cyan);
+    background: var(--accent-primary);
 }
 
 .top-bar-center {
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 0 12px;
+    min-width: 0;
 }
 
 .active-page-pill {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
-    letter-spacing: 1.5px;
-    color: var(--cyan);
-    background: rgba(0, 242, 254, 0.06);
-    border: 1px solid rgba(0, 242, 254, 0.2);
-    padding: 4px 14px;
+    letter-spacing: 1px;
+    color: var(--accent-primary);
+    background: rgba(112, 173, 71, 0.1);
+    border: 1px solid rgba(112, 173, 71, 0.3);
+    padding: 3px 12px;
     border-radius: 20px;
     text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .top-bar-right {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 .top-nav-quick-btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 14px;
-    background: rgba(0, 242, 254, 0.1);
-    border: 1px solid rgba(0, 242, 254, 0.3);
-    border-radius: 8px;
-    color: var(--cyan);
+    padding: 6px 12px;
+    background: rgba(112, 173, 71, 0.12);
+    border: 1px solid rgba(112, 173, 71, 0.4);
+    border-radius: 7px;
+    color: var(--accent-primary);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: 0.72rem;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .top-nav-quick-btn:hover {
-    background: var(--cyan);
+    background: var(--accent-primary);
     color: #050B08;
-    box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+    box-shadow: 0 0 14px rgba(112, 173, 71, 0.4);
+}
+
+/* Responsive Top Bar Breakpoints */
+@media (max-width: 768px) {
+    .app-top-bar {
+        height: 52px;
+        min-height: 52px;
+        padding: 0 0.85rem;
+    }
+    
+    .top-bar-brand .version-tag {
+        display: none;
+    }
+    
+    .top-bar-brand .logo-text {
+        font-size: 1.15rem;
+    }
+    
+    .top-bar-right .system-status {
+        display: none;
+    }
+    
+    .top-nav-quick-btn {
+        padding: 5px 8px;
+        font-size: 0.68rem;
+    }
+    
+    .active-page-pill {
+        font-size: 0.62rem;
+        padding: 2px 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .top-bar-center {
+        display: none;
+    }
 }
 
 /* Off-Canvas Sidebar Drawer (All Devices) */
